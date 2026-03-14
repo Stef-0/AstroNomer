@@ -95,10 +95,20 @@ Default is `10`, but pagination is configurable per instance. This is an intenti
 - `shell.mode`
   Supported values: `standalone`, `host-integrated`
 - `shell.navigation`
+- `shell.homepage.mode`
+  Supported values: `content-first`, `editorial-hero`
 
 Each navigation item must include:
 - `href`
 - `label`
+
+Homepage behavior:
+- `content-first` starts with a lead content package and recent posts
+- `editorial-hero` adds the larger editorial intro block above the lead content package
+
+Recommendation:
+- use `content-first` for most live publications
+- use `editorial-hero` only when the instance needs a stronger brand or mission statement at the top of the homepage
 
 ### Deploy Transport
 - `deploy.transport`
@@ -120,7 +130,7 @@ This feeds structured data and metadata output.
 
 1. Set the public site URL in `.env`.
 2. Edit [instance.config.mjs](/Users/stefanorlic/code/astronomer/instance.config.mjs) for:
-   routing, authorship, analytics, embeds, pagination, and social fallback image.
+   routing, authorship, analytics, embeds, homepage mode, pagination, and social fallback image.
 3. Adjust [src/styles/tokens.css](/Users/stefanorlic/code/astronomer/src/styles/tokens.css) to match the target brand.
 4. Add or replace content in [/Users/stefanorlic/code/astronomer/src/content/posts](/Users/stefanorlic/code/astronomer/src/content/posts).
 5. Build and deploy through the single deploy chain.
@@ -197,4 +207,3 @@ Still intentionally deferred:
 - analytics providers beyond GA4
 - formal multi-author permissions
 - advanced deploy rollback/recovery tooling
-

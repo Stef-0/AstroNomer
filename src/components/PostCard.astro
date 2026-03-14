@@ -11,43 +11,116 @@ interface Props {
 const { post } = Astro.props;
 ---
 
-<article class="surface-card post-card">
-  <p class="eyebrow">{post.data.categories[0] || "Article"}</p>
-  <h2><a href={withBasePath(`/blog/${post.slug}`)}>{post.data.title}</a></h2>
-  <p>{post.data.description}</p>
-  <div class="meta">
-    <span>{post.data.publishedAt.toLocaleDateString("en-US", { dateStyle: "long" })}</span>
-    <span>{getAuthorName(post)}</span>
+<article class="post-card">
+  <div class="post-card__rail">
+    <p class="eyebrow">{post.data.categories[0] || "Article"}</p>
+    <span>{post.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
   </div>
-  <ul class="tag-list">
-    {post.data.tags.map((tag) => (
-      <li><a href={withBasePath(`/tags/${toSlug(tag)}`)}>#{tag}</a></li>
-    ))}
-  </ul>
+  <div class="post-card__body">
+    <h2><a href={withBasePath(`/blog/${post.slug}`)}>{post.data.title}</a></h2>
+    <p class="post-card__dek">{post.data.description}</p>
+    <div class="meta">
+      <span>By {getAuthorName(post)}</span>
+    </div>
+    <ul class="tag-list">
+      {post.data.tags.slice(0, 3).map((tag) => (
+        <li><a href={withBasePath(`/tags/${toSlug(tag)}`)}>{tag}</a></li>
+      ))}
+    </ul>
+  </div>
 </article>
 
 <style>
   .post-card {
-    padding: var(--space-6);
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: var(--space-6);
+    padding: var(--space-8) 0;
+    border-top: 1px solid var(--color-border);
+    align-items: start;
   }
 
   h2 {
     font-family: var(--font-heading);
-    margin: 0.25rem 0 0.75rem;
-    font-size: clamp(1.5rem, 3vw, 2.4rem);
+    margin: 0 0 0.8rem;
+    font-size: clamp(1.7rem, 3vw, 2.7rem);
+    line-height: 0.95;
   }
 
   h2 a {
     text-decoration: none;
   }
 
+  .post-card:hover h2 a,
+  .post-card:focus-within h2 a {
+    color: color-mix(in srgb, var(--color-accent-strong) 92%, white);
+  }
+
+  .post-card__rail {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    color: var(--color-text-soft);
+    font-family: var(--font-display);
+    font-size: 0.84rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .post-card__body {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .post-card__dek {
+    margin: 0;
+    font-size: 1.08rem;
+    line-height: 1.5;
+    max-width: 48rem;
+  }
+
   .meta,
   .tag-list {
     display: flex;
-    gap: var(--space-3);
+    gap: var(--space-2);
     flex-wrap: wrap;
     padding: 0;
     list-style: none;
     color: var(--color-text-soft);
+  }
+
+  .meta {
+    font-family: var(--font-display);
+    font-size: 0.83rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .tag-list a {
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    padding: 0.35rem 0.65rem;
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.38);
+  }
+
+  .tag-list a:hover,
+  .tag-list a:focus-visible {
+    background: color-mix(in srgb, var(--color-highlight) 52%, white);
+    border-color: var(--color-border-strong);
+    text-decoration: none;
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 760px) {
+    .post-card {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+      padding: var(--space-6) 0;
+    }
   }
 </style>

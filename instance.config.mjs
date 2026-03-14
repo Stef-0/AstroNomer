@@ -28,7 +28,10 @@ const instanceConfigSchema = z.object({
   }),
   shell: z.object({
     mode: z.enum(["standalone", "host-integrated"]),
-    navigation: z.array(navigationItemSchema).min(1)
+    navigation: z.array(navigationItemSchema).min(1),
+    homepage: z.object({
+      mode: z.enum(["content-first", "editorial-hero"])
+    })
   }),
   blog: z.object({
     postsPerPage: z.number().int().min(1).max(100)
@@ -83,7 +86,10 @@ const rawInstanceConfig = {
         href: "/rss.xml",
         label: "RSS"
       }
-    ]
+    ],
+    homepage: {
+      mode: "content-first"
+    }
   },
   blog: {
     postsPerPage: 10

@@ -31,9 +31,11 @@ const social = getPageSocialMetadata();
     ])
   ]}
 >
-  <section class="page-shell search-page">
-    <p class="eyebrow">Search</p>
-    <h2>Find posts fast</h2>
+  <section class="page-shell search-page archive-shell">
+    <div class="archive-heading">
+      <p class="eyebrow">Search Desk</p>
+      <h2>Find posts fast</h2>
+    </div>
     {searchEnabled ? (
       <>
         <div id="search"></div>
@@ -75,16 +77,6 @@ const social = getPageSocialMetadata();
 </script>
 
 <style>
-  .search-page {
-    padding-bottom: var(--space-16);
-  }
-
-  h2 {
-    font-family: var(--font-heading);
-    font-size: clamp(2rem, 4vw, 4rem);
-    margin-top: 0;
-  }
-
   .fallback {
     color: var(--color-text-soft);
   }

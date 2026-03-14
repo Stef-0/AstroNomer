@@ -18,7 +18,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Current Build Phase
 - Active phase: `Phase 0 / MVP foundation`
-- Last updated for: initial greenfield scaffold
+- Last updated for: editorial UX/UI pass and documentation-ready MVP surface
 
 ## Requirement Tracking
 
@@ -28,7 +28,7 @@ This file is the working source for implementation status, intentional spec devi
 | Tailwind CSS v4 foundation | C6, C11 | implemented | Tailwind v4 is installed and active through the Vite integration path. |
 | Three-layer config surface | C6, C10, C11 | implemented | `.env.example`, `instance.config.mjs`, and `src/styles/tokens.css` created with separated responsibilities. |
 | Environment-driven site/base path | C6, C11 | implemented | `astro.config.mjs` reads env-driven site URL and instance-configured base path. |
-| Design tokens contract | C6, C11 | implemented | Neutral token system created in `tokens.css`; dark-mode token hooks included but disabled by default. |
+| Design tokens contract | C6, C11 | implemented | Editorial token system now drives the masthead, archive rhythm, and post-reading presentation with configurable fallback branding hooks. |
 | Markdown/MDX content workflow | C6, C11 | implemented | Content schema, MDX component mapping, and an expanded representative content set now exercise real archive and draft scenarios. |
 | Draft filtering | C6, C11 | implemented | Production filtering is centralized in content query helpers. |
 | Rich media and code block layer | C6, C11 | implemented | `CodeBlock` uses Shiki with locked props, and approved click-to-load MDX embeds now cover YouTube, Vimeo, CodePen, GitHub Gist, and Twitter/X. |
@@ -39,7 +39,7 @@ This file is the working source for implementation status, intentional spec devi
 | SEO and structured data baseline | C6, C11 | partial | Post pages emit article metadata, and non-post pages now share a default social image plus page-type schema and item lists; richer post image handling is the main remaining refinement. |
 | Single-command deploy chain | C6, C11, C14 | implemented | `npm run deploy` verified end to end with build, Pagefind, and transfer. |
 | Transport abstraction | C6, C11, C14 | implemented | `noop` and `local-copy` transports are implemented and verified; remote transports remain future extensions, not MVP requirements. |
-| Standalone shell + `SiteShell.astro` seam | C6, C11, C15 | implemented | Shell seam created with the minimum required props and a default standalone presentation. |
+| Standalone shell + `SiteShell.astro` seam | C6, C11, C15 | implemented | Shell seam now ships with a verified editorial standalone presentation built around masthead, archive, and article layouts. |
 | Schema-ready multi-author support | C6, C11 | implemented | Optional `author` field is in the content schema. |
 | GA4 default analytics slot | C6, C11, C15 | implemented | Non-blocking GA4 component scaffolded behind instance config and env vars. |
 | Newsletter structural placeholder | C6, C11 | implemented | `NewsletterEmbed` placeholder component added with no active provider coupling. |
@@ -47,8 +47,10 @@ This file is the working source for implementation status, intentional spec devi
 ## Decisions and Overrides
 - Decision: the tracking file for implementation and spec drift lives at `/Users/stefanorlic/code/astronomer/IMPLEMENTATION_TRACKER.md`.
   Reason: the spec explicitly asked for a file that works for progress tracking and drift checks; keeping it in the repo root makes it hard to miss.
-- Decision: first implementation slice prioritizes the reusable platform skeleton over a polished design.
-  Reason: the spec is architecture-heavy and greenfield; getting the seams and constraints in place early reduces rework.
+- Decision: the MVP now includes an intentional editorial UI layer rather than remaining a neutral scaffold.
+  Reason: for a publishing product, reading experience is core product value, not post-MVP polish; the off-white and ink editorial treatment is now part of the verified default shell.
+- Decision: homepage presentation is configurable per instance, with `content-first` as the default and `editorial-hero` as an opt-in variant.
+  Reason: a content-led homepage is the stronger default for most live publications, while some operators still need a branded intro mode at the top of the homepage.
 - Decision: deploy transport starts with `noop` and `local-copy`.
   Reason: the spec requires an abstraction and a fixed deploy chain, but does not lock a concrete remote provider for MVP.
 - Decision: deploy transport may be overridden with `DEPLOY_TRANSPORT` for operational verification.
@@ -100,6 +102,8 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: RSS verified with 13 published items after content expansion
 - `completed`: duplicate content-id warning resolved after clearing stale `.astro` cache and rebuilding cleanly
 - `completed`: non-post pages verified with default social image plus `WebPage`/`CollectionPage`/`SearchResultsPage` schema in generated HTML
+- `completed`: editorial redesign verified across home, archive, taxonomy, search, and post templates in generated HTML
+- `completed`: homepage mode seam verified with `content-first` as default and `editorial-hero` as validated config option
 - `completed`: Pagefind index generation
 - `completed`: full `npm run deploy` verified against the expanded 53-page site
 - `completed`: `npm run deploy` with default `noop` transport

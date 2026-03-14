@@ -50,11 +50,11 @@ Supported optional fields:
 - `draft: true`
   Excludes the post from production routes, RSS, and search output
 - `featured: true`
-  Lets the homepage prioritize the post
+  Lets the homepage prioritize the post in the lead package
 - `author`
   Overrides the instance default author for that post
 - `image`
-  Becomes the post’s social image when present
+  Becomes the post’s social image when present and may also be used in homepage lead presentation
 - `faq`
   Generates FAQ structured data on the post page
 
@@ -196,4 +196,3 @@ Unless you are also acting as an operator, you usually do not need to change:
 - analytics settings
 
 Those are operator-level concerns.
-

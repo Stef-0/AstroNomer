@@ -1,26 +1,32 @@
 :root {
-  --font-heading: "Outfit Variable", "Avenir Next", sans-serif;
+  --font-heading: "Newsreader Variable", Georgia, serif;
   --font-body: "Newsreader Variable", Georgia, serif;
-  --color-background: #f6f2ea;
-  --color-surface: #fffaf3;
-  --color-surface-strong: #f0e6d6;
-  --color-text: #1f1d1a;
-  --color-text-soft: #5f5649;
-  --color-border: #d6c6ad;
-  --color-accent: #8e4b2d;
-  --color-accent-strong: #5f2f1b;
-  --radius-sm: 0.5rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.5rem;
+  --font-display: "Outfit Variable", "Avenir Next", sans-serif;
+  --color-background: #f7f7f3;
+  --color-surface: #fcfcfa;
+  --color-surface-strong: #efefe8;
+  --color-text: #141311;
+  --color-text-soft: #625b50;
+  --color-border: #d6d0c3;
+  --color-border-strong: #7a766f;
+  --color-accent: #2e2a24;
+  --color-accent-strong: #0f0e0d;
+  --color-highlight: #ece7dc;
+  --radius-sm: 0.15rem;
+  --radius-md: 0.35rem;
+  --radius-lg: 0.5rem;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
   --space-4: 1rem;
+  --space-5: 1.25rem;
   --space-6: 1.5rem;
   --space-8: 2rem;
   --space-12: 3rem;
   --space-16: 4rem;
-  --content-width: 72rem;
+  --space-20: 5rem;
+  --content-width: 78rem;
+  --reading-width: 46rem;
   color-scheme: light;
 }
 
@@ -34,4 +40,3 @@
   --color-accent: #f0a870;
   --color-accent-strong: #ffd2a8;
 }
-

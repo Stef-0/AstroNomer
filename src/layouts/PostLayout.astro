@@ -56,16 +56,20 @@ const stats = getPostReadingStats(post);
 >
   <article class="page-shell post">
     <header class="post-hero">
-      <p class="eyebrow">{post.data.categories[0] || "Article"}</p>
-      <h1>{post.data.title}</h1>
-      <p class="dek">{post.data.description}</p>
-      <div class="meta">
-        <span>{post.data.publishedAt.toLocaleDateString("en-US", { dateStyle: "long" })}</span>
-        <span>{getAuthorName(post)}</span>
-        <span>{Math.ceil(stats.minutes)} min read</span>
+      <div class="post-hero__grid">
+        <div class="post-hero__rail">
+          <p class="eyebrow">{post.data.categories[0] || "Article"}</p>
+          <p>{post.data.publishedAt.toLocaleDateString("en-US", { dateStyle: "long" })}</p>
+          <p>By {getAuthorName(post)}</p>
+          <p>{Math.ceil(stats.minutes)} min read</p>
+        </div>
+        <div>
+          <h1>{post.data.title}</h1>
+          <p class="dek">{post.data.description}</p>
+        </div>
       </div>
     </header>
-    <div class="post-body surface-card">
+    <div class="post-body">
       <slot />
     </div>
     {instanceConfig.features.newsletter && <NewsletterEmbed />}
@@ -78,39 +82,85 @@ const stats = getPostReadingStats(post);
   }
 
   .post-hero {
-    padding: var(--space-6) 0 var(--space-8);
+    padding: var(--space-12) 0 var(--space-8);
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: var(--space-8);
+  }
+
+  .post-hero__grid {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    gap: var(--space-8);
   }
 
   h1 {
     font-family: var(--font-heading);
-    margin: 0.25rem 0;
-    font-size: clamp(2.4rem, 6vw, 5rem);
-    line-height: 0.95;
+    margin: 0;
+    font-size: clamp(3rem, 7vw, 6.3rem);
+    line-height: 0.94;
   }
 
   .dek {
-    font-size: 1.2rem;
-    max-width: 48rem;
+    font-size: 1.35rem;
+    line-height: 1.45;
+    max-width: 42rem;
+    margin-top: var(--space-4);
   }
 
-  .meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
+  .post-hero__rail {
+    display: grid;
+    align-content: start;
+    gap: 0.7rem;
+    font-family: var(--font-display);
+    font-size: 0.84rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     color: var(--color-text-soft);
   }
 
   .post-body {
-    padding: var(--space-8);
+    width: min(100%, var(--reading-width));
+    font-size: 1.16rem;
+    line-height: 1.82;
+  }
+
+  .post-body :global(p),
+  .post-body :global(ul),
+  .post-body :global(ol) {
+    margin-bottom: 1.35rem;
   }
 
   .post-body :global(h2),
   .post-body :global(h3) {
     font-family: var(--font-heading);
+    margin-top: 2.4rem;
+    line-height: 1.05;
+  }
+
+  .post-body :global(h2) {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+
+  .post-body :global(blockquote) {
+    margin: 2rem 0;
+    padding-left: 1.2rem;
+    border-left: 3px solid var(--color-border-strong);
+    font-style: italic;
   }
 
   .post-body :global(pre),
   .post-body :global(figure) {
     margin: 2rem 0;
+  }
+
+  @media (max-width: 760px) {
+    .post-hero__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+
+    .post-body {
+      width: 100%;
+    }
   }
 </style>

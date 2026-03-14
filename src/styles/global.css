@@ -5,8 +5,12 @@
 
 :root {
   font-family: var(--font-body);
-  background: radial-gradient(circle at top, rgba(142, 75, 45, 0.14), transparent 30%), var(--color-background);
+  background:
+    linear-gradient(180deg, rgba(20, 19, 17, 0.018), transparent 14rem),
+    linear-gradient(90deg, rgba(20, 19, 17, 0.008), transparent 24rem),
+    var(--color-background);
   color: var(--color-text);
+  line-height: 1.5;
 }
 
 * {
@@ -20,12 +24,35 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.55), transparent 24rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.42), transparent 12rem);
 }
 
 a {
   color: inherit;
-  text-decoration-color: var(--color-accent);
+  text-decoration-color: color-mix(in srgb, var(--color-text) 30%, transparent);
   text-underline-offset: 0.2em;
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    opacity 180ms ease,
+    transform 180ms ease,
+    text-decoration-color 180ms ease;
+}
+
+a:hover {
+  text-decoration-color: color-mix(in srgb, var(--color-text) 65%, transparent);
+}
+
+button {
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
 }
 
 img {
@@ -44,15 +71,108 @@ pre {
 }
 
 .eyebrow {
-  letter-spacing: 0.12em;
+  font-family: var(--font-display);
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: var(--color-text-soft);
 }
 
 .surface-card {
   background: color-mix(in srgb, var(--color-surface) 92%, white);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+main {
+  display: block;
+}
+
+.section-rule {
+  border-top: 1px solid var(--color-border-strong);
+}
+
+.archive-shell {
+  padding-bottom: var(--space-20);
+}
+
+.archive-heading {
+  border-top: 2px solid var(--color-accent-strong);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-8) 0 var(--space-5);
+  margin-bottom: var(--space-8);
+}
+
+.archive-heading h2 {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-heading);
+  font-size: clamp(2.4rem, 5vw, 4.6rem);
+}
+
+.story-stack {
+  display: grid;
+  gap: 0;
+}
+
+#search :global(.pagefind-ui) {
+  font-family: var(--font-display);
+}
+
+#search :global(.pagefind-ui__search-input) {
+  border: 1px solid var(--color-border-strong);
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 1rem 1.1rem;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+#search :global(.pagefind-ui__search-input:focus) {
+  outline: none;
+  border-color: var(--color-accent-strong);
+  box-shadow: 0 0 0 3px rgba(20, 19, 17, 0.06);
+}
+
+#search :global(.pagefind-ui__result) {
+  border-top: 1px solid var(--color-border);
+  padding: 1.1rem 0;
+}
+
+#search :global(.pagefind-ui__button) {
+  border-radius: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .page-shell {
+    width: min(calc(100% - 1.25rem), var(--content-width));
+  }
 }

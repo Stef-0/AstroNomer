@@ -3,14 +3,20 @@ import SiteShell from "@/components/SiteShell.astro";
 import PostCard from "@/components/PostCard.astro";
 import NewsletterEmbed from "@/components/NewsletterEmbed.astro";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/constants";
-import { getFeaturedPosts, getPublishedPosts } from "@/lib/content";
+import { getAuthorName, getFeaturedPosts, getPublishedPosts } from "@/lib/content";
 import { buildItemListSchema, buildOrgSchema, buildPageSchema, buildWebsiteSchema, getPageSocialMetadata } from "@/lib/seo";
-import { getCanonicalUrl } from "@/lib/site";
+import { getCanonicalUrl, withBasePath } from "@/lib/site";
+import instanceConfig from "../../instance.config.mjs";
 
 const featuredPosts = await getFeaturedPosts();
-const recentPosts = (await getPublishedPosts()).slice(0, 10);
-const heroPosts = featuredPosts.length ? featuredPosts : recentPosts.slice(0, 3);
+const publishedPosts = await getPublishedPosts();
+const leadPosts = (featuredPosts.length ? featuredPosts : publishedPosts).slice(0, 3);
+const primaryLead = leadPosts[0];
+const secondaryLead = leadPosts.slice(1);
+const leadSlugs = new Set(leadPosts.map((post) => post.slug));
+const recentPosts = publishedPosts.filter((post) => !leadSlugs.has(post.slug)).slice(0, 9);
 const social = getPageSocialMetadata();
+const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero";
 ---
 
 <SiteShell
@@ -27,72 +33,254 @@ const social = getPageSocialMetadata();
       description: SITE_DESCRIPTION,
       path: "/"
     }),
-    buildItemListSchema(recentPosts.slice(0, 5), "/")
+    buildItemListSchema(publishedPosts.slice(0, 5), "/")
   ]}
 >
-  <section class="page-shell hero">
-    <p class="eyebrow">Static, searchable, deployable</p>
-    <h2>{SITE_NAME} is a reusable blog platform with tokens, content collections, and spec-tracked seams.</h2>
-    <p>
-      This instance starts with the reusable MVP architecture from the spec:
-      Astro static output, MDX content, taxonomy pages, Pagefind search, RSS, sitemap, SEO metadata,
-      and a transport-ready deploy chain.
-    </p>
-  </section>
+  {showEditorialHero && (
+    <section class="page-shell home-intro">
+      <div class="home-intro__lead">
+        <p class="eyebrow">Sunday Edition</p>
+        <h2>{SITE_NAME} is a static editorial system with the posture of a publication, not a template.</h2>
+        <p class="home-intro__dek">
+          Built for serious reading, clean archives, fast search, and configurable publishing operations across independent instances.
+        </p>
+      </div>
+      <div class="home-intro__brief">
+        <p class="eyebrow">Inside This Issue</p>
+        <p>Astro static output, MDX content, taxonomy navigation, Pagefind search, RSS, sitemap, structured metadata, and a transport-ready deploy chain.</p>
+      </div>
+    </section>
+  )}
 
-  <section class="page-shell feature-grid">
-    {heroPosts.map((post) => <PostCard post={post} />)}
-  </section>
+  {primaryLead && (
+    <section class="page-shell lead-package">
+      <div class="archive-heading">
+        <p class="eyebrow">{showEditorialHero ? "Lead Story" : "Latest Edition"}</p>
+        <h2>{showEditorialHero ? "Featured reporting" : "Start with the newest and strongest work"}</h2>
+      </div>
 
-  <section class="page-shell split">
-    <div>
-      <p class="eyebrow">Recent posts</p>
-      <div class="stack">
+      <div class="lead-package__grid">
+        <article class="lead-feature">
+          {primaryLead.data.image && (
+            <a class="lead-feature__media" href={withBasePath(`/blog/${primaryLead.slug}`)} aria-hidden="true" tabindex="-1">
+              <img
+                src={primaryLead.data.image.src}
+                alt={primaryLead.data.imageAlt || ""}
+                loading="eager"
+              />
+            </a>
+          )}
+
+          <div class="lead-feature__content">
+            <p class="eyebrow">{primaryLead.data.categories[0] || "Article"}</p>
+            <h3>
+              <a href={withBasePath(`/blog/${primaryLead.slug}`)}>{primaryLead.data.title}</a>
+            </h3>
+            <p class="lead-feature__dek">{primaryLead.data.description}</p>
+            <div class="lead-feature__meta">
+              <span>{primaryLead.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+              <span>By {getAuthorName(primaryLead)}</span>
+            </div>
+          </div>
+        </article>
+
+        <div class="lead-rail">
+          <p class="eyebrow">Featured</p>
+          <div class="lead-rail__stack">
+            {secondaryLead.map((post) => (
+              <article class="lead-rail__item">
+                <p class="eyebrow">{post.data.categories[0] || "Article"}</p>
+                <h3><a href={withBasePath(`/blog/${post.slug}`)}>{post.data.title}</a></h3>
+                <p>{post.data.description}</p>
+                <div class="lead-rail__meta">
+                  <span>{post.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+                  <span>By {getAuthorName(post)}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="page-shell newsroom section-rule">
+    <div class="newsroom__main">
+      <div class="archive-heading">
+        <p class="eyebrow">Recent Posts</p>
+        <h2>From the archive</h2>
+      </div>
+      <div class="story-stack">
         {recentPosts.map((post) => <PostCard post={post} />)}
       </div>
     </div>
-    <NewsletterEmbed title="Newsletter seam" description="Provider activation is deferred, but the placeholder is ready for future integration." />
+    <div class="newsroom__aside">
+      <NewsletterEmbed title="Newsletter seam" description="Provider activation is deferred, but the placeholder is ready for future integration." />
+    </div>
   </section>
 </SiteShell>
 
 <style>
-  .hero {
-    padding: var(--space-8) 0 var(--space-12);
-  }
-
-  h2 {
-    font-family: var(--font-heading);
-    font-size: clamp(2.5rem, 6vw, 5.5rem);
-    line-height: 0.95;
-    max-width: 18ch;
-    margin: 0.25rem 0 1rem;
-  }
-
-  .hero p:last-child {
-    max-width: 52rem;
-    font-size: 1.1rem;
-  }
-
-  .feature-grid,
-  .split {
+  .home-intro {
     display: grid;
-    gap: var(--space-6);
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    padding-bottom: var(--space-12);
+    grid-template-columns: minmax(0, 1.7fr) minmax(16rem, 0.9fr);
+    gap: var(--space-8);
+    padding: var(--space-8) 0 var(--space-6);
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .split {
-    grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
+  .home-intro h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(2.9rem, 6vw, 4.9rem);
+    line-height: 0.94;
+    max-width: 11ch;
+    margin: 0.35rem 0 1rem;
   }
 
-  .stack {
+  .home-intro__dek,
+  .home-intro__brief p:last-child {
+    max-width: 42rem;
+    font-size: 1.08rem;
+    line-height: 1.65;
+  }
+
+  .home-intro__brief {
+    align-self: end;
+  }
+
+  .lead-package {
+    padding: var(--space-6) 0 var(--space-8);
+  }
+
+  .lead-package__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.95fr);
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  .lead-feature {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .lead-feature__media {
+    display: block;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    background: color-mix(in srgb, var(--color-surface) 86%, white);
+    aspect-ratio: 16 / 9;
+  }
+
+  .lead-feature__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 260ms ease;
+  }
+
+  .lead-feature:hover .lead-feature__media img,
+  .lead-feature:focus-within .lead-feature__media img {
+    transform: scale(1.02);
+  }
+
+  .lead-feature__content {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .lead-feature h3,
+  .lead-rail h3 {
+    margin: 0;
+    font-family: var(--font-heading);
+    line-height: 0.96;
+  }
+
+  .lead-feature h3 {
+    font-size: clamp(2.6rem, 5vw, 4.6rem);
+    max-width: 12ch;
+  }
+
+  .lead-feature h3 a,
+  .lead-rail h3 a {
+    text-decoration: none;
+  }
+
+  .lead-feature h3 a:hover,
+  .lead-feature h3 a:focus-visible,
+  .lead-rail h3 a:hover,
+  .lead-rail h3 a:focus-visible {
+    color: color-mix(in srgb, var(--color-accent-strong) 92%, white);
+  }
+
+  .lead-feature__dek {
+    margin: 0;
+    max-width: 42rem;
+    font-size: 1.18rem;
+    line-height: 1.6;
+  }
+
+  .lead-feature__meta,
+  .lead-rail__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-soft);
+  }
+
+  .lead-rail {
     display: grid;
     gap: var(--space-4);
   }
 
-  @media (max-width: 900px) {
-    .feature-grid,
-    .split {
+  .lead-rail__stack {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .lead-rail__item {
+    display: grid;
+    gap: var(--space-3);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .lead-rail__item:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .lead-rail h3 {
+    font-size: clamp(1.8rem, 3vw, 3rem);
+    max-width: 10ch;
+  }
+
+  .lead-rail__item p:not(.eyebrow) {
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  .newsroom {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
+    gap: var(--space-8);
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-16);
+  }
+
+  .newsroom__main :global(.post-card:first-child) {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  @media (max-width: 960px) {
+    .home-intro,
+    .lead-package__grid,
+    .newsroom {
       grid-template-columns: 1fr;
     }
   }

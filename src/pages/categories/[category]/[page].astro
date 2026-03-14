@@ -56,10 +56,12 @@ const social = getPageSocialMetadata();
     ])
   ]}
 >
-  <section class="page-shell archive">
-    <p class="eyebrow">Category archive</p>
-    <h2>{category}</h2>
-    <div class="stack">
+  <section class="page-shell archive-shell">
+    <div class="archive-heading">
+      <p class="eyebrow">Category archive</p>
+      <h2>{category}</h2>
+    </div>
+    <div class="story-stack">
       {pagePosts.map((post) => <PostCard post={post} />)}
     </div>
     <Pagination currentPage={page} totalPages={totalPages} basePath={`/categories/${category}`} />
@@ -67,18 +69,8 @@ const social = getPageSocialMetadata();
 </SiteShell>
 
 <style>
-  .archive {
-    padding-bottom: var(--space-16);
-  }
-
-  h2 {
-    font-family: var(--font-heading);
-    font-size: clamp(2rem, 4vw, 4rem);
-    margin-top: 0;
-  }
-
-  .stack {
-    display: grid;
-    gap: var(--space-4);
+  .archive-shell :global(.post-card:first-child) {
+    border-top: 0;
+    padding-top: 0;
   }
 </style>

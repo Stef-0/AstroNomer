@@ -45,7 +45,7 @@ const social = getPageSocialMetadata();
 
 <style>
   .archive {
-    padding-bottom: var(--space-16);
+    padding: var(--space-8) 0 var(--space-16);
   }
 
   h2 {
@@ -67,5 +67,21 @@ const social = getPageSocialMetadata();
     display: flex;
     justify-content: space-between;
     gap: var(--space-3);
+    align-items: baseline;
+    transition:
+      border-color 180ms ease,
+      background-color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .tag-grid li:hover,
+  .tag-grid li:focus-within {
+    background: color-mix(in srgb, var(--color-surface) 72%, white);
+    border-color: var(--color-border-strong);
+    transform: translateY(-2px);
+  }
+
+  .tag-grid a {
+    text-decoration: none;
   }
 </style>
