@@ -30,6 +30,7 @@ This file is the working source for implementation status, intentional spec devi
 | Environment-driven site/base path | C6, C11 | implemented | `astro.config.mjs` reads env-driven site URL and instance-configured base path. |
 | Design tokens contract | C6, C11 | implemented | Editorial token system now drives the masthead, archive rhythm, and post-reading presentation with configurable fallback branding hooks plus provider-driven font delivery. |
 | Markdown/MDX content workflow | C6, C11 | implemented | Content schema, MDX component mapping, and an expanded representative content set now exercise real archive and draft scenarios. |
+| Table of contents system | C6, C11 | implemented | Instance defaults and post-level TOC overrides now support enable/disable, heading-level filters, and explicit heading inclusion. |
 | Draft filtering | C6, C11 | implemented | Production filtering is centralized in content query helpers. |
 | Rich media and code block layer | C6, C11 | implemented | `CodeBlock` uses Shiki with locked props, and approved click-to-load MDX embeds now cover YouTube, Vimeo, CodePen, GitHub Gist, and Twitter/X. |
 | Discovery surfaces | C6, C11 | implemented | Home, blog index, paginated listings, category/tag pages, post pages, and search have been verified with multi-page archives. |
@@ -53,6 +54,8 @@ This file is the working source for implementation status, intentional spec devi
   Reason: a content-led homepage is the stronger default for most live publications, while some operators still need a branded intro mode at the top of the homepage.
 - Decision: font delivery is configurable per instance through `fontsource`, `self-hosted`, or `google-fonts` provider modes.
   Reason: operators need a clean seam for package-managed fonts, manually hosted font files, or third-party convenience loading without rewriting the shell or token contract.
+- Decision: table of contents behavior is configurable at the instance level and overridable per post.
+  Reason: operators need a site-wide default, while authors still need to disable or refine the TOC for posts whose heading structure should not map directly to navigation.
 - Decision: deploy transport starts with `noop` and `local-copy`.
   Reason: the spec requires an abstraction and a fixed deploy chain, but does not lock a concrete remote provider for MVP.
 - Decision: deploy transport may be overridden with `DEPLOY_TRANSPORT` for operational verification.
@@ -107,6 +110,7 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: editorial redesign verified across home, archive, taxonomy, search, and post templates in generated HTML
 - `completed`: homepage mode seam verified with `content-first` as default and `editorial-hero` as validated config option
 - `completed`: font delivery seam verified with `fontsource` default delivery moved into head-managed provider logic
+- `completed`: table of contents seam verified with instance defaults plus post-level heading selection overrides
 - `completed`: Pagefind index generation
 - `completed`: full `npm run deploy` verified against the expanded 53-page site
 - `completed`: `npm run deploy` with default `noop` transport

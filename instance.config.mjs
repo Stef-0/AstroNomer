@@ -5,6 +5,8 @@ const navigationItemSchema = z.object({
   label: z.string().min(1)
 });
 
+const headingLevelSchema = z.enum(["h2", "h3", "h4", "h5", "h6"]);
+
 const fontProviderSchema = z.discriminatedUnion("provider", [
   z.object({
     provider: z.literal("fontsource"),
@@ -55,7 +57,12 @@ const instanceConfigSchema = z.object({
     })
   }),
   blog: z.object({
-    postsPerPage: z.number().int().min(1).max(100)
+    postsPerPage: z.number().int().min(1).max(100),
+    tableOfContents: z.object({
+      enabled: z.boolean(),
+      title: z.string().min(1),
+      levels: z.array(headingLevelSchema).min(1)
+    })
   }),
   deploy: z.object({
     transport: z.enum(["noop", "local-copy"])
@@ -117,7 +124,12 @@ const rawInstanceConfig = {
     }
   },
   blog: {
-    postsPerPage: 10
+    postsPerPage: 10,
+    tableOfContents: {
+      enabled: false,
+      title: "On this page",
+      levels: ["h2", "h3"]
+    }
   },
   deploy: {
     transport: process.env.DEPLOY_TRANSPORT || "noop"

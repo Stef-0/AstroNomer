@@ -44,6 +44,7 @@ Supported optional fields:
 - `draft`
 - `featured`
 - `author`
+- `toc`
 - `faq`
 
 ### Notes
@@ -57,6 +58,8 @@ Supported optional fields:
   Becomes the post’s social image when present and may also be used in homepage lead presentation
 - `faq`
   Generates FAQ structured data on the post page
+- `toc`
+  Controls the post-level table of contents behavior
 
 ## Draft Workflow
 
@@ -141,6 +144,39 @@ Post social image behavior:
 - if no instance fallback image is configured, the generated default site image is used
 
 If you want a specific post to have its own social card image, set `image`.
+
+## Table Of Contents
+
+TOC behavior starts from the instance default, then can be overridden per post.
+
+Supported post-level values:
+
+```md
+toc: true
+```
+
+```md
+toc: false
+```
+
+```md
+toc:
+  enabled: true
+  title: On this page
+  levels:
+    - h2
+    - h3
+  include:
+    - Overview
+    - Implementation
+```
+
+Behavior:
+- `true` enables the TOC using the instance defaults
+- `false` disables the TOC for that post
+- `levels` limits which heading levels are listed
+- `include` limits the TOC to specific heading names
+- `title` changes the rendered TOC heading for that post
 
 ## Publishing Model
 

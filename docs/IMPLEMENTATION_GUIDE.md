@@ -113,8 +113,16 @@ Behavior notes:
 
 ### Blog Behavior
 - `blog.postsPerPage`
+- `blog.tableOfContents.enabled`
+- `blog.tableOfContents.title`
+- `blog.tableOfContents.levels`
 
 Default is `10`, but pagination is configurable per instance. This is an intentional implementation override from the original spec lock.
+
+Table of contents behavior:
+- instance defaults live in `blog.tableOfContents`
+- recommended default levels are `h2` and `h3`
+- per-post frontmatter can disable the TOC, override heading levels, change the TOC title, or include only named headings
 
 ### Shell And Navigation
 - `shell.mode`
