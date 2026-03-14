@@ -1,0 +1,126 @@
+---
+import instanceConfig from "../../instance.config.mjs";
+import "@/styles/global.css";
+import SeoHead from "@/components/SeoHead.astro";
+import Analytics from "@/components/Analytics.astro";
+import { withBasePath } from "@/lib/site";
+
+interface Props {
+  pageTitle: string;
+  description: string;
+  canonicalUrl: string;
+  currentPath: string;
+  image?: string;
+  schema?: unknown[];
+}
+
+const {
+  pageTitle,
+  description,
+  canonicalUrl,
+  currentPath,
+  image,
+  schema = []
+} = Astro.props;
+
+const title = `${pageTitle} | ${instanceConfig.siteName}`;
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <SeoHead
+      title={title}
+      description={description}
+      canonicalUrl={canonicalUrl}
+      currentPath={currentPath}
+      image={image}
+      schema={schema}
+    />
+  </head>
+  <body>
+    <Analytics />
+    <header class="page-shell site-header">
+      <div>
+        <a class="eyebrow" href={withBasePath("/")}>Reusable Publishing Base</a>
+        <h1><a href={withBasePath("/")}>{instanceConfig.siteName}</a></h1>
+      </div>
+      <nav aria-label="Primary">
+        <ul>
+          {instanceConfig.shell.navigation.map((item) => (
+            <li>
+              <a aria-current={currentPath === item.href ? "page" : undefined} href={withBasePath(item.href)}>
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </header>
+    <main data-pagefind-body>
+      <slot />
+    </main>
+    <footer class="page-shell site-footer">
+      <p>{instanceConfig.siteDescription}</p>
+      <p>
+        Built as a static Astro instance with a host-shell seam through
+        <code>SiteShell.astro</code>.
+      </p>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-8);
+    padding: var(--space-8) 0 var(--space-6);
+    align-items: end;
+  }
+
+  .site-header h1 {
+    margin: 0.4rem 0 0;
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 4rem);
+  }
+
+  .site-header h1 a {
+    text-decoration: none;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: var(--space-3);
+  }
+
+  nav a {
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.7rem 1rem;
+    background: rgba(255, 255, 255, 0.45);
+  }
+
+  nav a[aria-current="page"] {
+    background: var(--color-accent);
+    color: white;
+    border-color: var(--color-accent);
+  }
+
+  .site-footer {
+    padding: var(--space-12) 0 var(--space-16);
+    color: var(--color-text-soft);
+  }
+
+  @media (max-width: 720px) {
+    .site-header {
+      align-items: start;
+      flex-direction: column;
+    }
+  }
+</style>

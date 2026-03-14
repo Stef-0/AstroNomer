@@ -1,0 +1,75 @@
+---
+import SiteShell from "@/components/SiteShell.astro";
+import PostCard from "@/components/PostCard.astro";
+import Pagination from "@/components/Pagination.astro";
+import { POSTS_PER_PAGE } from "@/lib/constants";
+import { getTagMap } from "@/lib/content";
+import { buildBreadcrumbSchema, buildOrgSchema, buildWebsiteSchema } from "@/lib/seo";
+import { getCanonicalUrl } from "@/lib/site";
+
+export async function getStaticPaths() {
+  const map = await getTagMap();
+  const paths = [];
+
+  for (const [tag, posts] of map.entries()) {
+    const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
+
+    for (let page = 2; page <= totalPages; page += 1) {
+      paths.push({
+        params: { tag, page: String(page) }
+      });
+    }
+  }
+
+  return paths;
+}
+
+const tag = Astro.params.tag!;
+const page = Number(Astro.params.page);
+const posts = (await getTagMap()).get(tag) || [];
+const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
+const start = (page - 1) * POSTS_PER_PAGE;
+const pagePosts = posts.slice(start, start + POSTS_PER_PAGE);
+---
+
+<SiteShell
+  pageTitle={`Tag: ${tag} page ${page}`}
+  description={`Posts filed under ${tag}`}
+  canonicalUrl={getCanonicalUrl(`/tags/${tag}/${page}`)}
+  currentPath={`/tags/${tag}`}
+  schema={[
+    buildWebsiteSchema(),
+    buildOrgSchema(),
+    buildBreadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Tags", path: "/tags" },
+      { name: tag, path: `/tags/${tag}` }
+    ])
+  ]}
+>
+  <section class="page-shell archive">
+    <p class="eyebrow">Tag archive</p>
+    <h2>#{tag}</h2>
+    <div class="stack">
+      {pagePosts.map((post) => <PostCard post={post} />)}
+    </div>
+    <Pagination currentPage={page} totalPages={totalPages} basePath={`/tags/${tag}`} />
+  </section>
+</SiteShell>
+
+<style>
+  .archive {
+    padding-bottom: var(--space-16);
+  }
+
+  h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4vw, 4rem);
+    margin-top: 0;
+  }
+
+  .stack {
+    display: grid;
+    gap: var(--space-4);
+  }
+</style>

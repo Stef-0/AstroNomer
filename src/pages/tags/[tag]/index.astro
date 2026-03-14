@@ -1,0 +1,63 @@
+---
+import SiteShell from "@/components/SiteShell.astro";
+import PostCard from "@/components/PostCard.astro";
+import Pagination from "@/components/Pagination.astro";
+import { POSTS_PER_PAGE } from "@/lib/constants";
+import { getTagMap } from "@/lib/content";
+import { buildBreadcrumbSchema, buildOrgSchema, buildWebsiteSchema } from "@/lib/seo";
+import { getCanonicalUrl } from "@/lib/site";
+
+export async function getStaticPaths() {
+  const map = await getTagMap();
+  return [...map.keys()].map((tag) => ({
+    params: { tag }
+  }));
+}
+
+const tag = Astro.params.tag!;
+const posts = (await getTagMap()).get(tag) || [];
+const totalPages = Math.max(1, Math.ceil(posts.length / POSTS_PER_PAGE));
+const pagePosts = posts.slice(0, POSTS_PER_PAGE);
+---
+
+<SiteShell
+  pageTitle={`Tag: ${tag}`}
+  description={`Posts filed under ${tag}`}
+  canonicalUrl={getCanonicalUrl(`/tags/${tag}`)}
+  currentPath={`/tags/${tag}`}
+  schema={[
+    buildWebsiteSchema(),
+    buildOrgSchema(),
+    buildBreadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Tags", path: "/tags" },
+      { name: tag, path: `/tags/${tag}` }
+    ])
+  ]}
+>
+  <section class="page-shell archive">
+    <p class="eyebrow">Tag archive</p>
+    <h2>#{tag}</h2>
+    <div class="stack">
+      {pagePosts.map((post) => <PostCard post={post} />)}
+    </div>
+    <Pagination currentPage={1} totalPages={totalPages} basePath={`/tags/${tag}`} />
+  </section>
+</SiteShell>
+
+<style>
+  .archive {
+    padding-bottom: var(--space-16);
+  }
+
+  h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4vw, 4rem);
+    margin-top: 0;
+  }
+
+  .stack {
+    display: grid;
+    gap: var(--space-4);
+  }
+</style>

@@ -1,0 +1,44 @@
+---
+title: Welcome to AstroNomer
+description: The first post in the reusable static publishing base.
+publishedAt: 2026-03-14
+tags:
+  - Astro
+  - Platform
+  - Spec
+categories:
+  - Launch
+featured: true
+author: AstroNomer Team
+faq:
+  - question: What is AstroNomer optimizing for?
+    answer: It optimizes for reusable static publishing instances with strong configuration boundaries and good discoverability defaults.
+  - question: Is this meant to be a one-off blog?
+    answer: No. The architecture is meant to support multiple independent instances without re-deciding the core stack.
+---
+
+import CodeBlock from "@/components/CodeBlock.astro";
+import Figure from "@/components/RichMedia/Figure.astro";
+
+AstroNomer starts from the spec-first architecture instead of a visual theme first. That gives us a cleaner foundation for multi-instance publishing, host-site mounting, and deploy portability.
+
+<CodeBlock
+  lang="bash"
+  filename="deploy.sh"
+  code={`npm run build\nnpm run pagefind\nnpm run transfer`}
+/>
+
+The first implementation slice already separates:
+
+- environment-driven domain settings
+- instance-level operational choices
+- design tokens
+
+<Figure
+  src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1200&q=80"
+  alt="A star field used as a visual placeholder"
+  caption="Rich media components are available in MDX content."
+/>
+
+Next, we can deepen the implementation with full syntax highlighting, stronger content templates, and concrete deployment transports.
+

@@ -1,0 +1,53 @@
+---
+import { getAuthorName } from "@/lib/content";
+import { toSlug } from "@/lib/slug";
+import { withBasePath } from "@/lib/site";
+import type { PostEntry } from "@/types/content";
+
+interface Props {
+  post: PostEntry;
+}
+
+const { post } = Astro.props;
+---
+
+<article class="surface-card post-card">
+  <p class="eyebrow">{post.data.categories[0] || "Article"}</p>
+  <h2><a href={withBasePath(`/blog/${post.slug}`)}>{post.data.title}</a></h2>
+  <p>{post.data.description}</p>
+  <div class="meta">
+    <span>{post.data.publishedAt.toLocaleDateString("en-US", { dateStyle: "long" })}</span>
+    <span>{getAuthorName(post)}</span>
+  </div>
+  <ul class="tag-list">
+    {post.data.tags.map((tag) => (
+      <li><a href={withBasePath(`/tags/${toSlug(tag)}`)}>#{tag}</a></li>
+    ))}
+  </ul>
+</article>
+
+<style>
+  .post-card {
+    padding: var(--space-6);
+  }
+
+  h2 {
+    font-family: var(--font-heading);
+    margin: 0.25rem 0 0.75rem;
+    font-size: clamp(1.5rem, 3vw, 2.4rem);
+  }
+
+  h2 a {
+    text-decoration: none;
+  }
+
+  .meta,
+  .tag-list {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    padding: 0;
+    list-style: none;
+    color: var(--color-text-soft);
+  }
+</style>

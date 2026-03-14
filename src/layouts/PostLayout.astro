@@ -1,0 +1,102 @@
+---
+import SiteShell from "@/components/SiteShell.astro";
+import NewsletterEmbed from "@/components/NewsletterEmbed.astro";
+import { getAuthorName, getPostReadingStats } from "@/lib/content";
+import { buildArticleSchema, buildBreadcrumbSchema, buildFaqSchema, buildOrgSchema, buildWebsiteSchema } from "@/lib/seo";
+import { getCanonicalUrl } from "@/lib/site";
+import type { PostEntry } from "@/types/content";
+import instanceConfig from "../../instance.config.mjs";
+
+interface Props {
+  post: PostEntry;
+}
+
+const { post } = Astro.props;
+const canonicalUrl = getCanonicalUrl(`/blog/${post.slug}`);
+const faqSchema = buildFaqSchema(post);
+const schema = [
+  buildWebsiteSchema(),
+  buildOrgSchema(),
+  buildArticleSchema(post),
+  buildBreadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "Blog", path: "/blog" },
+    { name: post.data.title, path: `/blog/${post.slug}` }
+  ])
+];
+
+if (faqSchema) {
+  schema.push(faqSchema);
+}
+
+const stats = getPostReadingStats(post);
+---
+
+<SiteShell
+  pageTitle={post.data.title}
+  description={post.data.description}
+  canonicalUrl={canonicalUrl}
+  currentPath={`/blog/${post.slug}`}
+  schema={schema}
+>
+  <article class="page-shell post">
+    <header class="post-hero">
+      <p class="eyebrow">{post.data.categories[0] || "Article"}</p>
+      <h1>{post.data.title}</h1>
+      <p class="dek">{post.data.description}</p>
+      <div class="meta">
+        <span>{post.data.publishedAt.toLocaleDateString("en-US", { dateStyle: "long" })}</span>
+        <span>{getAuthorName(post)}</span>
+        <span>{Math.ceil(stats.minutes)} min read</span>
+      </div>
+    </header>
+    <div class="post-body surface-card">
+      <slot />
+    </div>
+    {instanceConfig.features.newsletter && <NewsletterEmbed />}
+  </article>
+</SiteShell>
+
+<style>
+  .post {
+    padding-bottom: var(--space-16);
+  }
+
+  .post-hero {
+    padding: var(--space-6) 0 var(--space-8);
+  }
+
+  h1 {
+    font-family: var(--font-heading);
+    margin: 0.25rem 0;
+    font-size: clamp(2.4rem, 6vw, 5rem);
+    line-height: 0.95;
+  }
+
+  .dek {
+    font-size: 1.2rem;
+    max-width: 48rem;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    color: var(--color-text-soft);
+  }
+
+  .post-body {
+    padding: var(--space-8);
+  }
+
+  .post-body :global(h2),
+  .post-body :global(h3) {
+    font-family: var(--font-heading);
+  }
+
+  .post-body :global(pre),
+  .post-body :global(figure) {
+    margin: 2rem 0;
+  }
+</style>
+

@@ -1,0 +1,20 @@
+---
+import instanceConfig from "../../instance.config.mjs";
+
+const gaId = import.meta.env.PUBLIC_GA4_ID;
+const shouldRender = instanceConfig.features.analytics === "ga4" && Boolean(gaId);
+---
+
+{
+  shouldRender && (
+    <>
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+      <script is:inline define:vars={{ gaId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', gaId, { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+      </script>
+    </>
+  )
+}

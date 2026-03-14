@@ -1,0 +1,83 @@
+---
+import SiteShell from "@/components/SiteShell.astro";
+import { buildBreadcrumbSchema, buildOrgSchema, buildWebsiteSchema } from "@/lib/seo";
+import { getCanonicalUrl } from "@/lib/site";
+import instanceConfig from "../../instance.config.mjs";
+
+const searchEnabled = instanceConfig.features.search;
+const pagefindModulePath = `${import.meta.env.BASE_URL}pagefind/pagefind-ui.js`;
+const pagefindCssPath = `${import.meta.env.BASE_URL}pagefind/pagefind-ui.css`;
+---
+
+<SiteShell
+  pageTitle="Search"
+  description="Search the static Pagefind index."
+  canonicalUrl={getCanonicalUrl("/search")}
+  currentPath="/search"
+  schema={[
+    buildWebsiteSchema(),
+    buildOrgSchema(),
+    buildBreadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Search", path: "/search" }
+    ])
+  ]}
+>
+  <section class="page-shell search-page">
+    <p class="eyebrow">Search</p>
+    <h2>Find posts fast</h2>
+    {searchEnabled ? (
+      <>
+        <div id="search"></div>
+        <p class="fallback">
+          If the Pagefind index is not available yet, the route still renders and can be enhanced after the first build.
+        </p>
+      </>
+    ) : (
+      <p>Search is disabled for this instance.</p>
+    )}
+  </section>
+</SiteShell>
+
+<script define:vars={{ pagefindModulePath, pagefindCssPath, searchEnabled }}>
+  if (searchEnabled) {
+    const existingStylesheet = document.querySelector('link[data-pagefind-ui]');
+    if (!existingStylesheet) {
+      const stylesheet = document.createElement("link");
+      stylesheet.rel = "stylesheet";
+      stylesheet.href = pagefindCssPath;
+      stylesheet.setAttribute("data-pagefind-ui", "true");
+      document.head.appendChild(stylesheet);
+    }
+
+    import(pagefindModulePath)
+      .then(({ PagefindUI }) => {
+        new PagefindUI({
+          element: "#search",
+          showSubResults: true
+        });
+      })
+      .catch(() => {
+        const target = document.querySelector(".fallback");
+        if (target) {
+          target.textContent = "Pagefind assets are not available yet. Run the build and Pagefind step to generate the static index.";
+        }
+      });
+  }
+</script>
+
+<style>
+  .search-page {
+    padding-bottom: var(--space-16);
+  }
+
+  h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4vw, 4rem);
+    margin-top: 0;
+  }
+
+  .fallback {
+    color: var(--color-text-soft);
+  }
+</style>

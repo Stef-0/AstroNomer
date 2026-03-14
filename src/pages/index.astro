@@ -1,0 +1,89 @@
+---
+import SiteShell from "@/components/SiteShell.astro";
+import PostCard from "@/components/PostCard.astro";
+import NewsletterEmbed from "@/components/NewsletterEmbed.astro";
+import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/constants";
+import { getFeaturedPosts, getPublishedPosts } from "@/lib/content";
+import { buildOrgSchema, buildWebsiteSchema } from "@/lib/seo";
+import { getCanonicalUrl } from "@/lib/site";
+
+const featuredPosts = await getFeaturedPosts();
+const recentPosts = (await getPublishedPosts()).slice(0, 10);
+const heroPosts = featuredPosts.length ? featuredPosts : recentPosts.slice(0, 3);
+---
+
+<SiteShell
+  pageTitle="Home"
+  description={SITE_DESCRIPTION}
+  canonicalUrl={getCanonicalUrl("/")}
+  currentPath="/"
+  schema={[buildWebsiteSchema(), buildOrgSchema()]}
+>
+  <section class="page-shell hero">
+    <p class="eyebrow">Static, searchable, deployable</p>
+    <h2>{SITE_NAME} is a reusable blog platform with tokens, content collections, and spec-tracked seams.</h2>
+    <p>
+      This instance starts with the reusable MVP architecture from the spec:
+      Astro static output, MDX content, taxonomy pages, Pagefind search, RSS, sitemap, SEO metadata,
+      and a transport-ready deploy chain.
+    </p>
+  </section>
+
+  <section class="page-shell feature-grid">
+    {heroPosts.map((post) => <PostCard post={post} />)}
+  </section>
+
+  <section class="page-shell split">
+    <div>
+      <p class="eyebrow">Recent posts</p>
+      <div class="stack">
+        {recentPosts.map((post) => <PostCard post={post} />)}
+      </div>
+    </div>
+    <NewsletterEmbed title="Newsletter seam" description="Provider activation is deferred, but the placeholder is ready for future integration." />
+  </section>
+</SiteShell>
+
+<style>
+  .hero {
+    padding: var(--space-8) 0 var(--space-12);
+  }
+
+  h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    line-height: 0.95;
+    max-width: 18ch;
+    margin: 0.25rem 0 1rem;
+  }
+
+  .hero p:last-child {
+    max-width: 52rem;
+    font-size: 1.1rem;
+  }
+
+  .feature-grid,
+  .split {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding-bottom: var(--space-12);
+  }
+
+  .split {
+    grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
+  }
+
+  .stack {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  @media (max-width: 900px) {
+    .feature-grid,
+    .split {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+

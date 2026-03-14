@@ -1,0 +1,58 @@
+@import "tailwindcss";
+@import "@fontsource-variable/outfit";
+@import "@fontsource-variable/newsreader";
+@import "./tokens.css";
+
+:root {
+  font-family: var(--font-body);
+  background: radial-gradient(circle at top, rgba(142, 75, 45, 0.14), transparent 30%), var(--color-background);
+  color: var(--color-text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--color-accent);
+  text-underline-offset: 0.2em;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+code,
+pre {
+  font-family: "SFMono-Regular", "SF Mono", Consolas, monospace;
+}
+
+.page-shell {
+  width: min(calc(100% - 2rem), var(--content-width));
+  margin: 0 auto;
+}
+
+.eyebrow {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: var(--color-text-soft);
+}
+
+.surface-card {
+  background: color-mix(in srgb, var(--color-surface) 92%, white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+}

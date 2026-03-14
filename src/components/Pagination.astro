@@ -1,0 +1,42 @@
+---
+import { withBasePath } from "@/lib/site";
+
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  basePath: string;
+}
+
+const { currentPage, totalPages, basePath } = Astro.props;
+
+function hrefFor(page: number) {
+  return withBasePath(page === 1 ? basePath : `${basePath}/${page}`);
+}
+---
+
+{totalPages > 1 && (
+  <nav class="pagination" aria-label="Pagination">
+    {currentPage > 1 && <a href={hrefFor(currentPage - 1)}>Previous</a>}
+    <span>
+      Page {currentPage} of {totalPages}
+    </span>
+    {currentPage < totalPages && <a href={hrefFor(currentPage + 1)}>Next</a>}
+  </nav>
+)}
+
+<style>
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    align-items: center;
+    margin-top: var(--space-8);
+  }
+
+  .pagination a {
+    text-decoration: none;
+    padding: 0.7rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+import SiteShell from "@/components/SiteShell.astro";
+import { getCategoryMap } from "@/lib/content";
+import { buildBreadcrumbSchema, buildOrgSchema, buildWebsiteSchema } from "@/lib/seo";
+import { getCanonicalUrl, withBasePath } from "@/lib/site";
+
+const categories = [...(await getCategoryMap()).entries()].sort((a, b) => b[1].length - a[1].length);
+---
+
+<SiteShell
+  pageTitle="Categories"
+  description="Browse all categories."
+  canonicalUrl={getCanonicalUrl("/categories")}
+  currentPath="/categories"
+  schema={[
+    buildWebsiteSchema(),
+    buildOrgSchema(),
+    buildBreadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Categories", path: "/categories" }
+    ])
+  ]}
+>
+  <section class="page-shell archive">
+    <p class="eyebrow">Taxonomy</p>
+    <h2>Categories</h2>
+    <ul class="tag-grid">
+      {categories.map(([category, posts]) => (
+        <li class="surface-card">
+          <a href={withBasePath(`/categories/${category}`)}>{category}</a>
+          <span>{posts.length} posts</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+</SiteShell>
+
+<style>
+  .archive {
+    padding-bottom: var(--space-16);
+  }
+
+  h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4vw, 4rem);
+    margin-top: 0;
+  }
+
+  .tag-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+  }
+
+  .tag-grid li {
+    padding: var(--space-5);
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+</style>

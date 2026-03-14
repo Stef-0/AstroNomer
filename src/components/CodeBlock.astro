@@ -1,0 +1,87 @@
+---
+interface Props {
+  code: string;
+  lang?: string;
+  filename?: string;
+}
+
+const { code, lang = "text", filename } = Astro.props;
+const lines = code.split("\n");
+---
+
+<div class="code-block surface-card">
+  <div class="code-block__header">
+    <span>{filename || "snippet"}</span>
+    <button type="button" data-copy={code}>Copy</button>
+  </div>
+  <pre aria-label={`${lang} code example`} data-language={lang}><code>
+    {lines.map((line, index) => (
+      <span class="code-line">
+        <span class="line-number">{index + 1}</span>
+        <span class="line-content">{line}</span>
+      </span>
+    ))}
+  </code></pre>
+</div>
+
+<script>
+  document.querySelectorAll("[data-copy]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const code = button.getAttribute("data-copy");
+      if (!code) return;
+      await navigator.clipboard.writeText(code);
+      button.textContent = "Copied";
+      window.setTimeout(() => {
+        button.textContent = "Copy";
+      }, 1500);
+    });
+  });
+</script>
+
+<style>
+  .code-block {
+    overflow: hidden;
+  }
+
+  .code-block__header {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-soft);
+    font-size: 0.95rem;
+  }
+
+  .code-block__header button {
+    border: 0;
+    background: var(--color-accent);
+    color: white;
+    border-radius: 999px;
+    padding: 0.45rem 0.8rem;
+    cursor: pointer;
+  }
+
+  pre {
+    margin: 0;
+    padding: var(--space-4);
+    overflow-x: auto;
+  }
+
+  code {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .code-line {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: var(--space-3);
+  }
+
+  .line-number {
+    color: var(--color-text-soft);
+    user-select: none;
+  }
+  </style>
+

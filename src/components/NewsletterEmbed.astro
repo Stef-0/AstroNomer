@@ -1,0 +1,29 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Newsletter integration placeholder",
+  description = "This seam is intentionally provider-neutral until a newsletter integration is selected."
+} = Astro.props;
+---
+
+<aside class="surface-card newsletter">
+  <p class="eyebrow">Future Module</p>
+  <h2>{title}</h2>
+  <p>{description}</p>
+</aside>
+
+<style>
+  .newsletter {
+    padding: var(--space-6);
+  }
+
+  .newsletter h2 {
+    margin-top: 0;
+    font-family: var(--font-heading);
+  }
+</style>
+
