@@ -57,6 +57,8 @@ This file is the working source for implementation status, intentional spec devi
   Reason: the spec treats `instance.config.mjs` as a primary configuration surface, so invalid instance settings should fail fast instead of drifting into builds.
 - Decision: rich-media loading strategy is configurable per instance as `click-to-load` or `eager`.
   Reason: some operators may already gate embeds behind a site-wide cookie or privacy layer and should not be forced into a second reveal step.
+- Decision: GA4 privacy behavior is configurable per instance as `cookieless` or `full`.
+  Reason: some operators will already have consent handling in place and need standard GA4 behavior, while others need privacy-reduced analytics by default.
 - Interpretation: draft filtering is enforced in content query helpers and route generation, which makes production exclusion explicit in the code paths that create pages and feeds.
 - Interpretation: approved third-party MDX embeds are implemented with click-to-load activation and source links so failures stay isolated to the embed surface.
 
@@ -86,6 +88,7 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: dependency install
 - `completed with ASTRO_TELEMETRY_DISABLED=1`: Astro build
 - `completed`: instance config validation and normalization enforced at import time
+- `completed`: GA4 privacy mode is configurable through validated instance config
 - `completed`: Shiki-backed `CodeBlock` render verified in generated post HTML
 - `completed`: post-page article metadata and required JSON-LD set verified in generated HTML
 - `completed`: click-to-load YouTube, Vimeo, CodePen, GitHub Gist, and Twitter/X embed surfaces verified in generated post HTML
