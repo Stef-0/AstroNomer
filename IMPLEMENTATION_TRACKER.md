@@ -31,7 +31,7 @@ This file is the working source for implementation status, intentional spec devi
 | Design tokens contract | C6, C11 | implemented | Neutral token system created in `tokens.css`; dark-mode token hooks included but disabled by default. |
 | Markdown/MDX content workflow | C6, C11 | in progress | Content collection schema, sample MDX content, and MDX component mapping added. |
 | Draft filtering | C6, C11 | implemented | Production filtering is centralized in content query helpers. |
-| Rich media and code block layer | C6, C11 | partial | `CodeBlock` and basic rich-media components exist; Shiki integration is scaffolded but not yet fully wired. |
+| Rich media and code block layer | C6, C11 | partial | `CodeBlock` now uses Shiki with locked `lang`/`filename`, line numbers, and copy; richer MDX media coverage still needs expansion. |
 | Discovery surfaces | C6, C11 | in progress | Home, blog index, paginated listings, category/tag pages, post pages, and search route scaffolded. |
 | Pagefind search | C6, C11, C15 | implemented | Search UI, Pagefind asset loading, and index generation are verified. |
 | RSS | C6, C11, C15 | implemented | RSS endpoint scaffolded with `content:encoded`. |
@@ -56,7 +56,7 @@ This file is the working source for implementation status, intentional spec devi
 - Interpretation: draft filtering is enforced in content query helpers and route generation, which makes production exclusion explicit in the code paths that create pages and feeds.
 
 ## Drift Watch
-- Watch: the spec locks Tailwind CSS v4 and a Shiki-powered `CodeBlock`; package installation and final syntax-highlighting wiring still need verification after dependencies are installed.
+- Watch: the locked Shiki-powered `CodeBlock` is implemented; the remaining gap in this area is breadth of approved rich-media components, not syntax highlighting.
 - Watch: structured data coverage in the spec is broader than the initial scaffold; Article/Breadcrumb/WebSite/Organization are present, but FAQPage generation still needs content-driven expansion.
 - Watch: the spec mentions self-hosted font delivery through fontsource; the scaffold exposes tokenized font families but does not yet install concrete font packages.
 - Watch: Pagefind integration is scaffolded, but index generation cannot be verified until dependencies are installed and a build is run.
@@ -80,6 +80,7 @@ This file is the working source for implementation status, intentional spec devi
 ## Verification Log
 - `completed`: dependency install
 - `completed with ASTRO_TELEMETRY_DISABLED=1`: Astro build
+- `completed`: Shiki-backed `CodeBlock` render verified in generated post HTML
 - `completed`: Pagefind index generation
 - `completed`: `npm run deploy` with default `noop` transport
 - `completed`: `npm run deploy` with `DEPLOY_TRANSPORT=local-copy` and output copied to `/tmp/astronomer-deploy-check`

@@ -1,4 +1,6 @@
 ---
+import { bundledLanguages, bundledLanguagesAlias, codeToTokens } from "shiki";
+
 interface Props {
   code: string;
   lang?: string;
@@ -6,19 +8,69 @@ interface Props {
 }
 
 const { code, lang = "text", filename } = Astro.props;
-const lines = code.split("\n");
+
+const requestedLanguage = lang.toLowerCase();
+const resolvedLanguage = resolveLanguage(requestedLanguage);
+const highlighted = await codeToTokens(code, {
+  lang: resolvedLanguage,
+  theme: "github-dark"
+});
+
+function resolveLanguage(language: string) {
+  if (language in bundledLanguages || language in bundledLanguagesAlias) {
+    return language;
+  }
+
+  return "text";
+}
+
+function getTokenStyle(color?: string, fontStyle?: number) {
+  const styles = [];
+
+  if (color) {
+    styles.push(`color: ${color}`);
+  }
+
+  if ((fontStyle ?? 0) & 1) {
+    styles.push("font-style: italic");
+  }
+
+  if ((fontStyle ?? 0) & 2) {
+    styles.push("font-weight: 700");
+  }
+
+  if ((fontStyle ?? 0) & 4) {
+    styles.push("text-decoration: underline");
+  }
+
+  return styles.join("; ");
+}
 ---
 
-<div class="code-block surface-card">
+<div
+  class="code-block surface-card"
+  style={`--code-bg: ${highlighted.bg}; --code-fg: ${highlighted.fg};`}
+>
   <div class="code-block__header">
-    <span>{filename || "snippet"}</span>
+    <div class="code-block__meta">
+      <span>{filename || "snippet"}</span>
+      <span class="code-block__language">{resolvedLanguage}</span>
+    </div>
     <button type="button" data-copy={code}>Copy</button>
   </div>
-  <pre aria-label={`${lang} code example`} data-language={lang}><code>
-    {lines.map((line, index) => (
-      <span class="code-line">
+  <pre aria-label={`${resolvedLanguage} code example`} data-language={resolvedLanguage}><code>
+    {highlighted.tokens.map((line, index) => (
+      <span class="code-line" data-line={index + 1}>
         <span class="line-number">{index + 1}</span>
-        <span class="line-content">{line}</span>
+        <span class="line-content">
+          {line.length > 0 ? (
+            line.map((token) => (
+              <span style={getTokenStyle(token.color, token.fontStyle)}>{token.content}</span>
+            ))
+          ) : (
+            <span>&nbsp;</span>
+          )}
+        </span>
       </span>
     ))}
   </code></pre>
@@ -41,6 +93,8 @@ const lines = code.split("\n");
 <style>
   .code-block {
     overflow: hidden;
+    background: var(--code-bg);
+    color: var(--code-fg);
   }
 
   .code-block__header {
@@ -49,8 +103,25 @@ const lines = code.split("\n");
     gap: var(--space-4);
     padding: var(--space-3) var(--space-4);
     border-bottom: 1px solid var(--color-border);
-    color: var(--color-text-soft);
+    color: color-mix(in srgb, var(--code-fg) 72%, white);
     font-size: 0.95rem;
+    background: color-mix(in srgb, var(--code-bg) 88%, black);
+  }
+
+  .code-block__meta {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .code-block__language {
+    border: 1px solid color-mix(in srgb, var(--code-fg) 18%, transparent);
+    border-radius: 999px;
+    padding: 0.15rem 0.55rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 
   .code-block__header button {
@@ -66,6 +137,7 @@ const lines = code.split("\n");
     margin: 0;
     padding: var(--space-4);
     overflow-x: auto;
+    background: var(--code-bg);
   }
 
   code {
@@ -77,11 +149,16 @@ const lines = code.split("\n");
     display: grid;
     grid-template-columns: 2rem 1fr;
     gap: var(--space-3);
+    min-height: 1.5rem;
   }
 
   .line-number {
-    color: var(--color-text-soft);
+    color: color-mix(in srgb, var(--code-fg) 45%, transparent);
     user-select: none;
+    text-align: right;
   }
-  </style>
 
+  .line-content {
+    white-space: pre;
+  }
+</style>
