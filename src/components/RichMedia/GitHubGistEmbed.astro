@@ -1,0 +1,122 @@
+---
+interface Props {
+  gist: string;
+  file?: string;
+  title?: string;
+}
+
+const { gist, file, title = "GitHub Gist" } = Astro.props;
+const scriptUrl = `https://gist.github.com/${gist}.js${file ? `?file=${encodeURIComponent(file)}` : ""}`;
+const gistUrl = `https://gist.github.com/${gist}`;
+---
+
+<div
+  class="surface-card gist-card"
+  data-embed-kind="gist"
+  data-embed-src={scriptUrl}
+>
+  <div class="gist-card__body">
+    <p class="eyebrow">GitHub Gist</p>
+    <h3>{title}</h3>
+    <p>Gists load only after activation so the rest of the post stays lightweight and readable.</p>
+    <div class="gist-card__actions">
+      <button type="button" class="gist-card__button">Load gist</button>
+      <a href={gistUrl} target="_blank" rel="noreferrer">Open source</a>
+    </div>
+    <p class="gist-card__status" aria-live="polite"></p>
+  </div>
+  <div class="gist-card__target" hidden></div>
+</div>
+
+<script>
+  document.querySelectorAll('[data-embed-kind="gist"]').forEach((root) => {
+    if (root.dataset.bound === "true") return;
+    root.dataset.bound = "true";
+
+    const button = root.querySelector(".gist-card__button");
+    const status = root.querySelector(".gist-card__status");
+    const target = root.querySelector(".gist-card__target");
+
+    button?.addEventListener("click", () => {
+      const src = root.getAttribute("data-embed-src");
+
+      if (!src || !target) {
+        if (status) {
+          status.textContent = "The gist could not be loaded. Use the source link instead.";
+        }
+        return;
+      }
+
+      target.innerHTML = "";
+      const script = document.createElement("script");
+      script.src = src;
+      script.async = true;
+      script.onerror = () => {
+        if (status) {
+          status.textContent = "The gist failed to load. Use the source link instead.";
+        }
+      };
+      target.appendChild(script);
+      target.hidden = false;
+      button.remove();
+
+      if (status) {
+        status.textContent = "Loaded gist.";
+      }
+    });
+  });
+</script>
+
+<style>
+  .gist-card {
+    overflow: hidden;
+  }
+
+  .gist-card__body {
+    padding: var(--space-6);
+  }
+
+  .gist-card h3 {
+    margin: 0.35rem 0 0.75rem;
+    font-family: var(--font-heading);
+    font-size: clamp(1.4rem, 3vw, 2rem);
+  }
+
+  .gist-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+  }
+
+  .gist-card__button,
+  .gist-card__actions a {
+    border-radius: 999px;
+    padding: 0.7rem 1rem;
+    text-decoration: none;
+  }
+
+  .gist-card__button {
+    border: 0;
+    background: var(--color-accent);
+    color: white;
+    cursor: pointer;
+  }
+
+  .gist-card__actions a {
+    border: 1px solid var(--color-border);
+  }
+
+  .gist-card__status {
+    min-height: 1.5rem;
+    color: var(--color-text-soft);
+    margin-bottom: 0;
+  }
+
+  .gist-card__target {
+    border-top: 1px solid var(--color-border);
+    padding: var(--space-4);
+    background: #fff;
+  }
+</style>
+

@@ -1,0 +1,142 @@
+---
+interface Props {
+  provider: string;
+  title: string;
+  href: string;
+  embedSrc: string;
+  aspectRatio?: string;
+  summary?: string;
+}
+
+const {
+  provider,
+  title,
+  href,
+  embedSrc,
+  aspectRatio = "16 / 9",
+  summary = "This third-party embed loads only after reader activation."
+} = Astro.props;
+---
+
+<div
+  class="surface-card embed-card"
+  style={`--embed-aspect-ratio: ${aspectRatio};`}
+  data-embed-kind="iframe"
+  data-embed-src={embedSrc}
+  data-embed-title={title}
+>
+  <div class="embed-card__body">
+    <p class="eyebrow">{provider}</p>
+    <h3>{title}</h3>
+    <p>{summary}</p>
+    <div class="embed-card__actions">
+      <button type="button" class="embed-card__button">Load embed</button>
+      <a href={href} target="_blank" rel="noreferrer">Open source</a>
+    </div>
+    <p class="embed-card__status" aria-live="polite"></p>
+  </div>
+  <div class="embed-card__target" hidden></div>
+</div>
+
+<script>
+  document.querySelectorAll('[data-embed-kind="iframe"]').forEach((root) => {
+    if (root.dataset.bound === "true") return;
+    root.dataset.bound = "true";
+
+    const button = root.querySelector(".embed-card__button");
+    const status = root.querySelector(".embed-card__status");
+    const target = root.querySelector(".embed-card__target");
+
+    button?.addEventListener("click", () => {
+      const src = root.getAttribute("data-embed-src");
+      const title = root.getAttribute("data-embed-title") || "Embedded content";
+
+      if (!src || !target) {
+        if (status) {
+          status.textContent = "The embed could not be prepared. Use the source link instead.";
+        }
+        return;
+      }
+
+      const iframe = document.createElement("iframe");
+      iframe.src = src;
+      iframe.title = title;
+      iframe.loading = "lazy";
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = "strict-origin-when-cross-origin";
+      iframe.setAttribute(
+        "allow",
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      );
+
+      target.innerHTML = "";
+      target.appendChild(iframe);
+      target.hidden = false;
+      button.remove();
+
+      if (status) {
+        status.textContent = `Loaded ${title}.`;
+      }
+    });
+  });
+</script>
+
+<style>
+  .embed-card {
+    overflow: hidden;
+  }
+
+  .embed-card__body {
+    padding: var(--space-6);
+  }
+
+  .embed-card h3 {
+    margin: 0.35rem 0 0.75rem;
+    font-family: var(--font-heading);
+    font-size: clamp(1.4rem, 3vw, 2rem);
+  }
+
+  .embed-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+  }
+
+  .embed-card__button,
+  .embed-card__actions a {
+    border-radius: 999px;
+    padding: 0.7rem 1rem;
+    text-decoration: none;
+  }
+
+  .embed-card__button {
+    border: 0;
+    background: var(--color-accent);
+    color: white;
+    cursor: pointer;
+  }
+
+  .embed-card__actions a {
+    border: 1px solid var(--color-border);
+  }
+
+  .embed-card__status {
+    min-height: 1.5rem;
+    color: var(--color-text-soft);
+    margin-bottom: 0;
+  }
+
+  .embed-card__target {
+    border-top: 1px solid var(--color-border);
+    aspect-ratio: var(--embed-aspect-ratio);
+    background: #111;
+  }
+
+  .embed-card__target iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+</style>
+

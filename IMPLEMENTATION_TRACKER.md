@@ -31,7 +31,7 @@ This file is the working source for implementation status, intentional spec devi
 | Design tokens contract | C6, C11 | implemented | Neutral token system created in `tokens.css`; dark-mode token hooks included but disabled by default. |
 | Markdown/MDX content workflow | C6, C11 | in progress | Content collection schema, sample MDX content, and MDX component mapping added. |
 | Draft filtering | C6, C11 | implemented | Production filtering is centralized in content query helpers. |
-| Rich media and code block layer | C6, C11 | partial | `CodeBlock` now uses Shiki with locked `lang`/`filename`, line numbers, and copy; richer MDX media coverage still needs expansion. |
+| Rich media and code block layer | C6, C11 | implemented | `CodeBlock` uses Shiki with locked props, and approved click-to-load MDX embeds now cover YouTube, Vimeo, CodePen, GitHub Gist, and Twitter/X. |
 | Discovery surfaces | C6, C11 | in progress | Home, blog index, paginated listings, category/tag pages, post pages, and search route scaffolded. |
 | Pagefind search | C6, C11, C15 | implemented | Search UI, Pagefind asset loading, and index generation are verified. |
 | RSS | C6, C11, C15 | implemented | RSS endpoint scaffolded with `content:encoded`. |
@@ -54,9 +54,10 @@ This file is the working source for implementation status, intentional spec devi
 - Decision: deploy transport may be overridden with `DEPLOY_TRANSPORT` for operational verification.
   Reason: this lets us test supported transports without repeatedly editing checked-in instance config, while keeping the instance config default as the source of truth.
 - Interpretation: draft filtering is enforced in content query helpers and route generation, which makes production exclusion explicit in the code paths that create pages and feeds.
+- Interpretation: approved third-party MDX embeds are implemented with click-to-load activation and source links so failures stay isolated to the embed surface.
 
 ## Drift Watch
-- Watch: the locked Shiki-powered `CodeBlock` is implemented; the remaining gap in this area is breadth of approved rich-media components, not syntax highlighting.
+- Watch: the approved rich-media provider set is implemented with click-to-load activation; the remaining risk in this area is provider-side embed reliability, which is intentionally isolated at runtime.
 - Watch: the core required schema types are now verified on post pages; the remaining SEO gap is refinement breadth across more page contexts and richer media/image metadata.
 - Watch: the spec mentions self-hosted font delivery through fontsource; the scaffold exposes tokenized font families but does not yet install concrete font packages.
 - Watch: Pagefind integration is scaffolded, but index generation cannot be verified until dependencies are installed and a build is run.
@@ -82,6 +83,7 @@ This file is the working source for implementation status, intentional spec devi
 - `completed with ASTRO_TELEMETRY_DISABLED=1`: Astro build
 - `completed`: Shiki-backed `CodeBlock` render verified in generated post HTML
 - `completed`: post-page article metadata and required JSON-LD set verified in generated HTML
+- `completed`: click-to-load YouTube, Vimeo, CodePen, GitHub Gist, and Twitter/X embed surfaces verified in generated post HTML
 - `completed`: Pagefind index generation
 - `completed`: `npm run deploy` with default `noop` transport
 - `completed`: `npm run deploy` with `DEPLOY_TRANSPORT=local-copy` and output copied to `/tmp/astronomer-deploy-check`

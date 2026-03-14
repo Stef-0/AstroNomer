@@ -18,7 +18,12 @@ faq:
 ---
 
 import CodeBlock from "@/components/CodeBlock.astro";
+import CodePenEmbed from "@/components/RichMedia/CodePenEmbed.astro";
 import Figure from "@/components/RichMedia/Figure.astro";
+import GitHubGistEmbed from "@/components/RichMedia/GitHubGistEmbed.astro";
+import TwitterEmbed from "@/components/RichMedia/TwitterEmbed.astro";
+import VimeoEmbed from "@/components/RichMedia/VimeoEmbed.astro";
+import YouTubeEmbed from "@/components/RichMedia/YouTubeEmbed.astro";
 
 AstroNomer starts from the spec-first architecture instead of a visual theme first. That gives us a cleaner foundation for multi-instance publishing, host-site mounting, and deploy portability.
 
@@ -42,3 +47,32 @@ The first implementation slice already separates:
 
 Next, we can deepen the implementation with full syntax highlighting, stronger content templates, and concrete deployment transports.
 
+The rich-content layer now supports click-to-load third-party embeds so posts stay readable even if a provider fails.
+
+<YouTubeEmbed
+  id="dQw4w9WgXcQ"
+  title="Example YouTube embed"
+  summary="YouTube iframes only load after activation."
+/>
+
+<VimeoEmbed
+  id="76979871"
+  title="Example Vimeo embed"
+  summary="Vimeo playback is also gated behind reader activation."
+/>
+
+<CodePenEmbed
+  user="chriscoyier"
+  pen="XWgrRwX"
+  title="Example CodePen embed"
+/>
+
+<GitHubGistEmbed
+  gist="paulirish/5d52fb081b3570c81e3a"
+  title="Example GitHub Gist embed"
+/>
+
+<TwitterEmbed
+  url="https://twitter.com/jack/status/20"
+  title="Example X / Twitter embed"
+/>

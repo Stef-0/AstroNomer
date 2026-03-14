@@ -1,0 +1,140 @@
+---
+interface Props {
+  url: string;
+  title?: string;
+}
+
+const { url, title = "X / Twitter post" } = Astro.props;
+---
+
+<div
+  class="surface-card tweet-card"
+  data-embed-kind="tweet"
+  data-embed-url={url}
+>
+  <div class="tweet-card__body">
+    <p class="eyebrow">X / Twitter</p>
+    <h3>{title}</h3>
+    <p>Social embeds stay click-to-load so the post content remains fast and readable by default.</p>
+    <div class="tweet-card__actions">
+      <button type="button" class="tweet-card__button">Load post</button>
+      <a href={url} target="_blank" rel="noreferrer">Open source</a>
+    </div>
+    <p class="tweet-card__status" aria-live="polite"></p>
+  </div>
+  <div class="tweet-card__target" hidden></div>
+</div>
+
+<script>
+  document.querySelectorAll('[data-embed-kind="tweet"]').forEach((root) => {
+    if (root.dataset.bound === "true") return;
+    root.dataset.bound = "true";
+
+    const button = root.querySelector(".tweet-card__button");
+    const status = root.querySelector(".tweet-card__status");
+    const target = root.querySelector(".tweet-card__target");
+
+    button?.addEventListener("click", () => {
+      const url = root.getAttribute("data-embed-url");
+
+      if (!url || !target) {
+        if (status) {
+          status.textContent = "The post could not be loaded. Use the source link instead.";
+        }
+        return;
+      }
+
+      target.innerHTML = "";
+      const blockquote = document.createElement("blockquote");
+      blockquote.className = "twitter-tweet";
+      const link = document.createElement("a");
+      link.href = url;
+      link.textContent = url;
+      blockquote.appendChild(link);
+      target.appendChild(blockquote);
+      target.hidden = false;
+
+      const existingScript = document.querySelector('script[data-twitter-widgets="true"]');
+      if (existingScript) {
+        if (window.twttr?.widgets?.load) {
+          window.twttr.widgets.load(target);
+        }
+      } else {
+        const script = document.createElement("script");
+        script.src = "https://platform.twitter.com/widgets.js";
+        script.async = true;
+        script.setAttribute("data-twitter-widgets", "true");
+        script.onerror = () => {
+          if (status) {
+            status.textContent = "The post failed to load. Use the source link instead.";
+          }
+        };
+        script.onload = () => {
+          if (window.twttr?.widgets?.load) {
+            window.twttr.widgets.load(target);
+          }
+        };
+        document.body.appendChild(script);
+      }
+
+      button.remove();
+
+      if (status) {
+        status.textContent = "Loaded social post.";
+      }
+    });
+  });
+</script>
+
+<style>
+  .tweet-card {
+    overflow: hidden;
+  }
+
+  .tweet-card__body {
+    padding: var(--space-6);
+  }
+
+  .tweet-card h3 {
+    margin: 0.35rem 0 0.75rem;
+    font-family: var(--font-heading);
+    font-size: clamp(1.4rem, 3vw, 2rem);
+  }
+
+  .tweet-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+  }
+
+  .tweet-card__button,
+  .tweet-card__actions a {
+    border-radius: 999px;
+    padding: 0.7rem 1rem;
+    text-decoration: none;
+  }
+
+  .tweet-card__button {
+    border: 0;
+    background: var(--color-accent);
+    color: white;
+    cursor: pointer;
+  }
+
+  .tweet-card__actions a {
+    border: 1px solid var(--color-border);
+  }
+
+  .tweet-card__status {
+    min-height: 1.5rem;
+    color: var(--color-text-soft);
+    margin-bottom: 0;
+  }
+
+  .tweet-card__target {
+    border-top: 1px solid var(--color-border);
+    padding: var(--space-4);
+  }
+</style>
+

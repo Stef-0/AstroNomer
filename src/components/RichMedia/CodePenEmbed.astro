@@ -1,0 +1,28 @@
+---
+import ClickToLoadFrame from "@/components/RichMedia/ClickToLoadFrame.astro";
+
+interface Props {
+  user: string;
+  pen: string;
+  title: string;
+  defaultTab?: string;
+  summary?: string;
+}
+
+const {
+  user,
+  pen,
+  title,
+  defaultTab = "result",
+  summary = "Interactive embeds stay dormant until the reader chooses to load them."
+} = Astro.props;
+---
+
+<ClickToLoadFrame
+  provider="CodePen"
+  title={title}
+  summary={summary}
+  href={`https://codepen.io/${user}/pen/${pen}`}
+  embedSrc={`https://codepen.io/${user}/embed/${pen}?default-tab=${defaultTab}&theme-id=light`}
+/>
+

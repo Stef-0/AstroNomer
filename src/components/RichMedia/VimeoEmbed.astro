@@ -11,9 +11,10 @@ const { id, title, summary } = Astro.props;
 ---
 
 <ClickToLoadFrame
-  provider="YouTube"
+  provider="Vimeo"
   title={title}
   summary={summary}
-  href={`https://www.youtube.com/watch?v=${id}`}
-  embedSrc={`https://www.youtube-nocookie.com/embed/${id}`}
+  href={`https://vimeo.com/${id}`}
+  embedSrc={`https://player.vimeo.com/video/${id}`}
 />
+
