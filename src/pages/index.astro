@@ -104,7 +104,7 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
     </section>
   )}
 
-  <section class="page-shell newsroom section-rule">
+  <section class="page-shell newsroom">
     <div class="newsroom__main">
       <div class="archive-heading">
         <p class="eyebrow">Recent Posts</p>
@@ -150,6 +150,11 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
 
   .lead-package {
     padding: var(--space-6) 0 var(--space-8);
+  }
+
+  .lead-package .archive-heading {
+    border-top: 0;
+    padding-top: 0;
   }
 
   .lead-package__grid {
@@ -268,8 +273,14 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
     gap: var(--space-8);
-    padding-top: var(--space-8);
+    padding-top: var(--space-12);
     padding-bottom: var(--space-16);
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 92%, transparent);
+  }
+
+  .newsroom .archive-heading {
+    border-top: 0;
+    padding-top: 0;
   }
 
   .newsroom__main :global(.post-card:first-child) {
