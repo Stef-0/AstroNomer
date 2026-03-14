@@ -24,8 +24,8 @@ This file is the working source for implementation status, intentional spec devi
 
 | Area | Spec reference | Status | Notes |
 | --- | --- | --- | --- |
-| Astro static architecture | C6, C11 | in progress | Project scaffold uses Astro static output as the base architecture. |
-| Tailwind CSS v4 foundation | C6, C11 | in progress | Package/config scaffold added; runtime install still pending. |
+| Astro static architecture | C6, C11 | implemented | Astro static output is configured and verified through real builds. |
+| Tailwind CSS v4 foundation | C6, C11 | implemented | Tailwind v4 is installed and active through the Vite integration path. |
 | Three-layer config surface | C6, C10, C11 | implemented | `.env.example`, `instance.config.mjs`, and `src/styles/tokens.css` created with separated responsibilities. |
 | Environment-driven site/base path | C6, C11 | implemented | `astro.config.mjs` reads env-driven site URL and instance-configured base path. |
 | Design tokens contract | C6, C11 | implemented | Neutral token system created in `tokens.css`; dark-mode token hooks included but disabled by default. |
@@ -53,6 +53,8 @@ This file is the working source for implementation status, intentional spec devi
   Reason: the spec requires an abstraction and a fixed deploy chain, but does not lock a concrete remote provider for MVP.
 - Decision: deploy transport may be overridden with `DEPLOY_TRANSPORT` for operational verification.
   Reason: this lets us test supported transports without repeatedly editing checked-in instance config, while keeping the instance config default as the source of truth.
+- Decision: instance configuration is validated at import time with Zod and normalized before use.
+  Reason: the spec treats `instance.config.mjs` as a primary configuration surface, so invalid instance settings should fail fast instead of drifting into builds.
 - Interpretation: draft filtering is enforced in content query helpers and route generation, which makes production exclusion explicit in the code paths that create pages and feeds.
 - Interpretation: approved third-party MDX embeds are implemented with click-to-load activation and source links so failures stay isolated to the embed surface.
 
@@ -81,6 +83,7 @@ This file is the working source for implementation status, intentional spec devi
 ## Verification Log
 - `completed`: dependency install
 - `completed with ASTRO_TELEMETRY_DISABLED=1`: Astro build
+- `completed`: instance config validation and normalization enforced at import time
 - `completed`: Shiki-backed `CodeBlock` render verified in generated post HTML
 - `completed`: post-page article metadata and required JSON-LD set verified in generated HTML
 - `completed`: click-to-load YouTube, Vimeo, CodePen, GitHub Gist, and Twitter/X embed surfaces verified in generated post HTML
