@@ -50,6 +50,8 @@ This file is the working source for implementation status, intentional spec devi
   Reason: the spec explicitly asked for a file that works for progress tracking and drift checks; keeping it in the repo root makes it hard to miss.
 - Decision: the MVP now includes an intentional editorial UI layer rather than remaining a neutral scaffold.
   Reason: for a publishing product, reading experience is core product value, not post-MVP polish; the off-white and ink editorial treatment is now part of the verified default shell.
+- Decision: post-page metadata is presented inline beneath the dek rather than in a detached left rail.
+  Reason: the inline treatment keeps category/date/author/read-time information closer to the headline it supports and avoids oversized negative space in wide article headers.
 - Decision: homepage presentation is configurable per instance, with `content-first` as the default and `editorial-hero` as an opt-in variant.
   Reason: a content-led homepage is the stronger default for most live publications, while some operators still need a branded intro mode at the top of the homepage.
 - Decision: font delivery is configurable per instance through `fontsource`, `self-hosted`, or `google-fonts` provider modes.

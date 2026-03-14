@@ -59,17 +59,13 @@ const stats = getPostReadingStats(post);
 >
   <article class="page-shell post">
     <header class="post-hero">
-      <div class="post-hero__grid">
-        <div class="post-hero__rail">
-          <p class="eyebrow">{post.data.categories[0] || "Article"}</p>
-          <p>{post.data.publishedAt.toLocaleDateString("en-US", { dateStyle: "long" })}</p>
-          <p>By {getAuthorName(post)}</p>
-          <p>{Math.ceil(stats.minutes)} min read</p>
-        </div>
-        <div>
-          <h1>{post.data.title}</h1>
-          <p class="dek">{post.data.description}</p>
-        </div>
+      <p class="eyebrow">{post.data.categories[0] || "Article"}</p>
+      <h1>{post.data.title}</h1>
+      <p class="dek">{post.data.description}</p>
+      <div class="post-meta">
+        <span>{post.data.publishedAt.toLocaleDateString("en-US", { dateStyle: "long" })}</span>
+        <span>By {getAuthorName(post)}</span>
+        <span>{Math.ceil(stats.minutes)} min read</span>
       </div>
     </header>
     <div class="post-content">
@@ -93,17 +89,12 @@ const stats = getPostReadingStats(post);
     margin-bottom: var(--space-8);
   }
 
-  .post-hero__grid {
-    display: grid;
-    grid-template-columns: 12rem minmax(0, 1fr);
-    gap: var(--space-8);
-  }
-
   h1 {
     font-family: var(--font-heading);
-    margin: 0;
+    margin: 0.35rem 0 0;
     font-size: clamp(3rem, 7vw, 6.3rem);
     line-height: 0.94;
+    max-width: 14ch;
   }
 
   .dek {
@@ -113,15 +104,21 @@ const stats = getPostReadingStats(post);
     margin-top: var(--space-4);
   }
 
-  .post-hero__rail {
-    display: grid;
-    align-content: start;
-    gap: 0.7rem;
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
     font-family: var(--font-display);
     font-size: 0.84rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--color-text-soft);
+  }
+
+  .post-meta span + span::before {
+    content: "•";
+    margin-right: var(--space-3);
   }
 
   .post-content {
@@ -167,13 +164,21 @@ const stats = getPostReadingStats(post);
   }
 
   @media (max-width: 760px) {
-    .post-hero__grid {
-      grid-template-columns: 1fr;
-      gap: var(--space-4);
+    .post-meta {
+      gap: var(--space-2);
+    }
+
+    .post-meta span + span::before {
+      margin-right: var(--space-2);
     }
 
     .post-content {
       grid-template-columns: 1fr;
+    }
+
+    .post-content :global(.toc) {
+      order: -1;
+      position: static;
     }
   }
 </style>
