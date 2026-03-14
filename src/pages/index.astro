@@ -121,6 +121,10 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
 </SiteShell>
 
 <style>
+  :root {
+    --home-sidebar-width: 22rem;
+  }
+
   .home-intro {
     display: grid;
     grid-template-columns: minmax(0, 1.7fr) minmax(16rem, 0.9fr);
@@ -159,8 +163,8 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
 
   .lead-package__grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.95fr);
-    gap: var(--space-8);
+    grid-template-columns: minmax(0, 1.2fr) minmax(20rem, var(--home-sidebar-width));
+    gap: var(--space-7);
     align-items: start;
   }
 
@@ -203,7 +207,7 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
 
   .lead-feature h3 {
     font-size: clamp(2.6rem, 5vw, 4.6rem);
-    max-width: 12ch;
+    max-width: 14ch;
   }
 
   .lead-feature h3 a,
@@ -271,11 +275,21 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
 
   .newsroom {
     display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(18rem, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, var(--home-sidebar-width));
     gap: var(--space-8);
     padding-top: var(--space-12);
     padding-bottom: var(--space-16);
     border-top: 1px solid color-mix(in srgb, var(--color-border) 92%, transparent);
+  }
+
+  .newsroom__aside {
+    align-self: start;
+    width: min(100%, var(--home-sidebar-width));
+    justify-self: stretch;
+  }
+
+  .newsroom__aside :global(.newsletter) {
+    width: 100%;
   }
 
   .newsroom .archive-heading {

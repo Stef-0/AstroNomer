@@ -72,14 +72,23 @@ const stats = getPostReadingStats(post);
       <div class="post-body">
         <slot />
       </div>
-      {toc && <TableOfContents toc={toc} />}
+      <div class="post-sidebar">
+        {toc && <TableOfContents toc={toc} />}
+        {instanceConfig.features.newsletter && (
+          <NewsletterEmbed
+            title="Newsletter desk"
+            description="Provider activation is deferred, but this slot is ready for an instance-level newsletter integration."
+          />
+        )}
+      </div>
     </div>
-    {instanceConfig.features.newsletter && <NewsletterEmbed />}
   </article>
 </SiteShell>
 
 <style>
   .post {
+    width: min(100%, 74rem);
+    margin: 0 auto;
     padding-bottom: var(--space-16);
   }
 
@@ -123,15 +132,24 @@ const stats = getPostReadingStats(post);
 
   .post-content {
     display: grid;
-    grid-template-columns: minmax(0, var(--reading-width)) minmax(16rem, 20rem);
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 20rem);
     gap: var(--space-8);
-    align-items: start;
+    align-items: stretch;
+  }
+
+  .post-sidebar {
+    display: grid;
+    gap: var(--space-5);
+    align-content: start;
+    align-self: stretch;
   }
 
   .post-body {
     width: 100%;
+    max-width: var(--reading-width);
     font-size: 1.16rem;
     line-height: 1.82;
+    align-self: start;
   }
 
   .post-body :global(p),
@@ -163,6 +181,13 @@ const stats = getPostReadingStats(post);
     margin: 2rem 0;
   }
 
+  .post-body :global(.code-block),
+  .post-body :global(.newsletter),
+  .post-sidebar :global(.newsletter),
+  .post-sidebar :global(.toc) {
+    border-radius: var(--radius-sm);
+  }
+
   @media (max-width: 760px) {
     .post-meta {
       gap: var(--space-2);
@@ -174,6 +199,10 @@ const stats = getPostReadingStats(post);
 
     .post-content {
       grid-template-columns: 1fr;
+    }
+
+    .post-sidebar {
+      gap: var(--space-4);
     }
 
     .post-content :global(.toc) {

@@ -161,4 +161,15 @@ function getTokenStyle(color?: string, fontStyle?: number) {
   .line-content {
     white-space: pre;
   }
+
+  @media (max-width: 760px) {
+    .code-block__header {
+      align-items: start;
+      flex-direction: column;
+    }
+
+    .code-block__header button {
+      align-self: flex-start;
+    }
+  }
 </style>

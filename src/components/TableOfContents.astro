@@ -24,6 +24,7 @@ const { toc } = Astro.props;
     padding: var(--space-5);
     position: sticky;
     top: var(--space-8);
+    background: color-mix(in srgb, var(--color-surface) 90%, white);
   }
 
   .toc h2 {
@@ -45,6 +46,7 @@ const { toc } = Astro.props;
     display: inline-block;
     text-decoration: none;
     line-height: 1.45;
+    color: var(--color-text-soft);
   }
 
   .toc__item--depth-3,

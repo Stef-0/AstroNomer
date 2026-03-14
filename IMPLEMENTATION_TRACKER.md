@@ -17,8 +17,8 @@ This file is the working source for implementation status, intentional spec devi
 - `blocked`
 
 ## Current Build Phase
-- Active phase: `Phase 0 / MVP foundation`
-- Last updated for: editorial UX/UI pass and documentation-ready MVP surface
+- Active phase: `Phase 1 / post-MVP product refinements`
+- Last updated for: separator cleanup, font delivery architecture, TOC system, and post/homepage composition refinements
 
 ## Requirement Tracking
 
@@ -50,10 +50,20 @@ This file is the working source for implementation status, intentional spec devi
   Reason: the spec explicitly asked for a file that works for progress tracking and drift checks; keeping it in the repo root makes it hard to miss.
 - Decision: the MVP now includes an intentional editorial UI layer rather than remaining a neutral scaffold.
   Reason: for a publishing product, reading experience is core product value, not post-MVP polish; the off-white and ink editorial treatment is now part of the verified default shell.
+- Decision: shared separator styling is intentionally sparse across header, archive, taxonomy, search, and homepage surfaces.
+  Reason: repeated stacked rules made the editorial shell feel boxed in; the lighter divider system is a deliberate readability and hierarchy choice rather than incidental CSS cleanup.
 - Decision: post-page metadata is presented inline beneath the dek rather than in a detached left rail.
   Reason: the inline treatment keeps category/date/author/read-time information closer to the headline it supports and avoids oversized negative space in wide article headers.
+- Decision: the post-page sidebar is treated as a full-height companion column so the TOC remains useful for more of the article scroll.
+  Reason: a shorter sidebar caused sticky TOC behavior to end too early; stretching the sidebar and tightening the inter-column gap produces better navigation and a more unified reading layout.
+- Decision: post pages use a narrower reading shell with a moderate body-to-sidebar gap instead of stretching the article composition across the full page shell.
+  Reason: the earlier wide shell made the layout feel left-weighted and left too much inert space on the far right; constraining the post composition keeps the TOC comfortably separated without making the page feel disconnected.
 - Decision: homepage presentation is configurable per instance, with `content-first` as the default and `editorial-hero` as an opt-in variant.
   Reason: a content-led homepage is the stronger default for most live publications, while some operators still need a branded intro mode at the top of the homepage.
+- Decision: the homepage right rail shares a single explicit column width across the lead and newsroom sections.
+  Reason: using one sidebar measure keeps the featured rail and newsletter seam aligned, which makes the homepage read as one editorial grid instead of two unrelated column systems.
+- Decision: the homepage lead package gives the primary story a wider share of the grid than the secondary rail.
+  Reason: matching the right-column alignment alone left too much inert space between the lead and sidebar; letting the primary story claim more width preserves alignment while keeping the lead package visually full.
 - Decision: font delivery is configurable per instance through `fontsource`, `self-hosted`, or `google-fonts` provider modes.
   Reason: operators need a clean seam for package-managed fonts, manually hosted font files, or third-party convenience loading without rewriting the shell or token contract.
 - Decision: table of contents behavior is configurable at the instance level and overridable per post.
@@ -110,9 +120,15 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: duplicate content-id warning resolved after clearing stale `.astro` cache and rebuilding cleanly
 - `completed`: non-post pages verified with default social image plus `WebPage`/`CollectionPage`/`SearchResultsPage` schema in generated HTML
 - `completed`: editorial redesign verified across home, archive, taxonomy, search, and post templates in generated HTML
+- `completed`: shared separator cleanup verified across header, homepage, archive, taxonomy, and search layouts
 - `completed`: homepage mode seam verified with `content-first` as default and `editorial-hero` as validated config option
 - `completed`: font delivery seam verified with `fontsource` default delivery moved into head-managed provider logic
 - `completed`: table of contents seam verified with instance defaults plus post-level heading selection overrides
+- `completed`: post-page metadata layout verified with inline article meta replacing the detached left rail
+- `completed`: responsive TOC behavior verified with desktop sidebar placement and mobile-first ordering above article content
+- `completed`: post-page composition rebalanced with a narrower shell and wider body-to-sidebar separation
+- `completed`: homepage right-column alignment verified across the featured rail and newsletter seam
+- `completed`: homepage lead package rebalanced so the primary story occupies more of the shared editorial grid
 - `completed`: Pagefind index generation
 - `completed`: full `npm run deploy` verified against the expanded 53-page site
 - `completed`: `npm run deploy` with default `noop` transport
