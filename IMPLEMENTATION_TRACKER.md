@@ -28,7 +28,7 @@ This file is the working source for implementation status, intentional spec devi
 | Tailwind CSS v4 foundation | C6, C11 | implemented | Tailwind v4 is installed and active through the Vite integration path. |
 | Three-layer config surface | C6, C10, C11 | implemented | `.env.example`, `instance.config.mjs`, and `src/styles/tokens.css` created with separated responsibilities. |
 | Environment-driven site/base path | C6, C11 | implemented | `astro.config.mjs` reads env-driven site URL and instance-configured base path. |
-| Design tokens contract | C6, C11 | implemented | Editorial token system now drives the masthead, archive rhythm, and post-reading presentation with configurable fallback branding hooks. |
+| Design tokens contract | C6, C11 | implemented | Editorial token system now drives the masthead, archive rhythm, and post-reading presentation with configurable fallback branding hooks plus provider-driven font delivery. |
 | Markdown/MDX content workflow | C6, C11 | implemented | Content schema, MDX component mapping, and an expanded representative content set now exercise real archive and draft scenarios. |
 | Draft filtering | C6, C11 | implemented | Production filtering is centralized in content query helpers. |
 | Rich media and code block layer | C6, C11 | implemented | `CodeBlock` uses Shiki with locked props, and approved click-to-load MDX embeds now cover YouTube, Vimeo, CodePen, GitHub Gist, and Twitter/X. |
@@ -51,6 +51,8 @@ This file is the working source for implementation status, intentional spec devi
   Reason: for a publishing product, reading experience is core product value, not post-MVP polish; the off-white and ink editorial treatment is now part of the verified default shell.
 - Decision: homepage presentation is configurable per instance, with `content-first` as the default and `editorial-hero` as an opt-in variant.
   Reason: a content-led homepage is the stronger default for most live publications, while some operators still need a branded intro mode at the top of the homepage.
+- Decision: font delivery is configurable per instance through `fontsource`, `self-hosted`, or `google-fonts` provider modes.
+  Reason: operators need a clean seam for package-managed fonts, manually hosted font files, or third-party convenience loading without rewriting the shell or token contract.
 - Decision: deploy transport starts with `noop` and `local-copy`.
   Reason: the spec requires an abstraction and a fixed deploy chain, but does not lock a concrete remote provider for MVP.
 - Decision: deploy transport may be overridden with `DEPLOY_TRANSPORT` for operational verification.
@@ -71,7 +73,7 @@ This file is the working source for implementation status, intentional spec devi
 ## Drift Watch
 - Watch: the approved rich-media provider set is implemented with click-to-load activation; the remaining risk in this area is provider-side embed reliability, which is intentionally isolated at runtime.
 - Watch: site-level SEO is now stronger across non-post pages; the remaining gap is richer post-specific image metadata when authors add local or custom images.
-- Watch: the spec mentions self-hosted font delivery through fontsource; the scaffold exposes tokenized font families but does not yet install concrete font packages.
+- Watch: the font delivery seam now supports `fontsource`, `self-hosted`, and `google-fonts`; the remaining product question is whether Google CDN delivery should stay an opt-in convenience or eventually require stronger compliance guidance in docs/UI.
 - Watch: the spec currently says pagination is locked at 10 per page, but the implementation now supports configurable pagination with `10` as the default. This should be reconciled in future product documentation/spec updates.
 
 ## Open Questions From The Spec
@@ -104,6 +106,7 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: non-post pages verified with default social image plus `WebPage`/`CollectionPage`/`SearchResultsPage` schema in generated HTML
 - `completed`: editorial redesign verified across home, archive, taxonomy, search, and post templates in generated HTML
 - `completed`: homepage mode seam verified with `content-first` as default and `editorial-hero` as validated config option
+- `completed`: font delivery seam verified with `fontsource` default delivery moved into head-managed provider logic
 - `completed`: Pagefind index generation
 - `completed`: full `npm run deploy` verified against the expanded 53-page site
 - `completed`: `npm run deploy` with default `noop` transport

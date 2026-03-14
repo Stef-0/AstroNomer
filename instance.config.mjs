@@ -5,10 +5,31 @@ const navigationItemSchema = z.object({
   label: z.string().min(1)
 });
 
+const fontProviderSchema = z.discriminatedUnion("provider", [
+  z.object({
+    provider: z.literal("fontsource"),
+    preset: z.enum(["newsreader-outfit"])
+  }),
+  z.object({
+    provider: z.literal("self-hosted"),
+    stylesheets: z.array(z.string().startsWith("/")).min(1),
+    preload: z.array(z.string().startsWith("/")).default([])
+  }),
+  z.object({
+    provider: z.literal("google-fonts"),
+    stylesheets: z.array(z.string().url()).min(1),
+    preconnectOrigins: z.array(z.string().url()).default([
+      "https://fonts.googleapis.com",
+      "https://fonts.gstatic.com"
+    ])
+  })
+]);
+
 const instanceConfigSchema = z.object({
   siteName: z.string().min(1),
   siteDescription: z.string().min(1),
   fallbackSocialImage: z.string().startsWith("/").or(z.string().url()).optional(),
+  fonts: fontProviderSchema,
   purpose: z.enum(["blog", "documentation", "changelog", "seo-hub"]),
   mount: z.object({
     model: z.enum(["root", "subdirectory", "subdomain"]),
@@ -50,6 +71,10 @@ const rawInstanceConfig = {
   siteName: "AstroNomer",
   siteDescription: "A reusable Astro publishing platform for blogs and content hubs.",
   fallbackSocialImage: undefined,
+  fonts: {
+    provider: "fontsource",
+    preset: "newsreader-outfit"
+  },
   purpose: "blog",
   mount: {
     model: "root",

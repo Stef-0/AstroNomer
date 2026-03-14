@@ -3,6 +3,7 @@ import instanceConfig from "../../instance.config.mjs";
 import "@/styles/global.css";
 import SeoHead from "@/components/SeoHead.astro";
 import Analytics from "@/components/Analytics.astro";
+import FontProviderHead from "@/components/FontProviderHead.astro";
 import { withBasePath } from "@/lib/site";
 
 interface Props {
@@ -41,6 +42,7 @@ const title = `${pageTitle} | ${instanceConfig.siteName}`;
 <!doctype html>
 <html lang="en" data-theme="light">
   <head>
+    <FontProviderHead />
     <SeoHead
       title={title}
       description={description}

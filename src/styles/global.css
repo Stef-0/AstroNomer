@@ -1,6 +1,4 @@
 @import "tailwindcss";
-@import "@fontsource-variable/outfit";
-@import "@fontsource-variable/newsreader";
 @import "./tokens.css";
 
 :root {

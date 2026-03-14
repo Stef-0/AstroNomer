@@ -69,6 +69,31 @@ Rules:
 
 This affects default display behavior and metadata, not runtime permissions.
 
+### Font Delivery
+- `fonts.provider`
+  Supported values: `fontsource`, `self-hosted`, `google-fonts`
+
+Current provider config shapes:
+- `fontsource`
+  - `preset`
+  - current built-in preset: `newsreader-outfit`
+- `self-hosted`
+  - `stylesheets`
+  - `preload`
+- `google-fonts`
+  - `stylesheets`
+  - `preconnectOrigins`
+
+Recommended usage:
+- use `fontsource` when the desired typefaces are available as packages
+- use `self-hosted` for downloaded or licensed font files you want to serve from your own site
+- use `google-fonts` only as an explicit convenience tradeoff when third-party runtime requests are acceptable
+
+Notes:
+- tokenized font families still live in [src/styles/tokens.css](/Users/stefanorlic/code/astronomer/src/styles/tokens.css)
+- the provider controls delivery, not the token names
+- a downloaded Google Font served from your own site belongs in the `self-hosted` workflow, not the `google-fonts` workflow
+
 ### Feature Options
 - `features.darkMode`
 - `features.newsletter`
@@ -130,7 +155,7 @@ This feeds structured data and metadata output.
 
 1. Set the public site URL in `.env`.
 2. Edit [instance.config.mjs](/Users/stefanorlic/code/astronomer/instance.config.mjs) for:
-   routing, authorship, analytics, embeds, homepage mode, pagination, and social fallback image.
+   routing, authorship, fonts, analytics, embeds, homepage mode, pagination, and social fallback image.
 3. Adjust [src/styles/tokens.css](/Users/stefanorlic/code/astronomer/src/styles/tokens.css) to match the target brand.
 4. Add or replace content in [/Users/stefanorlic/code/astronomer/src/content/posts](/Users/stefanorlic/code/astronomer/src/content/posts).
 5. Build and deploy through the single deploy chain.

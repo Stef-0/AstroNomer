@@ -1,0 +1,31 @@
+---
+import instanceConfig from "../../instance.config.mjs";
+import { withBasePath } from "@/lib/site";
+import newsreaderOutfitStylesheet from "@/styles/font-providers/newsreader-outfit.css?url";
+
+const fontsourcePresetStylesheets = {
+  "newsreader-outfit": newsreaderOutfitStylesheet
+} as const;
+
+const config = instanceConfig.fonts;
+---
+
+{config.provider === "fontsource" && (
+  <link rel="stylesheet" href={fontsourcePresetStylesheets[config.preset]} />
+)}
+
+{config.provider === "self-hosted" &&
+  config.preload.map((href) => (
+    <link rel="preload" href={withBasePath(href)} as="font" crossorigin="anonymous" />
+  ))}
+
+{config.provider === "self-hosted" &&
+  config.stylesheets.map((href) => <link rel="stylesheet" href={withBasePath(href)} />)}
+
+{config.provider === "google-fonts" &&
+  config.preconnectOrigins.map((href) => (
+    <link rel="preconnect" href={href} crossorigin="anonymous" />
+  ))}
+
+{config.provider === "google-fonts" &&
+  config.stylesheets.map((href) => <link rel="stylesheet" href={href} />)}
