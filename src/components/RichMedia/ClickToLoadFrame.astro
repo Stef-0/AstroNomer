@@ -1,4 +1,6 @@
 ---
+import instanceConfig from "../../../instance.config.mjs";
+
 interface Props {
   provider: string;
   title: string;
@@ -16,27 +18,53 @@ const {
   aspectRatio = "16 / 9",
   summary = "This third-party embed loads only after reader activation."
 } = Astro.props;
+const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
 ---
 
-<div
-  class="surface-card embed-card"
-  style={`--embed-aspect-ratio: ${aspectRatio};`}
-  data-embed-kind="iframe"
-  data-embed-src={embedSrc}
-  data-embed-title={title}
->
-  <div class="embed-card__body">
-    <p class="eyebrow">{provider}</p>
-    <h3>{title}</h3>
-    <p>{summary}</p>
-    <div class="embed-card__actions">
-      <button type="button" class="embed-card__button">Load embed</button>
-      <a href={href} target="_blank" rel="noreferrer">Open source</a>
+{
+  eager ? (
+    <div class="surface-card embed-card embed-card--eager" style={`--embed-aspect-ratio: ${aspectRatio};`}>
+      <div class="embed-card__body">
+        <p class="eyebrow">{provider}</p>
+        <h3>{title}</h3>
+        <p>{summary}</p>
+        <div class="embed-card__actions">
+          <a href={href} target="_blank" rel="noreferrer">Open source</a>
+        </div>
+      </div>
+      <div class="embed-card__target embed-card__target--visible">
+        <iframe
+          src={embedSrc}
+          title={title}
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
     </div>
-    <p class="embed-card__status" aria-live="polite"></p>
-  </div>
-  <div class="embed-card__target" hidden></div>
-</div>
+  ) : (
+    <div
+      class="surface-card embed-card"
+      style={`--embed-aspect-ratio: ${aspectRatio};`}
+      data-embed-kind="iframe"
+      data-embed-src={embedSrc}
+      data-embed-title={title}
+    >
+      <div class="embed-card__body">
+        <p class="eyebrow">{provider}</p>
+        <h3>{title}</h3>
+        <p>{summary}</p>
+        <div class="embed-card__actions">
+          <button type="button" class="embed-card__button">Load embed</button>
+          <a href={href} target="_blank" rel="noreferrer">Open source</a>
+        </div>
+        <p class="embed-card__status" aria-live="polite"></p>
+      </div>
+      <div class="embed-card__target" hidden></div>
+    </div>
+  )
+}
 
 <script>
   document.querySelectorAll('[data-embed-kind="iframe"]').forEach((root) => {
@@ -133,10 +161,13 @@ const {
     background: #111;
   }
 
+  .embed-card__target--visible {
+    display: block;
+  }
+
   .embed-card__target iframe {
     width: 100%;
     height: 100%;
     border: 0;
   }
 </style>
-

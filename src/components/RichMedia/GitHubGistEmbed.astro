@@ -1,4 +1,6 @@
 ---
+import instanceConfig from "../../../instance.config.mjs";
+
 interface Props {
   gist: string;
   file?: string;
@@ -8,25 +10,44 @@ interface Props {
 const { gist, file, title = "GitHub Gist" } = Astro.props;
 const scriptUrl = `https://gist.github.com/${gist}.js${file ? `?file=${encodeURIComponent(file)}` : ""}`;
 const gistUrl = `https://gist.github.com/${gist}`;
+const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
 ---
 
-<div
-  class="surface-card gist-card"
-  data-embed-kind="gist"
-  data-embed-src={scriptUrl}
->
-  <div class="gist-card__body">
-    <p class="eyebrow">GitHub Gist</p>
-    <h3>{title}</h3>
-    <p>Gists load only after activation so the rest of the post stays lightweight and readable.</p>
-    <div class="gist-card__actions">
-      <button type="button" class="gist-card__button">Load gist</button>
-      <a href={gistUrl} target="_blank" rel="noreferrer">Open source</a>
+{
+  eager ? (
+    <div class="surface-card gist-card">
+      <div class="gist-card__body">
+        <p class="eyebrow">GitHub Gist</p>
+        <h3>{title}</h3>
+        <p>Gist embeds load immediately for instances that do not need a reveal gate.</p>
+        <div class="gist-card__actions">
+          <a href={gistUrl} target="_blank" rel="noreferrer">Open source</a>
+        </div>
+      </div>
+      <div class="gist-card__target gist-card__target--visible">
+        <script src={scriptUrl} async></script>
+      </div>
     </div>
-    <p class="gist-card__status" aria-live="polite"></p>
-  </div>
-  <div class="gist-card__target" hidden></div>
-</div>
+  ) : (
+    <div
+      class="surface-card gist-card"
+      data-embed-kind="gist"
+      data-embed-src={scriptUrl}
+    >
+      <div class="gist-card__body">
+        <p class="eyebrow">GitHub Gist</p>
+        <h3>{title}</h3>
+        <p>Gists load only after activation so the rest of the post stays lightweight and readable.</p>
+        <div class="gist-card__actions">
+          <button type="button" class="gist-card__button">Load gist</button>
+          <a href={gistUrl} target="_blank" rel="noreferrer">Open source</a>
+        </div>
+        <p class="gist-card__status" aria-live="polite"></p>
+      </div>
+      <div class="gist-card__target" hidden></div>
+    </div>
+  )
+}
 
 <script>
   document.querySelectorAll('[data-embed-kind="gist"]').forEach((root) => {
@@ -118,5 +139,8 @@ const gistUrl = `https://gist.github.com/${gist}`;
     padding: var(--space-4);
     background: #fff;
   }
-</style>
 
+  .gist-card__target--visible {
+    display: block;
+  }
+</style>

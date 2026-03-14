@@ -1,29 +1,53 @@
 ---
+import instanceConfig from "../../../instance.config.mjs";
+
 interface Props {
   url: string;
   title?: string;
 }
 
 const { url, title = "X / Twitter post" } = Astro.props;
+const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
 ---
 
-<div
-  class="surface-card tweet-card"
-  data-embed-kind="tweet"
-  data-embed-url={url}
->
-  <div class="tweet-card__body">
-    <p class="eyebrow">X / Twitter</p>
-    <h3>{title}</h3>
-    <p>Social embeds stay click-to-load so the post content remains fast and readable by default.</p>
-    <div class="tweet-card__actions">
-      <button type="button" class="tweet-card__button">Load post</button>
-      <a href={url} target="_blank" rel="noreferrer">Open source</a>
+{
+  eager ? (
+    <div class="surface-card tweet-card">
+      <div class="tweet-card__body">
+        <p class="eyebrow">X / Twitter</p>
+        <h3>{title}</h3>
+        <p>Social embeds load immediately for instances that do not need a reveal gate.</p>
+        <div class="tweet-card__actions">
+          <a href={url} target="_blank" rel="noreferrer">Open source</a>
+        </div>
+      </div>
+      <div class="tweet-card__target tweet-card__target--visible">
+        <blockquote class="twitter-tweet">
+          <a href={url}>{url}</a>
+        </blockquote>
+        <script src="https://platform.twitter.com/widgets.js" async data-twitter-widgets="true"></script>
+      </div>
     </div>
-    <p class="tweet-card__status" aria-live="polite"></p>
-  </div>
-  <div class="tweet-card__target" hidden></div>
-</div>
+  ) : (
+    <div
+      class="surface-card tweet-card"
+      data-embed-kind="tweet"
+      data-embed-url={url}
+    >
+      <div class="tweet-card__body">
+        <p class="eyebrow">X / Twitter</p>
+        <h3>{title}</h3>
+        <p>Social embeds stay click-to-load so the post content remains fast and readable by default.</p>
+        <div class="tweet-card__actions">
+          <button type="button" class="tweet-card__button">Load post</button>
+          <a href={url} target="_blank" rel="noreferrer">Open source</a>
+        </div>
+        <p class="tweet-card__status" aria-live="polite"></p>
+      </div>
+      <div class="tweet-card__target" hidden></div>
+    </div>
+  )
+}
 
 <script>
   document.querySelectorAll('[data-embed-kind="tweet"]').forEach((root) => {
@@ -136,5 +160,8 @@ const { url, title = "X / Twitter post" } = Astro.props;
     border-top: 1px solid var(--color-border);
     padding: var(--space-4);
   }
-</style>
 
+  .tweet-card__target--visible {
+    display: block;
+  }
+</style>

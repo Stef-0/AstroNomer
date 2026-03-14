@@ -21,7 +21,8 @@ const instanceConfigSchema = z.object({
     darkMode: z.boolean(),
     newsletter: z.boolean(),
     analytics: z.enum(["ga4", "disabled"]),
-    search: z.boolean()
+    search: z.boolean(),
+    richMediaLoadStrategy: z.enum(["click-to-load", "eager"])
   }),
   shell: z.object({
     mode: z.enum(["standalone", "host-integrated"]),
@@ -56,7 +57,8 @@ const rawInstanceConfig = {
     darkMode: false,
     newsletter: true,
     analytics: "ga4",
-    search: true
+    search: true,
+    richMediaLoadStrategy: "click-to-load"
   },
   shell: {
     mode: "standalone",

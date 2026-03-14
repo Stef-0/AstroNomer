@@ -55,6 +55,8 @@ This file is the working source for implementation status, intentional spec devi
   Reason: this lets us test supported transports without repeatedly editing checked-in instance config, while keeping the instance config default as the source of truth.
 - Decision: instance configuration is validated at import time with Zod and normalized before use.
   Reason: the spec treats `instance.config.mjs` as a primary configuration surface, so invalid instance settings should fail fast instead of drifting into builds.
+- Decision: rich-media loading strategy is configurable per instance as `click-to-load` or `eager`.
+  Reason: some operators may already gate embeds behind a site-wide cookie or privacy layer and should not be forced into a second reveal step.
 - Interpretation: draft filtering is enforced in content query helpers and route generation, which makes production exclusion explicit in the code paths that create pages and feeds.
 - Interpretation: approved third-party MDX embeds are implemented with click-to-load activation and source links so failures stay isolated to the embed surface.
 
