@@ -59,6 +59,8 @@ This file is the working source for implementation status, intentional spec devi
   Reason: some operators may already gate embeds behind a site-wide cookie or privacy layer and should not be forced into a second reveal step.
 - Decision: GA4 privacy behavior is configurable per instance as `cookieless` or `full`.
   Reason: some operators will already have consent handling in place and need standard GA4 behavior, while others need privacy-reduced analytics by default.
+- Override: pagination is configurable per instance through `blog.postsPerPage`, with `10` as the default.
+  Reason: this intentionally overrides the current spec lock at 10 per page in favor of operator flexibility; this is a tracked spec drift decision, not an accidental implementation change.
 - Interpretation: draft filtering is enforced in content query helpers and route generation, which makes production exclusion explicit in the code paths that create pages and feeds.
 - Interpretation: approved third-party MDX embeds are implemented with click-to-load activation and source links so failures stay isolated to the embed surface.
 
@@ -67,6 +69,7 @@ This file is the working source for implementation status, intentional spec devi
 - Watch: the core required schema types are now verified on post pages; the remaining SEO gap is refinement breadth across more page contexts and richer media/image metadata.
 - Watch: the spec mentions self-hosted font delivery through fontsource; the scaffold exposes tokenized font families but does not yet install concrete font packages.
 - Watch: Pagefind integration is scaffolded, but index generation cannot be verified until dependencies are installed and a build is run.
+- Watch: the spec currently says pagination is locked at 10 per page, but the implementation now supports configurable pagination with `10` as the default. This should be reconciled in future product documentation/spec updates.
 
 ## Open Questions From The Spec
 - Formal author vs operator deploy permissions remain unresolved by the spec.
@@ -78,7 +81,6 @@ This file is the working source for implementation status, intentional spec devi
 - Provider-swappable analytics beyond GA4
 - Activated newsletter provider integration
 - Purpose-specific homepage/navigation variants
-- Pagination customization beyond 10 per page
 - Additional schema fields beyond the locked defaults
 - Formal permissions module
 - Shared cross-instance design/component library

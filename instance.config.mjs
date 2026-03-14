@@ -30,7 +30,7 @@ const instanceConfigSchema = z.object({
     navigation: z.array(navigationItemSchema).min(1)
   }),
   blog: z.object({
-    postsPerPage: z.literal(10)
+    postsPerPage: z.number().int().min(1).max(100)
   }),
   deploy: z.object({
     transport: z.enum(["noop", "local-copy"])
