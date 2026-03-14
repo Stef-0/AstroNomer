@@ -187,6 +187,7 @@ For mounted instances:
 
 Current behavior:
 - posts can use their own social image through post frontmatter `image`
+- post images now emit richer social metadata when dimensions are available
 - non-post pages use the instance fallback social image
 - if no instance fallback image is configured, AstroNomer uses the generated `/social/site.svg`
 - posts emit article metadata and JSON-LD

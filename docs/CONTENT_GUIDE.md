@@ -140,6 +140,7 @@ Authors do not need to change content based on that setting.
 
 Post social image behavior:
 - if `image` is set in the post, that image is used
+- local post images also feed social alt/dimension metadata automatically
 - otherwise the instance fallback social image is used
 - if no instance fallback image is configured, the generated default site image is used
 

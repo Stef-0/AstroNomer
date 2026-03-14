@@ -12,7 +12,13 @@ interface Props {
   canonicalUrl: string;
   currentPath: string;
   type?: "website" | "article";
-  image?: string;
+  image?: {
+    url: string;
+    alt?: string;
+    width?: number;
+    height?: number;
+    mimeType?: string;
+  };
   publishedTime?: string;
   modifiedTime?: string;
   author?: string;

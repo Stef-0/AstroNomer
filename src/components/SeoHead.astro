@@ -8,7 +8,13 @@ interface Props {
   canonicalUrl: string;
   currentPath: string;
   type?: "website" | "article";
-  image?: string;
+  image?: {
+    url: string;
+    alt?: string;
+    width?: number;
+    height?: number;
+    mimeType?: string;
+  };
   publishedTime?: string;
   modifiedTime?: string;
   author?: string;
@@ -44,12 +50,17 @@ const {
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalUrl} />
-{image && <meta property="og:image" content={image} />}
+{image && <meta property="og:image" content={image.url} />}
+{image?.alt && <meta property="og:image:alt" content={image.alt} />}
+{image?.width && <meta property="og:image:width" content={String(image.width)} />}
+{image?.height && <meta property="og:image:height" content={String(image.height)} />}
+{image?.mimeType && <meta property="og:image:type" content={image.mimeType} />}
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-{image && <meta name="twitter:image" content={image} />}
+{image && <meta name="twitter:image" content={image.url} />}
+{image?.alt && <meta name="twitter:image:alt" content={image.alt} />}
 {author && <meta name="author" content={author} />}
 
 {type === "article" && publishedTime && <meta property="article:published_time" content={publishedTime} />}

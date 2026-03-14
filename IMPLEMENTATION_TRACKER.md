@@ -18,7 +18,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Current Build Phase
 - Active phase: `Phase 1 / post-MVP product refinements`
-- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, and RSS namespace compliance
+- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, and richer post image metadata
 
 ## Requirement Tracking
 
@@ -37,7 +37,7 @@ This file is the working source for implementation status, intentional spec devi
 | Pagefind search | C6, C11, C15 | implemented | Search UI, Pagefind asset loading, and index generation are verified. |
 | RSS | C6, C11, C15 | implemented | RSS endpoint scaffolded with `content:encoded`. |
 | Sitemap | C6, C11, C15 | implemented | Astro sitemap integration configured. |
-| SEO and structured data baseline | C6, C11 | partial | Post pages emit article metadata, and non-post pages now share a default social image plus page-type schema and item lists; richer post image handling is the main remaining refinement. |
+| SEO and structured data baseline | C6, C11 | implemented | Post pages now emit article metadata with richer social image tags and `ImageObject` schema support, while non-post pages share fallback social imagery plus page-type schema and item lists. |
 | Single-command deploy chain | C6, C11, C14 | implemented | `npm run deploy` verified end to end with build, Pagefind, and transfer. |
 | Transport abstraction | C6, C11, C14 | implemented | `noop` and `local-copy` transports are implemented and verified; remote transports remain future extensions, not MVP requirements. |
 | Standalone shell + `SiteShell.astro` seam | C6, C11, C15 | implemented | Shell seam now ships with a verified editorial standalone presentation built around masthead, archive, and article layouts. |
@@ -87,7 +87,6 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Drift Watch
 - Watch: the approved rich-media provider set is implemented with click-to-load activation; the remaining risk in this area is provider-side embed reliability, which is intentionally isolated at runtime.
-- Watch: site-level SEO is now stronger across non-post pages; the remaining gap is richer post-specific image metadata when authors add local or custom images.
 - Watch: the font delivery seam now supports `fontsource`, `self-hosted`, and `google-fonts`; the remaining product question is whether Google CDN delivery should stay an opt-in convenience or eventually require stronger compliance guidance in docs/UI.
 - Watch: the spec currently says pagination is locked at 10 per page, but the implementation now supports configurable pagination with `10` as the default. This should be reconciled in future product documentation/spec updates.
 
@@ -118,6 +117,7 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: draft entries verified absent from generated `dist` output
 - `completed`: RSS verified with 13 published items after content expansion
 - `completed`: RSS XML namespace declarations verified for `atom:link` and `content:encoded` output
+- `completed`: post-level social image metadata verified with local image alt text plus `og:image:*`, `twitter:image:alt`, and `ImageObject` schema output
 - `completed`: duplicate content-id warning resolved after clearing stale `.astro` cache and rebuilding cleanly
 - `completed`: non-post pages verified with default social image plus `WebPage`/`CollectionPage`/`SearchResultsPage` schema in generated HTML
 - `completed`: editorial redesign verified across home, archive, taxonomy, search, and post templates in generated HTML
