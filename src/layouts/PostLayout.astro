@@ -2,7 +2,14 @@
 import SiteShell from "@/components/SiteShell.astro";
 import NewsletterEmbed from "@/components/NewsletterEmbed.astro";
 import { getAuthorName, getPostReadingStats } from "@/lib/content";
-import { buildArticleSchema, buildBreadcrumbSchema, buildFaqSchema, buildOrgSchema, buildWebsiteSchema } from "@/lib/seo";
+import {
+  buildArticleSchema,
+  buildBreadcrumbSchema,
+  buildFaqSchema,
+  buildOrgSchema,
+  buildWebsiteSchema,
+  getPostSocialMetadata
+} from "@/lib/seo";
 import { getCanonicalUrl } from "@/lib/site";
 import type { PostEntry } from "@/types/content";
 import instanceConfig from "../../instance.config.mjs";
@@ -14,6 +21,7 @@ interface Props {
 const { post } = Astro.props;
 const canonicalUrl = getCanonicalUrl(`/blog/${post.slug}`);
 const faqSchema = buildFaqSchema(post);
+const social = getPostSocialMetadata(post);
 const schema = [
   buildWebsiteSchema(),
   buildOrgSchema(),
@@ -37,6 +45,13 @@ const stats = getPostReadingStats(post);
   description={post.data.description}
   canonicalUrl={canonicalUrl}
   currentPath={`/blog/${post.slug}`}
+  type="article"
+  image={social.image}
+  publishedTime={social.publishedTime}
+  modifiedTime={social.modifiedTime}
+  author={social.author}
+  tags={social.tags}
+  section={social.section}
   schema={schema}
 >
   <article class="page-shell post">
@@ -99,4 +114,3 @@ const stats = getPostReadingStats(post);
     margin: 2rem 0;
   }
 </style>
-

@@ -1,6 +1,6 @@
 import instanceConfig from "../../instance.config.mjs";
 import { SITE_DESCRIPTION, SITE_NAME } from "./constants";
-import { getCanonicalUrl, getSiteUrl } from "./site";
+import { getCanonicalUrl } from "./site";
 import type { PostEntry } from "@/types/content";
 
 export function buildWebsiteSchema() {
@@ -41,6 +41,8 @@ export function buildBreadcrumbSchema(items: Array<{ name: string; path: string 
 }
 
 export function buildArticleSchema(post: PostEntry) {
+  const authorName = post.data.author || instanceConfig.authorship.defaultAuthor;
+
   return {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -50,9 +52,17 @@ export function buildArticleSchema(post: PostEntry) {
     dateModified: (post.data.updatedAt || post.data.publishedAt).toISOString(),
     author: {
       "@type": "Person",
-      name: post.data.author || instanceConfig.authorship.defaultAuthor
+      name: authorName
+    },
+    publisher: {
+      "@type": instanceConfig.organization.type,
+      name: instanceConfig.organization.name,
+      url: instanceConfig.organization.url
     },
     mainEntityOfPage: getCanonicalUrl(`/blog/${post.slug}`),
+    articleSection: post.data.categories[0],
+    keywords: [...post.data.categories, ...post.data.tags].join(", "),
+    inLanguage: "en",
     image: post.data.image ? getCanonicalUrl(post.data.image.src) : undefined
   };
 }
@@ -73,5 +83,17 @@ export function buildFaqSchema(post: PostEntry) {
         text: entry.answer
       }
     }))
+  };
+}
+
+export function getPostSocialMetadata(post: PostEntry) {
+  return {
+    type: "article",
+    image: post.data.image ? getCanonicalUrl(post.data.image.src) : undefined,
+    publishedTime: post.data.publishedAt.toISOString(),
+    modifiedTime: (post.data.updatedAt || post.data.publishedAt).toISOString(),
+    author: post.data.author || instanceConfig.authorship.defaultAuthor,
+    tags: post.data.tags,
+    section: post.data.categories[0]
   };
 }

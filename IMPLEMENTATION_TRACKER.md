@@ -36,7 +36,7 @@ This file is the working source for implementation status, intentional spec devi
 | Pagefind search | C6, C11, C15 | implemented | Search UI, Pagefind asset loading, and index generation are verified. |
 | RSS | C6, C11, C15 | implemented | RSS endpoint scaffolded with `content:encoded`. |
 | Sitemap | C6, C11, C15 | implemented | Astro sitemap integration configured. |
-| SEO and structured data baseline | C6, C11 | partial | OG/Twitter/basic JSON-LD wired; FAQ and richer per-page variants are scaffolded but not fully populated. |
+| SEO and structured data baseline | C6, C11 | partial | Post pages now emit article-specific OG/Twitter metadata plus verified WebSite, Organization, Article, BreadcrumbList, and FAQPage JSON-LD; image-rich and broader page-type refinements remain. |
 | Single-command deploy chain | C6, C11, C14 | implemented | `npm run deploy` verified end to end with build, Pagefind, and transfer. |
 | Transport abstraction | C6, C11, C14 | implemented | `noop` and `local-copy` transports are implemented and verified; remote transports remain future extensions, not MVP requirements. |
 | Standalone shell + `SiteShell.astro` seam | C6, C11, C15 | implemented | Shell seam created with the minimum required props and a default standalone presentation. |
@@ -57,7 +57,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Drift Watch
 - Watch: the locked Shiki-powered `CodeBlock` is implemented; the remaining gap in this area is breadth of approved rich-media components, not syntax highlighting.
-- Watch: structured data coverage in the spec is broader than the initial scaffold; Article/Breadcrumb/WebSite/Organization are present, but FAQPage generation still needs content-driven expansion.
+- Watch: the core required schema types are now verified on post pages; the remaining SEO gap is refinement breadth across more page contexts and richer media/image metadata.
 - Watch: the spec mentions self-hosted font delivery through fontsource; the scaffold exposes tokenized font families but does not yet install concrete font packages.
 - Watch: Pagefind integration is scaffolded, but index generation cannot be verified until dependencies are installed and a build is run.
 
@@ -81,6 +81,7 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: dependency install
 - `completed with ASTRO_TELEMETRY_DISABLED=1`: Astro build
 - `completed`: Shiki-backed `CodeBlock` render verified in generated post HTML
+- `completed`: post-page article metadata and required JSON-LD set verified in generated HTML
 - `completed`: Pagefind index generation
 - `completed`: `npm run deploy` with default `noop` transport
 - `completed`: `npm run deploy` with `DEPLOY_TRANSPORT=local-copy` and output copied to `/tmp/astronomer-deploy-check`

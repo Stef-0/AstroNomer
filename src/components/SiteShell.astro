@@ -10,7 +10,13 @@ interface Props {
   description: string;
   canonicalUrl: string;
   currentPath: string;
+  type?: "website" | "article";
   image?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  author?: string;
+  tags?: string[];
+  section?: string;
   schema?: unknown[];
 }
 
@@ -19,7 +25,13 @@ const {
   description,
   canonicalUrl,
   currentPath,
+  type,
   image,
+  publishedTime,
+  modifiedTime,
+  author,
+  tags,
+  section,
   schema = []
 } = Astro.props;
 
@@ -34,7 +46,13 @@ const title = `${pageTitle} | ${instanceConfig.siteName}`;
       description={description}
       canonicalUrl={canonicalUrl}
       currentPath={currentPath}
+      type={type}
       image={image}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      author={author}
+      tags={tags}
+      section={section}
       schema={schema}
     />
   </head>
