@@ -29,10 +29,10 @@ This file is the working source for implementation status, intentional spec devi
 | Three-layer config surface | C6, C10, C11 | implemented | `.env.example`, `instance.config.mjs`, and `src/styles/tokens.css` created with separated responsibilities. |
 | Environment-driven site/base path | C6, C11 | implemented | `astro.config.mjs` reads env-driven site URL and instance-configured base path. |
 | Design tokens contract | C6, C11 | implemented | Neutral token system created in `tokens.css`; dark-mode token hooks included but disabled by default. |
-| Markdown/MDX content workflow | C6, C11 | in progress | Content collection schema, sample MDX content, and MDX component mapping added. |
+| Markdown/MDX content workflow | C6, C11 | implemented | Content schema, MDX component mapping, and an expanded representative content set now exercise real archive and draft scenarios. |
 | Draft filtering | C6, C11 | implemented | Production filtering is centralized in content query helpers. |
 | Rich media and code block layer | C6, C11 | implemented | `CodeBlock` uses Shiki with locked props, and approved click-to-load MDX embeds now cover YouTube, Vimeo, CodePen, GitHub Gist, and Twitter/X. |
-| Discovery surfaces | C6, C11 | in progress | Home, blog index, paginated listings, category/tag pages, post pages, and search route scaffolded. |
+| Discovery surfaces | C6, C11 | implemented | Home, blog index, paginated listings, category/tag pages, post pages, and search have been verified with multi-page archives. |
 | Pagefind search | C6, C11, C15 | implemented | Search UI, Pagefind asset loading, and index generation are verified. |
 | RSS | C6, C11, C15 | implemented | RSS endpoint scaffolded with `content:encoded`. |
 | Sitemap | C6, C11, C15 | implemented | Astro sitemap integration configured. |
@@ -68,7 +68,7 @@ This file is the working source for implementation status, intentional spec devi
 - Watch: the approved rich-media provider set is implemented with click-to-load activation; the remaining risk in this area is provider-side embed reliability, which is intentionally isolated at runtime.
 - Watch: the core required schema types are now verified on post pages; the remaining SEO gap is refinement breadth across more page contexts and richer media/image metadata.
 - Watch: the spec mentions self-hosted font delivery through fontsource; the scaffold exposes tokenized font families but does not yet install concrete font packages.
-- Watch: Pagefind integration is scaffolded, but index generation cannot be verified until dependencies are installed and a build is run.
+- Watch: Astro emitted duplicate content-id warnings for several edited post files during the larger-seed build even though the file tree does not show duplicate filenames or explicit ids. Output artifacts were still correct, but this should be revisited if the warning persists.
 - Watch: the spec currently says pagination is locked at 10 per page, but the implementation now supports configurable pagination with `10` as the default. This should be reconciled in future product documentation/spec updates.
 
 ## Open Questions From The Spec
@@ -94,6 +94,9 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: Shiki-backed `CodeBlock` render verified in generated post HTML
 - `completed`: post-page article metadata and required JSON-LD set verified in generated HTML
 - `completed`: click-to-load YouTube, Vimeo, CodePen, GitHub Gist, and Twitter/X embed surfaces verified in generated post HTML
+- `completed`: expanded content set verified multi-page `/blog/2`, `/categories/platform/2`, and `/tags/core/2` archives
+- `completed`: draft entries verified absent from generated `dist` output
+- `completed`: RSS verified with 13 published items after content expansion
 - `completed`: Pagefind index generation
 - `completed`: `npm run deploy` with default `noop` transport
 - `completed`: `npm run deploy` with `DEPLOY_TRANSPORT=local-copy` and output copied to `/tmp/astronomer-deploy-check`
