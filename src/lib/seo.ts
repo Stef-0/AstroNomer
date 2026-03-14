@@ -18,6 +18,45 @@ export function buildWebsiteSchema() {
   };
 }
 
+export function buildPageSchema({
+  title,
+  description,
+  path,
+  type = "WebPage"
+}: {
+  title: string;
+  description: string;
+  path: string;
+  type?: "WebPage" | "CollectionPage" | "SearchResultsPage";
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": type,
+    name: title,
+    description,
+    url: getCanonicalUrl(path),
+    isPartOf: {
+      "@type": "WebSite",
+      name: SITE_NAME,
+      url: getCanonicalUrl("/")
+    }
+  };
+}
+
+export function buildItemListSchema(posts: PostEntry[], path: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    url: getCanonicalUrl(path),
+    itemListElement: posts.map((post, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: getCanonicalUrl(`/blog/${post.slug}`),
+      name: post.data.title
+    }))
+  };
+}
+
 export function buildOrgSchema() {
   return {
     "@context": "https://schema.org",
@@ -89,11 +128,32 @@ export function buildFaqSchema(post: PostEntry) {
 export function getPostSocialMetadata(post: PostEntry) {
   return {
     type: "article",
-    image: post.data.image ? getCanonicalUrl(post.data.image.src) : undefined,
+    image: post.data.image ? getCanonicalUrl(post.data.image.src) : getDefaultSocialImage(),
     publishedTime: post.data.publishedAt.toISOString(),
     modifiedTime: (post.data.updatedAt || post.data.publishedAt).toISOString(),
     author: post.data.author || instanceConfig.authorship.defaultAuthor,
     tags: post.data.tags,
     section: post.data.categories[0]
+  };
+}
+
+export function getDefaultSocialImage() {
+  const configuredFallback = instanceConfig.fallbackSocialImage;
+
+  if (!configuredFallback) {
+    return getCanonicalUrl("/social/site.svg");
+  }
+
+  if (configuredFallback.startsWith("/")) {
+    return getCanonicalUrl(configuredFallback);
+  }
+
+  return configuredFallback;
+}
+
+export function getPageSocialMetadata(type: "website" | "article" = "website") {
+  return {
+    type,
+    image: getDefaultSocialImage()
   };
 }

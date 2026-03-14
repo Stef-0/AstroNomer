@@ -1,10 +1,11 @@
 ---
 import SiteShell from "@/components/SiteShell.astro";
 import { getTagMap } from "@/lib/content";
-import { buildBreadcrumbSchema, buildOrgSchema, buildWebsiteSchema } from "@/lib/seo";
+import { buildBreadcrumbSchema, buildOrgSchema, buildPageSchema, buildWebsiteSchema, getPageSocialMetadata } from "@/lib/seo";
 import { getCanonicalUrl, withBasePath } from "@/lib/site";
 
 const tags = [...(await getTagMap()).entries()].sort((a, b) => b[1].length - a[1].length);
+const social = getPageSocialMetadata();
 ---
 
 <SiteShell
@@ -12,9 +13,16 @@ const tags = [...(await getTagMap()).entries()].sort((a, b) => b[1].length - a[1
   description="Browse all tags."
   canonicalUrl={getCanonicalUrl("/tags")}
   currentPath="/tags"
+  image={social.image}
   schema={[
     buildWebsiteSchema(),
     buildOrgSchema(),
+    buildPageSchema({
+      title: "Tags",
+      description: "Browse all tags.",
+      path: "/tags",
+      type: "CollectionPage"
+    }),
     buildBreadcrumbSchema([
       { name: "Home", path: "/" },
       { name: "Tags", path: "/tags" }

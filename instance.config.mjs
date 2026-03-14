@@ -8,6 +8,7 @@ const navigationItemSchema = z.object({
 const instanceConfigSchema = z.object({
   siteName: z.string().min(1),
   siteDescription: z.string().min(1),
+  fallbackSocialImage: z.string().startsWith("/").or(z.string().url()).optional(),
   purpose: z.enum(["blog", "documentation", "changelog", "seo-hub"]),
   mount: z.object({
     model: z.enum(["root", "subdirectory", "subdomain"]),
@@ -45,6 +46,7 @@ const instanceConfigSchema = z.object({
 const rawInstanceConfig = {
   siteName: "AstroNomer",
   siteDescription: "A reusable Astro publishing platform for blogs and content hubs.",
+  fallbackSocialImage: undefined,
   purpose: "blog",
   mount: {
     model: "root",

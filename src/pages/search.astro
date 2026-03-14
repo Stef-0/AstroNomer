@@ -1,12 +1,13 @@
 ---
 import SiteShell from "@/components/SiteShell.astro";
-import { buildBreadcrumbSchema, buildOrgSchema, buildWebsiteSchema } from "@/lib/seo";
+import { buildBreadcrumbSchema, buildOrgSchema, buildPageSchema, buildWebsiteSchema, getPageSocialMetadata } from "@/lib/seo";
 import { getCanonicalUrl } from "@/lib/site";
 import instanceConfig from "../../instance.config.mjs";
 
 const searchEnabled = instanceConfig.features.search;
 const pagefindModulePath = `${import.meta.env.BASE_URL}pagefind/pagefind-ui.js`;
 const pagefindCssPath = `${import.meta.env.BASE_URL}pagefind/pagefind-ui.css`;
+const social = getPageSocialMetadata();
 ---
 
 <SiteShell
@@ -14,9 +15,16 @@ const pagefindCssPath = `${import.meta.env.BASE_URL}pagefind/pagefind-ui.css`;
   description="Search the static Pagefind index."
   canonicalUrl={getCanonicalUrl("/search")}
   currentPath="/search"
+  image={social.image}
   schema={[
     buildWebsiteSchema(),
     buildOrgSchema(),
+    buildPageSchema({
+      title: "Search",
+      description: "Search the static Pagefind index.",
+      path: "/search",
+      type: "SearchResultsPage"
+    }),
     buildBreadcrumbSchema([
       { name: "Home", path: "/" },
       { name: "Search", path: "/search" }

@@ -1,10 +1,11 @@
 ---
 import SiteShell from "@/components/SiteShell.astro";
 import { getCategoryMap } from "@/lib/content";
-import { buildBreadcrumbSchema, buildOrgSchema, buildWebsiteSchema } from "@/lib/seo";
+import { buildBreadcrumbSchema, buildOrgSchema, buildPageSchema, buildWebsiteSchema, getPageSocialMetadata } from "@/lib/seo";
 import { getCanonicalUrl, withBasePath } from "@/lib/site";
 
 const categories = [...(await getCategoryMap()).entries()].sort((a, b) => b[1].length - a[1].length);
+const social = getPageSocialMetadata();
 ---
 
 <SiteShell
@@ -12,9 +13,16 @@ const categories = [...(await getCategoryMap()).entries()].sort((a, b) => b[1].l
   description="Browse all categories."
   canonicalUrl={getCanonicalUrl("/categories")}
   currentPath="/categories"
+  image={social.image}
   schema={[
     buildWebsiteSchema(),
     buildOrgSchema(),
+    buildPageSchema({
+      title: "Categories",
+      description: "Browse all categories.",
+      path: "/categories",
+      type: "CollectionPage"
+    }),
     buildBreadcrumbSchema([
       { name: "Home", path: "/" },
       { name: "Categories", path: "/categories" }

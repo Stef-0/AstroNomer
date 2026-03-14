@@ -36,7 +36,7 @@ This file is the working source for implementation status, intentional spec devi
 | Pagefind search | C6, C11, C15 | implemented | Search UI, Pagefind asset loading, and index generation are verified. |
 | RSS | C6, C11, C15 | implemented | RSS endpoint scaffolded with `content:encoded`. |
 | Sitemap | C6, C11, C15 | implemented | Astro sitemap integration configured. |
-| SEO and structured data baseline | C6, C11 | partial | Post pages now emit article-specific OG/Twitter metadata plus verified WebSite, Organization, Article, BreadcrumbList, and FAQPage JSON-LD; image-rich and broader page-type refinements remain. |
+| SEO and structured data baseline | C6, C11 | partial | Post pages emit article metadata, and non-post pages now share a default social image plus page-type schema and item lists; richer post image handling is the main remaining refinement. |
 | Single-command deploy chain | C6, C11, C14 | implemented | `npm run deploy` verified end to end with build, Pagefind, and transfer. |
 | Transport abstraction | C6, C11, C14 | implemented | `noop` and `local-copy` transports are implemented and verified; remote transports remain future extensions, not MVP requirements. |
 | Standalone shell + `SiteShell.astro` seam | C6, C11, C15 | implemented | Shell seam created with the minimum required props and a default standalone presentation. |
@@ -59,6 +59,8 @@ This file is the working source for implementation status, intentional spec devi
   Reason: some operators may already gate embeds behind a site-wide cookie or privacy layer and should not be forced into a second reveal step.
 - Decision: GA4 privacy behavior is configurable per instance as `cookieless` or `full`.
   Reason: some operators will already have consent handling in place and need standard GA4 behavior, while others need privacy-reduced analytics by default.
+- Decision: the instance-wide fallback social image is configurable, with the generated site SVG retained as the default fallback when no custom image is supplied.
+  Reason: operators should be able to align social cards with their brand without needing per-post images everywhere.
 - Override: pagination is configurable per instance through `blog.postsPerPage`, with `10` as the default.
   Reason: this intentionally overrides the current spec lock at 10 per page in favor of operator flexibility; this is a tracked spec drift decision, not an accidental implementation change.
 - Interpretation: draft filtering is enforced in content query helpers and route generation, which makes production exclusion explicit in the code paths that create pages and feeds.
@@ -66,9 +68,8 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Drift Watch
 - Watch: the approved rich-media provider set is implemented with click-to-load activation; the remaining risk in this area is provider-side embed reliability, which is intentionally isolated at runtime.
-- Watch: the core required schema types are now verified on post pages; the remaining SEO gap is refinement breadth across more page contexts and richer media/image metadata.
+- Watch: site-level SEO is now stronger across non-post pages; the remaining gap is richer post-specific image metadata when authors add local or custom images.
 - Watch: the spec mentions self-hosted font delivery through fontsource; the scaffold exposes tokenized font families but does not yet install concrete font packages.
-- Watch: Astro emitted duplicate content-id warnings for several edited post files during the larger-seed build even though the file tree does not show duplicate filenames or explicit ids. Output artifacts were still correct, but this should be revisited if the warning persists.
 - Watch: the spec currently says pagination is locked at 10 per page, but the implementation now supports configurable pagination with `10` as the default. This should be reconciled in future product documentation/spec updates.
 
 ## Open Questions From The Spec
@@ -97,6 +98,9 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: expanded content set verified multi-page `/blog/2`, `/categories/platform/2`, and `/tags/core/2` archives
 - `completed`: draft entries verified absent from generated `dist` output
 - `completed`: RSS verified with 13 published items after content expansion
+- `completed`: duplicate content-id warning resolved after clearing stale `.astro` cache and rebuilding cleanly
+- `completed`: non-post pages verified with default social image plus `WebPage`/`CollectionPage`/`SearchResultsPage` schema in generated HTML
 - `completed`: Pagefind index generation
+- `completed`: full `npm run deploy` verified against the expanded 53-page site
 - `completed`: `npm run deploy` with default `noop` transport
 - `completed`: `npm run deploy` with `DEPLOY_TRANSPORT=local-copy` and output copied to `/tmp/astronomer-deploy-check`

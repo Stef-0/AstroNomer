@@ -4,12 +4,13 @@ import PostCard from "@/components/PostCard.astro";
 import NewsletterEmbed from "@/components/NewsletterEmbed.astro";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/constants";
 import { getFeaturedPosts, getPublishedPosts } from "@/lib/content";
-import { buildOrgSchema, buildWebsiteSchema } from "@/lib/seo";
+import { buildItemListSchema, buildOrgSchema, buildPageSchema, buildWebsiteSchema, getPageSocialMetadata } from "@/lib/seo";
 import { getCanonicalUrl } from "@/lib/site";
 
 const featuredPosts = await getFeaturedPosts();
 const recentPosts = (await getPublishedPosts()).slice(0, 10);
 const heroPosts = featuredPosts.length ? featuredPosts : recentPosts.slice(0, 3);
+const social = getPageSocialMetadata();
 ---
 
 <SiteShell
@@ -17,7 +18,17 @@ const heroPosts = featuredPosts.length ? featuredPosts : recentPosts.slice(0, 3)
   description={SITE_DESCRIPTION}
   canonicalUrl={getCanonicalUrl("/")}
   currentPath="/"
-  schema={[buildWebsiteSchema(), buildOrgSchema()]}
+  image={social.image}
+  schema={[
+    buildWebsiteSchema(),
+    buildOrgSchema(),
+    buildPageSchema({
+      title: SITE_NAME,
+      description: SITE_DESCRIPTION,
+      path: "/"
+    }),
+    buildItemListSchema(recentPosts.slice(0, 5), "/")
+  ]}
 >
   <section class="page-shell hero">
     <p class="eyebrow">Static, searchable, deployable</p>
@@ -86,4 +97,3 @@ const heroPosts = featuredPosts.length ? featuredPosts : recentPosts.slice(0, 3)
     }
   }
 </style>
-
