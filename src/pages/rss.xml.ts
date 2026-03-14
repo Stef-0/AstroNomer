@@ -10,6 +10,10 @@ export async function GET(context) {
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
     site: context.site,
+    xmlns: {
+      atom: "http://www.w3.org/2005/Atom",
+      content: "http://purl.org/rss/1.0/modules/content/"
+    },
     items: posts.map((post) => ({
       title: post.data.title,
       description: post.data.description,
@@ -21,4 +25,3 @@ export async function GET(context) {
     customData: `<language>en-us</language><atom:link href="${getCanonicalUrl("/rss.xml")}" rel="self" type="application/rss+xml" />`
   });
 }
-

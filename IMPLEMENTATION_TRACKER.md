@@ -18,7 +18,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Current Build Phase
 - Active phase: `Phase 1 / post-MVP product refinements`
-- Last updated for: separator cleanup, font delivery architecture, TOC system, and post/homepage composition refinements
+- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, and RSS namespace compliance
 
 ## Requirement Tracking
 
@@ -117,6 +117,7 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: expanded content set verified multi-page `/blog/2`, `/categories/platform/2`, and `/tags/core/2` archives
 - `completed`: draft entries verified absent from generated `dist` output
 - `completed`: RSS verified with 13 published items after content expansion
+- `completed`: RSS XML namespace declarations verified for `atom:link` and `content:encoded` output
 - `completed`: duplicate content-id warning resolved after clearing stale `.astro` cache and rebuilding cleanly
 - `completed`: non-post pages verified with default social image plus `WebPage`/`CollectionPage`/`SearchResultsPage` schema in generated HTML
 - `completed`: editorial redesign verified across home, archive, taxonomy, search, and post templates in generated HTML
