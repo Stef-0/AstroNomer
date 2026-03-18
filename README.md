@@ -9,7 +9,7 @@ AstroNomer is a reusable static publishing base for blogs and content hubs built
 - Rich media embeds, Shiki-powered code blocks, and structured SEO metadata
 - Instance-level configuration for routing, analytics, rich media behavior, newsletter activation, pagination, design tokens, and font delivery
 - Configurable table of contents defaults with per-post overrides
-- Configurable homepage mode for content-first or editorial-intro presentation
+- Configurable homepage modes for editorial hero, featured-led default, or minimalist post-list presentation
 
 ## Start Here
 - Operators and integrators: [docs/IMPLEMENTATION_GUIDE.md](/Users/stefanorlic/code/astronomer/docs/IMPLEMENTATION_GUIDE.md)
@@ -23,7 +23,7 @@ AstroNomer is a reusable static publishing base for blogs and content hubs built
 - Configurable pagination, GA4 privacy mode, rich media loading strategy, fallback social image, and newsletter activation modes
 - Configurable table of contents defaults with post-level control
 - Configurable font delivery architecture for `fontsource`, self-hosted files, or Google Fonts CDN
-- Configurable homepage mode with `content-first` as the recommended default
+- Configurable homepage mode with `default` as the recommended baseline
 - Verified archive, taxonomy, RSS, search, sitemap, and deploy flows
 
 ## Main Configuration Files

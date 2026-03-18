@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const navigationItemSchema = z.object({
   href: z.string().startsWith("/"),
-  label: z.string().min(1)
+  label: z.string().min(1),
 });
 
 const headingLevelSchema = z.enum(["h2", "h3", "h4", "h5", "h6"]);
@@ -11,21 +11,20 @@ const urlOrRootRelativeSchema = z.string().startsWith("/").or(z.string().url());
 const fontProviderSchema = z.discriminatedUnion("provider", [
   z.object({
     provider: z.literal("fontsource"),
-    preset: z.enum(["newsreader-outfit"])
+    preset: z.enum(["newsreader-outfit"]),
   }),
   z.object({
     provider: z.literal("self-hosted"),
     stylesheets: z.array(z.string().startsWith("/")).min(1),
-    preload: z.array(z.string().startsWith("/")).default([])
+    preload: z.array(z.string().startsWith("/")).default([]),
   }),
   z.object({
     provider: z.literal("google-fonts"),
     stylesheets: z.array(z.string().url()).min(1),
-    preconnectOrigins: z.array(z.string().url()).default([
-      "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
-    ])
-  })
+    preconnectOrigins: z
+      .array(z.string().url())
+      .default(["https://fonts.googleapis.com", "https://fonts.gstatic.com"]),
+  }),
 ]);
 
 const newsletterConfigSchema = z.discriminatedUnion("mode", [
@@ -33,7 +32,7 @@ const newsletterConfigSchema = z.discriminatedUnion("mode", [
     mode: z.literal("placeholder"),
     eyebrow: z.string().min(1).default("Newsletter"),
     title: z.string().min(1),
-    description: z.string().min(1)
+    description: z.string().min(1),
   }),
   z.object({
     mode: z.literal("button"),
@@ -42,7 +41,7 @@ const newsletterConfigSchema = z.discriminatedUnion("mode", [
     description: z.string().min(1),
     ctaLabel: z.string().min(1),
     href: urlOrRootRelativeSchema,
-    note: z.string().min(1).optional()
+    note: z.string().min(1).optional(),
   }),
   z.object({
     mode: z.literal("form"),
@@ -59,10 +58,10 @@ const newsletterConfigSchema = z.discriminatedUnion("mode", [
       .array(
         z.object({
           name: z.string().min(1),
-          value: z.string()
-        })
+          value: z.string(),
+        }),
       )
-      .default([])
+      .default([]),
   }),
   z.object({
     mode: z.literal("embed"),
@@ -71,23 +70,27 @@ const newsletterConfigSchema = z.discriminatedUnion("mode", [
     description: z.string().min(1),
     src: urlOrRootRelativeSchema,
     minHeight: z.number().int().min(240).max(1600).default(420),
-    note: z.string().min(1).optional()
-  })
+    note: z.string().min(1).optional(),
+  }),
 ]);
 
 const instanceConfigSchema = z.object({
   siteName: z.string().min(1),
   siteDescription: z.string().min(1),
-  fallbackSocialImage: z.string().startsWith("/").or(z.string().url()).optional(),
+  fallbackSocialImage: z
+    .string()
+    .startsWith("/")
+    .or(z.string().url())
+    .optional(),
   fonts: fontProviderSchema,
   purpose: z.enum(["blog", "documentation", "changelog", "seo-hub"]),
   mount: z.object({
     model: z.enum(["root", "subdirectory", "subdomain"]),
-    basePath: z.string().min(1)
+    basePath: z.string().min(1),
   }),
   authorship: z.object({
     mode: z.enum(["single-author", "multi-author-ready"]),
-    defaultAuthor: z.string().min(1)
+    defaultAuthor: z.string().min(1),
   }),
   features: z.object({
     darkMode: z.boolean(),
@@ -95,50 +98,51 @@ const instanceConfigSchema = z.object({
     analytics: z.enum(["ga4", "disabled"]),
     analyticsPrivacyMode: z.enum(["cookieless", "full"]),
     search: z.boolean(),
-    richMediaLoadStrategy: z.enum(["click-to-load", "eager"])
+    richMediaLoadStrategy: z.enum(["click-to-load", "eager"]),
   }),
   shell: z.object({
     mode: z.enum(["standalone", "host-integrated"]),
     navigation: z.array(navigationItemSchema).min(1),
     homepage: z.object({
-      mode: z.enum(["content-first", "editorial-hero"])
-    })
+      mode: z.enum(["default", "editorial-hero", "posts-only"]),
+    }),
   }),
   blog: z.object({
     postsPerPage: z.number().int().min(1).max(100),
     tableOfContents: z.object({
       enabled: z.boolean(),
       title: z.string().min(1),
-      levels: z.array(headingLevelSchema).min(1)
-    })
+      levels: z.array(headingLevelSchema).min(1),
+    }),
   }),
   deploy: z.object({
-    transport: z.enum(["noop", "local-copy"])
+    transport: z.enum(["noop", "local-copy"]),
   }),
   organization: z.object({
     type: z.enum(["Organization", "Person"]),
     name: z.string().min(1),
-    url: z.string().url()
+    url: z.string().url(),
   }),
-  newsletter: newsletterConfigSchema
+  newsletter: newsletterConfigSchema,
 });
 
 const rawInstanceConfig = {
   siteName: "AstroNomer",
-  siteDescription: "A reusable Astro publishing platform for blogs and content hubs.",
+  siteDescription:
+    "A reusable Astro publishing platform for blogs and content hubs.",
   fallbackSocialImage: undefined,
   fonts: {
     provider: "fontsource",
-    preset: "newsreader-outfit"
+    preset: "newsreader-outfit",
   },
   purpose: "blog",
   mount: {
     model: "root",
-    basePath: "/"
+    basePath: "/",
   },
   authorship: {
     mode: "single-author",
-    defaultAuthor: "AstroNomer Team"
+    defaultAuthor: "AstroNomer Team",
   },
   features: {
     darkMode: false,
@@ -146,73 +150,82 @@ const rawInstanceConfig = {
     analytics: "ga4",
     analyticsPrivacyMode: "cookieless",
     search: true,
-    richMediaLoadStrategy: "click-to-load"
+    richMediaLoadStrategy: "click-to-load",
   },
   shell: {
     mode: "standalone",
     navigation: [
       {
         href: "/",
-        label: "Home"
+        label: "Home",
       },
       {
         href: "/blog",
-        label: "Blog"
+        label: "Blog",
       },
       {
         href: "/search",
-        label: "Search"
+        label: "Search",
       },
       {
         href: "/rss.xml",
-        label: "RSS"
-      }
+        label: "RSS",
+      },
     ],
     homepage: {
-      mode: "content-first"
-    }
+      mode: "default",
+    },
   },
   blog: {
     postsPerPage: 10,
     tableOfContents: {
       enabled: false,
       title: "On this page",
-      levels: ["h2", "h3"]
-    }
+      levels: ["h2", "h3"],
+    },
   },
   deploy: {
-    transport: process.env.DEPLOY_TRANSPORT || "noop"
+    transport: process.env.DEPLOY_TRANSPORT || "noop",
   },
   organization: {
     type: "Organization",
     name: "AstroNomer",
-    url: "https://example.com"
+    url: "https://example.com",
   },
   newsletter: {
     mode: "button",
     eyebrow: "Newsletter",
     title: "Newsletter desk",
-    description: "Follow new issues by email through the instance newsletter surface.",
+    description:
+      "Follow new issues by email through the instance newsletter surface.",
     ctaLabel: "Subscribe",
     href: "https://example.com/newsletter",
-    note: "Replace this example destination with your provider-hosted subscribe page, or switch to form or embed mode."
-  }
+    note: "Replace this example destination with your provider-hosted subscribe page, or switch to form or embed mode.",
+  },
 };
 
 const instanceConfig = instanceConfigSchema.parse({
   ...rawInstanceConfig,
   mount: {
     ...rawInstanceConfig.mount,
-    basePath: normalizeBasePath(rawInstanceConfig.mount.basePath)
-  }
+    basePath: normalizeBasePath(rawInstanceConfig.mount.basePath),
+  },
 });
 
-if (instanceConfig.mount.model === "root" && instanceConfig.mount.basePath !== "/") {
+if (
+  instanceConfig.mount.model === "root" &&
+  instanceConfig.mount.basePath !== "/"
+) {
   throw new Error('Root-mounted instances must use "/" as `mount.basePath`.');
 }
 
-if (instanceConfig.mount.model === "subdirectory" && instanceConfig.mount.basePath === "/") {
-  throw new Error("Subdirectory-mounted instances must declare a non-root `mount.basePath`.");
+if (
+  instanceConfig.mount.model === "subdirectory" &&
+  instanceConfig.mount.basePath === "/"
+) {
+  throw new Error(
+    "Subdirectory-mounted instances must declare a non-root `mount.basePath`.",
+  );
 }
 
 export default instanceConfig;

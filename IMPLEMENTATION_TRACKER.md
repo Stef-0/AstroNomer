@@ -18,7 +18,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Current Build Phase
 - Active phase: `Phase 1 / post-MVP product refinements`
-- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, and homepage lead tagline refinement
+- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, homepage lead tagline refinement, three-mode homepage presentation, homepage featured-label simplification, homepage featured-package alignment, and posts-only first-story cleanup
 
 ## Requirement Tracking
 
@@ -59,8 +59,8 @@ This file is the working source for implementation status, intentional spec devi
   Reason: a shorter sidebar caused sticky TOC behavior to end too early; stretching the sidebar and tightening the inter-column gap produces better navigation and a more unified reading layout.
 - Decision: post pages use a narrower reading shell with a moderate body-to-sidebar gap instead of stretching the article composition across the full page shell.
   Reason: the earlier wide shell made the layout feel left-weighted and left too much inert space on the far right; constraining the post composition keeps the TOC comfortably separated without making the page feel disconnected.
-- Decision: homepage presentation is configurable per instance, with `content-first` as the default and `editorial-hero` as an opt-in variant.
-  Reason: a content-led homepage is the stronger default for most live publications, while some operators still need a branded intro mode at the top of the homepage.
+- Decision: homepage presentation is configurable per instance as `default`, `editorial-hero`, or `posts-only`.
+  Reason: operators need a clean choice between a featured editorial front page, a simpler featured-post homepage, and a minimal archive-first homepage without overloading one mode with conflicting responsibilities.
 - Decision: the homepage right rail shares a single explicit column width across the lead and newsroom sections.
   Reason: using one sidebar measure keeps the featured rail and newsletter seam aligned, which makes the homepage read as one editorial grid instead of two unrelated column systems.
 - Decision: the homepage lead package gives the primary story a wider share of the grid than the secondary rail.
@@ -75,6 +75,12 @@ This file is the working source for implementation status, intentional spec devi
   Reason: the editorial visual system depends on crisp typography and restrained overlays; faux depth effects weaken that language instead of supporting it.
 - Decision: the homepage lead section heading is treated like a wide tagline rather than a standard archive heading.
   Reason: the homepage lead package needs a more expansive, hero-like measure than normal section headings, while still using a tighter line-height to avoid awkward orphaned wraps.
+- Decision: the homepage uses a single `Featured` label above the primary lead block, with no secondary featured label in the rail.
+  Reason: the left lead object is the dominant featured story, and repeating the label in the rail adds noise without improving the information hierarchy.
+- Decision: the homepage `Featured` label sits above the entire lead package rather than inside the left column.
+  Reason: the whole package represents featured stories, and placing the label at the package level lets the sidebar stories align directly with the top of the lead image instead of competing with the label for the first visual row.
+- Decision: `posts-only` mode removes the top divider from the first listed story.
+  Reason: in the minimal homepage variant, the first post begins the page rather than continuing a section, so neither the section wrapper nor the first story should carry a leading divider.
 - Decision: font delivery is configurable per instance through `fontsource`, `self-hosted`, or `google-fonts` provider modes.
   Reason: operators need a clean seam for package-managed fonts, manually hosted font files, or third-party convenience loading without rewriting the shell or token contract.
 - Decision: table of contents behavior is configurable at the instance level and overridable per post.
@@ -140,7 +146,7 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: non-post pages verified with default social image plus `WebPage`/`CollectionPage`/`SearchResultsPage` schema in generated HTML
 - `completed`: editorial redesign verified across home, archive, taxonomy, search, and post templates in generated HTML
 - `completed`: shared separator cleanup verified across header, homepage, archive, taxonomy, and search layouts
-- `completed`: homepage mode seam verified with `content-first` as default and `editorial-hero` as validated config option
+- `completed`: homepage mode seam verified with `default`, `editorial-hero`, and `posts-only` as validated config options
 - `completed`: font delivery seam verified with `fontsource` default delivery moved into head-managed provider logic
 - `completed`: table of contents seam verified with instance defaults plus post-level heading selection overrides
 - `completed`: post-page metadata layout verified with inline article meta replacing the detached left rail

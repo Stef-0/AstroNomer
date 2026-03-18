@@ -151,19 +151,21 @@ Table of contents behavior:
   Supported values: `standalone`, `host-integrated`
 - `shell.navigation`
 - `shell.homepage.mode`
-  Supported values: `content-first`, `editorial-hero`
+  Supported values: `default`, `editorial-hero`, `posts-only`
 
 Each navigation item must include:
 - `href`
 - `label`
 
 Homepage behavior:
-- `content-first` starts with a lead content package and recent posts
-- `editorial-hero` adds the larger editorial intro block above the lead content package
+- `default` starts with a featured lead package and then the standard archive flow
+- `editorial-hero` adds the large tagline-style heading above the featured lead package
+- `posts-only` removes the featured package and shows a straight chronological post list
 
 Recommendation:
-- use `content-first` for most live publications
-- use `editorial-hero` only when the instance needs a stronger brand or mission statement at the top of the homepage
+- use `default` for most live publications
+- use `editorial-hero` when the homepage should feel more like a curated editorial front page
+- use `posts-only` when the homepage should behave like a minimal archive
 
 ### Deploy Transport
 - `deploy.transport`

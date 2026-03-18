@@ -16,7 +16,9 @@ const secondaryLead = leadPosts.slice(1);
 const leadSlugs = new Set(leadPosts.map((post) => post.slug));
 const recentPosts = publishedPosts.filter((post) => !leadSlugs.has(post.slug)).slice(0, 9);
 const social = getPageSocialMetadata();
-const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero";
+const homepageMode = instanceConfig.shell.homepage.mode;
+const showLeadTagline = homepageMode === "editorial-hero";
+const showFeaturedLead = homepageMode !== "posts-only";
 ---
 
 <SiteShell
@@ -36,29 +38,16 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
     buildItemListSchema(publishedPosts.slice(0, 5), "/")
   ]}
 >
-  {showEditorialHero && (
-    <section class="page-shell home-intro">
-      <div class="home-intro__lead">
-        <p class="eyebrow">Sunday Edition</p>
-        <h2>{SITE_NAME} is a static editorial system with the posture of a publication, not a template.</h2>
-        <p class="home-intro__dek">
-          Built for serious reading, clean archives, fast search, and configurable publishing operations across independent instances.
-        </p>
-      </div>
-      <div class="home-intro__brief">
-        <p class="eyebrow">Inside This Issue</p>
-        <p>Astro static output, MDX content, taxonomy navigation, Pagefind search, RSS, sitemap, structured metadata, and a transport-ready deploy chain.</p>
-      </div>
-    </section>
-  )}
-
-  {primaryLead && (
+  {showFeaturedLead && primaryLead && (
     <section class="page-shell lead-package">
-      <div class="archive-heading">
-        <p class="eyebrow">{showEditorialHero ? "Lead Story" : "Latest Edition"}</p>
-        <h2>{showEditorialHero ? "Featured reporting" : "Start with the newest and strongest work"}</h2>
-      </div>
+      {showLeadTagline && (
+        <div class="archive-heading">
+          <p class="eyebrow">Latest Edition</p>
+          <h2>Start with the newest and strongest work</h2>
+        </div>
+      )}
 
+      <p class="eyebrow lead-package__label">Featured</p>
       <div class="lead-package__grid">
         <article class="lead-feature">
           <div class="lead-feature__content">
@@ -92,7 +81,6 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
         </article>
 
         <div class="lead-rail">
-          <p class="eyebrow">Featured</p>
           <div class="lead-rail__stack">
             {secondaryLead.map((post) => (
               <article class="lead-rail__item">
@@ -111,19 +99,23 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
     </section>
   )}
 
-  <section class="page-shell newsroom">
+  <section class:list={["page-shell newsroom", homepageMode === "posts-only" && "newsroom--posts-only"]}>
     <div class="newsroom__main">
-      <div class="archive-heading">
-        <p class="eyebrow">Recent Posts</p>
-        <h2>From the archive</h2>
-      </div>
+      {homepageMode !== "posts-only" && (
+        <div class="archive-heading">
+          <p class="eyebrow">Recent Posts</p>
+          <h2>From the archive</h2>
+        </div>
+      )}
       <div class="story-stack">
-        {recentPosts.map((post) => <PostCard post={post} />)}
+        {(homepageMode === "posts-only" ? publishedPosts : recentPosts).map((post) => <PostCard post={post} />)}
       </div>
     </div>
-    <div class="newsroom__aside">
-      <NewsletterEmbed title="Newsletter desk" description="Subscribe to new issues through the instance newsletter surface." />
-    </div>
+    {homepageMode !== "posts-only" && (
+      <div class="newsroom__aside">
+        <NewsletterEmbed title="Newsletter desk" description="Subscribe to new issues through the instance newsletter surface." />
+      </div>
+    )}
   </section>
 </SiteShell>
 
@@ -132,35 +124,12 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
     --home-sidebar-width: 22rem;
   }
 
-  .home-intro {
-    display: grid;
-    grid-template-columns: minmax(0, 1.7fr) minmax(16rem, 0.9fr);
-    gap: var(--space-8);
-    padding: var(--space-8) 0 var(--space-6);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .home-intro h2 {
-    font-family: var(--font-heading);
-    font-size: clamp(2.9rem, 6vw, 4.9rem);
-    line-height: 0.94;
-    max-width: 11ch;
-    margin: 0.35rem 0 1rem;
-  }
-
-  .home-intro__dek,
-  .home-intro__brief p:last-child {
-    max-width: 42rem;
-    font-size: 1.08rem;
-    line-height: 1.65;
-  }
-
-  .home-intro__brief {
-    align-self: end;
-  }
-
   .lead-package {
     padding: var(--space-6) 0 var(--space-8);
+  }
+
+  .lead-package__label {
+    margin: 0 0 var(--space-4);
   }
 
   .lead-package .archive-heading {
@@ -338,6 +307,12 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
     width: 100%;
   }
 
+  .newsroom--posts-only {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: var(--space-8);
+    border-top: 0;
+  }
+
   .newsroom .archive-heading {
     border-top: 0;
     padding-top: 0;
@@ -348,8 +323,12 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
     padding-top: 0;
   }
 
+  .newsroom--posts-only .story-stack > :global(article.post-card:first-of-type) {
+    border-top: 0;
+    padding-top: 0;
+  }
+
   @media (max-width: 960px) {
-    .home-intro,
     .lead-package__grid,
     .newsroom {
       grid-template-columns: 1fr;
