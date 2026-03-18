@@ -6,6 +6,7 @@ const navigationItemSchema = z.object({
 });
 
 const headingLevelSchema = z.enum(["h2", "h3", "h4", "h5", "h6"]);
+const urlOrRootRelativeSchema = z.string().startsWith("/").or(z.string().url());
 
 const fontProviderSchema = z.discriminatedUnion("provider", [
   z.object({
@@ -24,6 +25,53 @@ const fontProviderSchema = z.discriminatedUnion("provider", [
       "https://fonts.googleapis.com",
       "https://fonts.gstatic.com"
     ])
+  })
+]);
+
+const newsletterConfigSchema = z.discriminatedUnion("mode", [
+  z.object({
+    mode: z.literal("placeholder"),
+    eyebrow: z.string().min(1).default("Newsletter"),
+    title: z.string().min(1),
+    description: z.string().min(1)
+  }),
+  z.object({
+    mode: z.literal("button"),
+    eyebrow: z.string().min(1).default("Newsletter"),
+    title: z.string().min(1),
+    description: z.string().min(1),
+    ctaLabel: z.string().min(1),
+    href: urlOrRootRelativeSchema,
+    note: z.string().min(1).optional()
+  }),
+  z.object({
+    mode: z.literal("form"),
+    eyebrow: z.string().min(1).default("Newsletter"),
+    title: z.string().min(1),
+    description: z.string().min(1),
+    action: urlOrRootRelativeSchema,
+    method: z.enum(["get", "post"]).default("post"),
+    submitLabel: z.string().min(1),
+    emailName: z.string().min(1).default("email"),
+    emailPlaceholder: z.string().min(1).default("you@example.com"),
+    note: z.string().min(1).optional(),
+    hiddenFields: z
+      .array(
+        z.object({
+          name: z.string().min(1),
+          value: z.string()
+        })
+      )
+      .default([])
+  }),
+  z.object({
+    mode: z.literal("embed"),
+    eyebrow: z.string().min(1).default("Newsletter"),
+    title: z.string().min(1),
+    description: z.string().min(1),
+    src: urlOrRootRelativeSchema,
+    minHeight: z.number().int().min(240).max(1600).default(420),
+    note: z.string().min(1).optional()
   })
 ]);
 
@@ -71,7 +119,8 @@ const instanceConfigSchema = z.object({
     type: z.enum(["Organization", "Person"]),
     name: z.string().min(1),
     url: z.string().url()
-  })
+  }),
+  newsletter: newsletterConfigSchema
 });
 
 const rawInstanceConfig = {
@@ -138,6 +187,15 @@ const rawInstanceConfig = {
     type: "Organization",
     name: "AstroNomer",
     url: "https://example.com"
+  },
+  newsletter: {
+    mode: "button",
+    eyebrow: "Newsletter",
+    title: "Newsletter desk",
+    description: "Follow new issues by email through the instance newsletter surface.",
+    ctaLabel: "Subscribe",
+    href: "https://example.com/newsletter",
+    note: "Replace this example destination with your provider-hosted subscribe page, or switch to form or embed mode."
   }
 };
 

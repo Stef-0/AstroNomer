@@ -18,7 +18,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Current Build Phase
 - Active phase: `Phase 1 / post-MVP product refinements`
-- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, and richer post image metadata
+- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, and newsletter activation modes
 
 ## Requirement Tracking
 
@@ -43,7 +43,8 @@ This file is the working source for implementation status, intentional spec devi
 | Standalone shell + `SiteShell.astro` seam | C6, C11, C15 | implemented | Shell seam now ships with a verified editorial standalone presentation built around masthead, archive, and article layouts. |
 | Schema-ready multi-author support | C6, C11 | implemented | Optional `author` field is in the content schema. |
 | GA4 default analytics slot | C6, C11, C15 | implemented | Non-blocking GA4 component scaffolded behind instance config and env vars. |
-| Newsletter structural placeholder | C6, C11 | implemented | `NewsletterEmbed` placeholder component added with no active provider coupling. |
+| Newsletter structural placeholder | C6, C11 | implemented | `NewsletterEmbed` remains the structural seam even when active newsletter modes are enabled. |
+| Activated newsletter integration | C20, C21 | implemented | The newsletter seam now supports instance-configured `button`, `form`, and `embed` activation modes without requiring the deferred provider abstraction module. |
 
 ## Decisions and Overrides
 - Decision: the tracking file for implementation and spec drift lives at `/Users/stefanorlic/code/astronomer/IMPLEMENTATION_TRACKER.md`.
@@ -80,6 +81,8 @@ This file is the working source for implementation status, intentional spec devi
   Reason: some operators will already have consent handling in place and need standard GA4 behavior, while others need privacy-reduced analytics by default.
 - Decision: the instance-wide fallback social image is configurable, with the generated site SVG retained as the default fallback when no custom image is supplied.
   Reason: operators should be able to align social cards with their brand without needing per-post images everywhere.
+- Decision: newsletter activation is implemented through instance-configured render modes instead of a provider-specific abstraction.
+  Reason: this enables a real subscribe surface now while keeping the broader provider abstraction module deferred until compliance and parity rules are clearer.
 - Override: pagination is configurable per instance through `blog.postsPerPage`, with `10` as the default.
   Reason: this intentionally overrides the current spec lock at 10 per page in favor of operator flexibility; this is a tracked spec drift decision, not an accidental implementation change.
 - Interpretation: draft filtering is enforced in content query helpers and route generation, which makes production exclusion explicit in the code paths that create pages and feeds.
@@ -98,7 +101,6 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Deferred By Spec
 - Provider-swappable analytics beyond GA4
-- Activated newsletter provider integration
 - Purpose-specific homepage/navigation variants
 - Additional schema fields beyond the locked defaults
 - Formal permissions module
@@ -118,6 +120,7 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: RSS verified with 13 published items after content expansion
 - `completed`: RSS XML namespace declarations verified for `atom:link` and `content:encoded` output
 - `completed`: post-level social image metadata verified with local image alt text plus `og:image:*`, `twitter:image:alt`, and `ImageObject` schema output
+- `completed`: newsletter seam verified with active instance-configured render modes instead of placeholder-only output
 - `completed`: duplicate content-id warning resolved after clearing stale `.astro` cache and rebuilding cleanly
 - `completed`: non-post pages verified with default social image plus `WebPage`/`CollectionPage`/`SearchResultsPage` schema in generated HTML
 - `completed`: editorial redesign verified across home, archive, taxonomy, search, and post templates in generated HTML

@@ -111,6 +111,24 @@ Behavior notes:
 - `richMediaLoadStrategy: "click-to-load"` keeps embeds behind an activation step
 - `richMediaLoadStrategy: "eager"` renders embeds immediately
 
+### Newsletter Activation
+
+`newsletter.mode` supports:
+- `placeholder`
+- `button`
+- `form`
+- `embed`
+
+Recommended usage:
+- `button` for a provider-hosted subscribe page
+- `form` for a public provider subscribe endpoint
+- `embed` for iframe-based provider widgets
+
+Important:
+- newsletter config values are public runtime values, not secrets
+- keep private provider tokens and administrative credentials out of source control
+- deeper provider abstraction and provider-equivalence rules are still post-MVP concerns
+
 ### Blog Behavior
 - `blog.postsPerPage`
 - `blog.tableOfContents.enabled`
@@ -163,7 +181,7 @@ This feeds structured data and metadata output.
 
 1. Set the public site URL in `.env`.
 2. Edit [instance.config.mjs](/Users/stefanorlic/code/astronomer/instance.config.mjs) for:
-   routing, authorship, fonts, analytics, embeds, homepage mode, pagination, and social fallback image.
+   routing, authorship, fonts, analytics, newsletter activation, embeds, homepage mode, pagination, and social fallback image.
 3. Adjust [src/styles/tokens.css](/Users/stefanorlic/code/astronomer/src/styles/tokens.css) to match the target brand.
 4. Add or replace content in [/Users/stefanorlic/code/astronomer/src/content/posts](/Users/stefanorlic/code/astronomer/src/content/posts).
 5. Build and deploy through the single deploy chain.
@@ -237,7 +255,6 @@ Implemented:
 - configurable pagination
 
 Still intentionally deferred:
-- newsletter provider integration
 - analytics providers beyond GA4
 - formal multi-author permissions
 - advanced deploy rollback/recovery tooling

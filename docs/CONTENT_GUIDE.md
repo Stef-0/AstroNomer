@@ -146,6 +146,15 @@ Post social image behavior:
 
 If you want a specific post to have its own social card image, set `image`.
 
+## Newsletter Surface
+
+The newsletter module is instance-controlled, not post-controlled.
+
+Authors should assume:
+- the newsletter block may appear on the homepage and post pages
+- the operator chooses whether it renders as a placeholder, button CTA, form, or embed
+- newsletter copy can vary by instance even when the post content stays the same
+
 ## Table Of Contents
 
 TOC behavior starts from the instance default, then can be overridden per post.
