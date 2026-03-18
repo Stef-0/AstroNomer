@@ -168,6 +168,13 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
     padding-top: 0;
   }
 
+  .lead-package .archive-heading h2 {
+    max-width: 20ch;
+    font-size: clamp(2.8rem, 5.8vw, 5.2rem);
+    line-height: 0.88;
+    text-wrap: balance;
+  }
+
   .lead-package__grid {
     display: grid;
     grid-template-columns: minmax(0, 1.2fr) minmax(20rem, var(--home-sidebar-width));

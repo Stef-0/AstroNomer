@@ -18,7 +18,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Current Build Phase
 - Active phase: `Phase 1 / post-MVP product refinements`
-- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, and flat featured-image contrast styling
+- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, and homepage lead tagline refinement
 
 ## Requirement Tracking
 
@@ -73,6 +73,8 @@ This file is the working source for implementation status, intentional spec devi
   Reason: image artwork can vary significantly, and a simple two-tone override keeps the system flexible without introducing arbitrary per-post color controls.
 - Decision: featured-image contrast treatment uses flat text color only, without decorative shadows or gloss effects.
   Reason: the editorial visual system depends on crisp typography and restrained overlays; faux depth effects weaken that language instead of supporting it.
+- Decision: the homepage lead section heading is treated like a wide tagline rather than a standard archive heading.
+  Reason: the homepage lead package needs a more expansive, hero-like measure than normal section headings, while still using a tighter line-height to avoid awkward orphaned wraps.
 - Decision: font delivery is configurable per instance through `fontsource`, `self-hosted`, or `google-fonts` provider modes.
   Reason: operators need a clean seam for package-managed fonts, manually hosted font files, or third-party convenience loading without rewriting the shell or token contract.
 - Decision: table of contents behavior is configurable at the instance level and overridable per post.
