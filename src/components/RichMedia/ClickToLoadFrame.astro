@@ -3,39 +3,39 @@ import instanceConfig from "../../../instance.config.mjs";
 
 interface Props {
   provider: string;
-  title: string;
+  title?: string;
   href: string;
   embedSrc: string;
   aspectRatio?: string;
-  summary?: string;
+  targetBackground?: string;
+  frameMaxWidth?: string;
+  revealLabel?: string;
+  revealChrome?: "framed" | "bare";
 }
 
 const {
   provider,
-  title,
+  title = provider,
   href,
   embedSrc,
   aspectRatio = "16 / 9",
-  summary = "This third-party embed loads only after reader activation."
+  targetBackground = "#111",
+  frameMaxWidth = "100%",
+  revealLabel = "View embed",
+  revealChrome = "framed"
 } = Astro.props;
 const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
 ---
 
 {
   eager ? (
-    <div class="surface-card embed-card embed-card--eager" style={`--embed-aspect-ratio: ${aspectRatio};`}>
-      <div class="embed-card__body">
-        <p class="eyebrow">{provider}</p>
-        <h3>{title}</h3>
-        <p>{summary}</p>
-        <div class="embed-card__actions">
-          <a href={href} target="_blank" rel="noreferrer">Open source</a>
-        </div>
-      </div>
+    <div class={`embed-card embed-card--eager ${frameMaxWidth !== "100%" ? "embed-card--constrained" : ""} ${revealChrome === "bare" ? "embed-card--bare" : ""}`} style={`--embed-aspect-ratio: ${aspectRatio}; --embed-target-bg: ${targetBackground}; --embed-frame-max-width: ${frameMaxWidth};`}>
       <div class="embed-card__target embed-card__target--visible">
         <iframe
           src={embedSrc}
           title={title}
+          width="100%"
+          height="100%"
           loading="lazy"
           referrerpolicy="strict-origin-when-cross-origin"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -45,23 +45,21 @@ const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
     </div>
   ) : (
     <div
-      class="surface-card embed-card"
-      style={`--embed-aspect-ratio: ${aspectRatio};`}
+      class={`embed-card ${frameMaxWidth !== "100%" ? "embed-card--constrained" : ""} ${revealChrome === "bare" ? "embed-card--bare" : ""}`}
+      style={`--embed-aspect-ratio: ${aspectRatio}; --embed-target-bg: ${targetBackground}; --embed-frame-max-width: ${frameMaxWidth};`}
       data-embed-kind="iframe"
       data-embed-src={embedSrc}
       data-embed-title={title}
     >
-      <div class="embed-card__body">
-        <p class="eyebrow">{provider}</p>
-        <h3>{title}</h3>
-        <p>{summary}</p>
-        <div class="embed-card__actions">
-          <button type="button" class="embed-card__button">Load embed</button>
-          <a href={href} target="_blank" rel="noreferrer">Open source</a>
+      <div class="embed-card__target">
+        <div class="embed-card__veil">
+          <div class="embed-card__veil-panel">
+            <button type="button" class="embed-card__button">{revealLabel}</button>
+            <a class="embed-card__source-link" href={href} target="_blank" rel="noreferrer">Open source</a>
+          </div>
         </div>
-        <p class="embed-card__status" aria-live="polite"></p>
       </div>
-      <div class="embed-card__target" hidden></div>
+      <p class="embed-card__status" aria-live="polite"></p>
     </div>
   )
 }
@@ -74,6 +72,7 @@ const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
     const button = root.querySelector(".embed-card__button");
     const status = root.querySelector(".embed-card__status");
     const target = root.querySelector(".embed-card__target");
+    const veil = root.querySelector(".embed-card__veil");
 
     button?.addEventListener("click", () => {
       const src = root.getAttribute("data-embed-src");
@@ -89,9 +88,14 @@ const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
       const iframe = document.createElement("iframe");
       iframe.src = src;
       iframe.title = title;
+      iframe.width = "100%";
+      iframe.height = "100%";
       iframe.loading = "lazy";
       iframe.allowFullscreen = true;
       iframe.referrerPolicy = "strict-origin-when-cross-origin";
+      iframe.style.width = "100%";
+      iframe.style.height = "100%";
+      iframe.style.display = "block";
       iframe.setAttribute(
         "allow",
         "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -99,8 +103,15 @@ const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
 
       target.innerHTML = "";
       target.appendChild(iframe);
-      target.hidden = false;
-      button.remove();
+      if (veil) {
+        target.appendChild(veil);
+        requestAnimationFrame(() => {
+          root.classList.add("is-loaded");
+        });
+        window.setTimeout(() => {
+          veil.remove();
+        }, 260);
+      }
 
       if (status) {
         status.textContent = `Loaded ${title}.`;
@@ -112,27 +123,13 @@ const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
 <style>
   .embed-card {
     overflow: hidden;
-  }
-
-  .embed-card__body {
-    padding: var(--space-6);
-  }
-
-  .embed-card h3 {
-    margin: 0.35rem 0 0.75rem;
-    font-family: var(--font-heading);
-    font-size: clamp(1.4rem, 3vw, 2rem);
-  }
-
-  .embed-card__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    align-items: center;
+    display: block;
+    width: 100%;
+    max-width: 100%;
   }
 
   .embed-card__button,
-  .embed-card__actions a {
+  .embed-card__source-link {
     border-radius: 999px;
     padding: 0.7rem 1rem;
     text-decoration: none;
@@ -145,29 +142,84 @@ const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
     cursor: pointer;
   }
 
-  .embed-card__actions a {
+  .embed-card__source-link {
     border: 1px solid var(--color-border);
+    color: var(--color-text);
+    background: color-mix(in srgb, white 74%, transparent);
   }
 
   .embed-card__status {
     min-height: 1.5rem;
     color: var(--color-text-soft);
-    margin-bottom: 0;
+    margin: var(--space-3) 0 0;
   }
 
   .embed-card__target {
-    border-top: 1px solid var(--color-border);
     aspect-ratio: var(--embed-aspect-ratio);
-    background: #111;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, white 76%, transparent) 0%, color-mix(in srgb, var(--color-surface) 92%, white) 100%);
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    border: 1px solid color-mix(in srgb, var(--color-border) 92%, transparent);
+  }
+
+  .embed-card--constrained .embed-card__target {
+    max-width: var(--embed-frame-max-width);
+    margin-inline: 0;
+  }
+
+  .embed-card--bare.is-loaded .embed-card__target {
+    border: 0;
   }
 
   .embed-card__target--visible {
     display: block;
+    background: var(--embed-target-bg);
   }
 
   .embed-card__target iframe {
     width: 100%;
     height: 100%;
     border: 0;
+    display: block;
+    max-width: var(--embed-frame-max-width);
+  }
+
+  .embed-card__veil {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: var(--space-6);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, white 34%, transparent) 0%, color-mix(in srgb, var(--color-surface) 54%, transparent) 100%),
+      radial-gradient(circle at 22% 24%, color-mix(in srgb, var(--color-highlight) 16%, transparent) 0, transparent 30%),
+      radial-gradient(circle at 78% 70%, color-mix(in srgb, var(--color-border-strong) 10%, transparent) 0, transparent 34%);
+    backdrop-filter: blur(18px) saturate(0.92);
+    -webkit-backdrop-filter: blur(18px) saturate(0.92);
+    transition: opacity 220ms ease;
+  }
+
+  .embed-card__veil-panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    width: min(100%, 24rem);
+    padding: 0;
+  }
+
+  .embed-card.is-loaded .embed-card__veil {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .embed-card.is-loaded .embed-card__target {
+    background: var(--embed-target-bg);
   }
 </style>

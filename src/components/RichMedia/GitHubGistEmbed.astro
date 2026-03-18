@@ -15,36 +15,31 @@ const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
 
 {
   eager ? (
-    <div class="surface-card gist-card">
-      <div class="gist-card__body">
-        <p class="eyebrow">GitHub Gist</p>
-        <h3>{title}</h3>
-        <p>Gist embeds load immediately for instances that do not need a reveal gate.</p>
-        <div class="gist-card__actions">
-          <a href={gistUrl} target="_blank" rel="noreferrer">Open source</a>
-        </div>
-      </div>
+    <div class="gist-card gist-card--eager">
       <div class="gist-card__target gist-card__target--visible">
-        <script src={scriptUrl} async></script>
+        <iframe
+          srcdoc={`<!doctype html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><style>body{margin:0;background:#fff;}</style></head><body><script src="${scriptUrl}"><\/script></body></html>`}
+          title={title}
+          loading="lazy"
+        ></iframe>
       </div>
     </div>
   ) : (
     <div
-      class="surface-card gist-card"
+      class="gist-card"
       data-embed-kind="gist"
       data-embed-src={scriptUrl}
+      data-embed-title={title}
     >
-      <div class="gist-card__body">
-        <p class="eyebrow">GitHub Gist</p>
-        <h3>{title}</h3>
-        <p>Gists load only after activation so the rest of the post stays lightweight and readable.</p>
-        <div class="gist-card__actions">
-          <button type="button" class="gist-card__button">Load gist</button>
-          <a href={gistUrl} target="_blank" rel="noreferrer">Open source</a>
+      <div class="gist-card__target">
+        <div class="gist-card__veil">
+          <div class="gist-card__veil-panel">
+            <button type="button" class="gist-card__button">View gist</button>
+            <a class="gist-card__source-link" href={gistUrl} target="_blank" rel="noreferrer">Open source</a>
+          </div>
         </div>
-        <p class="gist-card__status" aria-live="polite"></p>
       </div>
-      <div class="gist-card__target" hidden></div>
+      <p class="gist-card__status" aria-live="polite"></p>
     </div>
   )
 }
@@ -57,9 +52,11 @@ const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
     const button = root.querySelector(".gist-card__button");
     const status = root.querySelector(".gist-card__status");
     const target = root.querySelector(".gist-card__target");
+    const veil = root.querySelector(".gist-card__veil");
 
     button?.addEventListener("click", () => {
       const src = root.getAttribute("data-embed-src");
+      const title = root.getAttribute("data-embed-title") || "GitHub Gist";
 
       if (!src || !target) {
         if (status) {
@@ -68,18 +65,26 @@ const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
         return;
       }
 
+      const iframe = document.createElement("iframe");
+      iframe.srcdoc = `<!doctype html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><style>body{margin:0;background:#fff;}</style></head><body><script src="${src}"><\/script></body></html>`;
+      iframe.title = title;
+      iframe.loading = "lazy";
+      iframe.style.width = "100%";
+      iframe.style.height = "32rem";
+      iframe.style.display = "block";
+      iframe.style.border = "0";
+
       target.innerHTML = "";
-      const script = document.createElement("script");
-      script.src = src;
-      script.async = true;
-      script.onerror = () => {
-        if (status) {
-          status.textContent = "The gist failed to load. Use the source link instead.";
-        }
-      };
-      target.appendChild(script);
-      target.hidden = false;
-      button.remove();
+      target.appendChild(iframe);
+      if (veil) {
+        target.appendChild(veil);
+        requestAnimationFrame(() => {
+          root.classList.add("is-loaded");
+        });
+        window.setTimeout(() => {
+          veil.remove();
+        }, 260);
+      }
 
       if (status) {
         status.textContent = "Loaded gist.";
@@ -91,27 +96,13 @@ const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
 <style>
   .gist-card {
     overflow: hidden;
-  }
-
-  .gist-card__body {
-    padding: var(--space-6);
-  }
-
-  .gist-card h3 {
-    margin: 0.35rem 0 0.75rem;
-    font-family: var(--font-heading);
-    font-size: clamp(1.4rem, 3vw, 2rem);
-  }
-
-  .gist-card__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    align-items: center;
+    display: block;
+    width: 100%;
+    max-width: 100%;
   }
 
   .gist-card__button,
-  .gist-card__actions a {
+  .gist-card__source-link {
     border-radius: 999px;
     padding: 0.7rem 1rem;
     text-decoration: none;
@@ -124,23 +115,71 @@ const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
     cursor: pointer;
   }
 
-  .gist-card__actions a {
+  .gist-card__source-link {
     border: 1px solid var(--color-border);
+    color: var(--color-text);
+    background: color-mix(in srgb, white 74%, transparent);
   }
 
   .gist-card__status {
     min-height: 1.5rem;
     color: var(--color-text-soft);
-    margin-bottom: 0;
+    margin: var(--space-3) 0 0;
   }
 
   .gist-card__target {
-    border-top: 1px solid var(--color-border);
-    padding: var(--space-4);
-    background: #fff;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, white 76%, transparent) 0%, color-mix(in srgb, var(--color-surface) 92%, white) 100%);
+    min-height: 32rem;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    border: 1px solid color-mix(in srgb, var(--color-border) 92%, transparent);
   }
 
   .gist-card__target--visible {
     display: block;
+    background: #fff;
+  }
+
+  .gist-card__target iframe {
+    width: 100%;
+    min-height: 32rem;
+    border: 0;
+    display: block;
+  }
+
+  .gist-card__veil {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: var(--space-6);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, white 34%, transparent) 0%, color-mix(in srgb, var(--color-surface) 54%, transparent) 100%),
+      radial-gradient(circle at 22% 24%, color-mix(in srgb, var(--color-highlight) 16%, transparent) 0, transparent 30%),
+      radial-gradient(circle at 78% 70%, color-mix(in srgb, var(--color-border-strong) 10%, transparent) 0, transparent 34%);
+    backdrop-filter: blur(18px) saturate(0.92);
+    -webkit-backdrop-filter: blur(18px) saturate(0.92);
+    transition: opacity 220ms ease;
+  }
+
+  .gist-card__veil-panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    width: min(100%, 24rem);
+    padding: 0;
+  }
+
+  .gist-card.is-loaded .gist-card__veil {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .gist-card.is-loaded .gist-card__target {
+    background: #fff;
   }
 </style>

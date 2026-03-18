@@ -18,7 +18,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Current Build Phase
 - Active phase: `Phase 1 / post-MVP product refinements`
-- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, homepage lead tagline refinement, three-mode homepage presentation, homepage featured-label simplification, homepage featured-package alignment, and posts-only first-story cleanup
+- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, homepage lead tagline refinement, three-mode homepage presentation, homepage featured-label simplification, homepage featured-package alignment, posts-only first-story cleanup, rich-media embed activation fixes, frosted click-to-load embed placeholders, embed-stage simplification, and unified provider-neutral rich-media placeholder styling
 
 ## Requirement Tracking
 
@@ -81,6 +81,14 @@ This file is the working source for implementation status, intentional spec devi
   Reason: the whole package represents featured stories, and placing the label at the package level lets the sidebar stories align directly with the top of the lead image instead of competing with the label for the first visual row.
 - Decision: `posts-only` mode removes the top divider from the first listed story.
   Reason: in the minimal homepage variant, the first post begins the page rather than continuing a section, so neither the section wrapper nor the first story should carry a leading divider.
+- Decision: rich-media demo content uses known public provider examples rather than arbitrary sample IDs.
+  Reason: embed failures should reflect component behavior rather than stale or invalid demo content, especially while we are validating post-MVP provider support.
+- Decision: click-to-load embeds use a frosted placeholder stage that dissolves into the live provider content on activation.
+  Reason: embeds should feel integrated into the editorial reading experience rather than appearing as disconnected controls followed by a separate media box.
+- Decision: click-to-load embeds do not render provider/title/summary chrome above the reveal stage.
+  Reason: the embed itself should be the object; extra heading blocks make the interaction feel like two separate components rather than one media surface transitioning from placeholder to live content.
+- Decision: click-to-load embed placeholders use one provider-neutral frosted visual language before reveal, while provider-specific differences appear primarily in the revealed embed sizing.
+  Reason: mixing dark and light placeholder treatments made the embed section feel inconsistent; the stage should read as one system until the real third-party surface appears.
 - Decision: font delivery is configurable per instance through `fontsource`, `self-hosted`, or `google-fonts` provider modes.
   Reason: operators need a clean seam for package-managed fonts, manually hosted font files, or third-party convenience loading without rewriting the shell or token contract.
 - Decision: table of contents behavior is configurable at the instance level and overridable per post.

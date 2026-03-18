@@ -3,17 +3,17 @@ import ClickToLoadFrame from "@/components/RichMedia/ClickToLoadFrame.astro";
 
 interface Props {
   id: string;
-  title: string;
-  summary?: string;
+  title?: string;
 }
 
-const { id, title, summary } = Astro.props;
+const { id, title = "YouTube video" } = Astro.props;
 ---
 
 <ClickToLoadFrame
   provider="YouTube"
   title={title}
-  summary={summary}
   href={`https://www.youtube.com/watch?v=${id}`}
   embedSrc={`https://www.youtube-nocookie.com/embed/${id}`}
+  frameMaxWidth="56rem"
+  revealLabel="View video"
 />

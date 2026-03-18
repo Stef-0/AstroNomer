@@ -3,18 +3,17 @@ import ClickToLoadFrame from "@/components/RichMedia/ClickToLoadFrame.astro";
 
 interface Props {
   id: string;
-  title: string;
-  summary?: string;
+  title?: string;
 }
 
-const { id, title, summary } = Astro.props;
+const { id, title = "Vimeo video" } = Astro.props;
 ---
 
 <ClickToLoadFrame
   provider="Vimeo"
   title={title}
-  summary={summary}
   href={`https://vimeo.com/${id}`}
   embedSrc={`https://player.vimeo.com/video/${id}`}
+  frameMaxWidth="56rem"
+  revealLabel="View video"
 />
-

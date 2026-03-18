@@ -4,25 +4,27 @@ import ClickToLoadFrame from "@/components/RichMedia/ClickToLoadFrame.astro";
 interface Props {
   user: string;
   pen: string;
-  title: string;
+  title?: string;
   defaultTab?: string;
-  summary?: string;
+  aspectRatio?: string;
 }
 
 const {
   user,
   pen,
-  title,
+  title = "CodePen embed",
   defaultTab = "result",
-  summary = "Interactive embeds stay dormant until the reader chooses to load them."
+  aspectRatio = "4 / 3"
 } = Astro.props;
 ---
 
 <ClickToLoadFrame
   provider="CodePen"
   title={title}
-  summary={summary}
   href={`https://codepen.io/${user}/pen/${pen}`}
   embedSrc={`https://codepen.io/${user}/embed/${pen}?default-tab=${defaultTab}&theme-id=light`}
+  aspectRatio={aspectRatio}
+  frameMaxWidth="52rem"
+  revealLabel="View CodePen"
+  targetBackground="#ffffff"
 />
-

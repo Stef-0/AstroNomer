@@ -3,137 +3,121 @@ import instanceConfig from "../../../instance.config.mjs";
 
 interface Props {
   url: string;
-  title?: string;
 }
 
-const { url, title = "X / Twitter post" } = Astro.props;
+const { url } = Astro.props;
+const tweetId = url.match(/status\/(\d+)/)?.[1] ?? "";
 const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
 ---
 
 {
   eager ? (
-    <div class="surface-card tweet-card">
-      <div class="tweet-card__body">
-        <p class="eyebrow">X / Twitter</p>
-        <h3>{title}</h3>
-        <p>Social embeds load immediately for instances that do not need a reveal gate.</p>
-        <div class="tweet-card__actions">
-          <a href={url} target="_blank" rel="noreferrer">Open source</a>
-        </div>
-      </div>
-      <div class="tweet-card__target tweet-card__target--visible">
-        <blockquote class="twitter-tweet">
-          <a href={url}>{url}</a>
-        </blockquote>
-        <script src="https://platform.twitter.com/widgets.js" async data-twitter-widgets="true"></script>
-      </div>
+    <div class="tweet-card tweet-card--visible" data-tweet-root data-tweet-id={tweetId}>
+      <div class="tweet-card__target"></div>
     </div>
   ) : (
-    <div
-      class="surface-card tweet-card"
-      data-embed-kind="tweet"
-      data-embed-url={url}
-    >
-      <div class="tweet-card__body">
-        <p class="eyebrow">X / Twitter</p>
-        <h3>{title}</h3>
-        <p>Social embeds stay click-to-load so the post content remains fast and readable by default.</p>
-        <div class="tweet-card__actions">
-          <button type="button" class="tweet-card__button">Load post</button>
-          <a href={url} target="_blank" rel="noreferrer">Open source</a>
+    <div class="tweet-card" data-tweet-root data-tweet-id={tweetId}>
+      <div class="tweet-card__target">
+        <div class="tweet-card__veil">
+          <div class="tweet-card__controls">
+            <button type="button" class="tweet-card__button">View post</button>
+            <a class="tweet-card__source-link" href={url} target="_blank" rel="noreferrer">Open source</a>
+          </div>
         </div>
-        <p class="tweet-card__status" aria-live="polite"></p>
       </div>
-      <div class="tweet-card__target" hidden></div>
+      <p class="tweet-card__status" aria-live="polite"></p>
     </div>
   )
 }
 
 <script>
-  document.querySelectorAll('[data-embed-kind="tweet"]').forEach((root) => {
+  const loadTwitterWidgets = () => {
+    if (window.twttr?.widgets?.createTweet) {
+      return Promise.resolve(window.twttr);
+    }
+
+    const existing = document.querySelector('script[data-twitter-widgets="true"]');
+    if (existing) {
+      return new Promise((resolve, reject) => {
+        existing.addEventListener("load", () => resolve(window.twttr), { once: true });
+        existing.addEventListener("error", reject, { once: true });
+      });
+    }
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://platform.twitter.com/widgets.js";
+      script.async = true;
+      script.defer = true;
+      script.setAttribute("data-twitter-widgets", "true");
+      script.addEventListener("load", () => resolve(window.twttr), { once: true });
+      script.addEventListener("error", reject, { once: true });
+      document.head.appendChild(script);
+    });
+  };
+
+  const revealTweet = async (root) => {
+    const tweetId = root.getAttribute("data-tweet-id");
+    const target = root.querySelector(".tweet-card__target");
+    const veil = root.querySelector(".tweet-card__veil");
+    const status = root.querySelector(".tweet-card__status");
+
+    if (!tweetId || !target) {
+      if (status) status.textContent = "The post could not be loaded. Use the source link instead.";
+      return;
+    }
+
+    try {
+      const twttr = await loadTwitterWidgets();
+      target.innerHTML = "";
+      const slot = document.createElement("div");
+      target.appendChild(slot);
+      await twttr.widgets.createTweet(tweetId, slot, {
+        dnt: true,
+        align: "left",
+        theme: "light"
+      });
+
+      if (veil) {
+        target.appendChild(veil);
+        requestAnimationFrame(() => {
+          root.classList.add("is-loaded");
+        });
+        window.setTimeout(() => {
+          veil.remove();
+        }, 260);
+      }
+
+      if (status) status.textContent = "Loaded X / Twitter post.";
+    } catch (error) {
+      if (status) status.textContent = "The post could not be loaded. Use the source link instead.";
+    }
+  };
+
+  document.querySelectorAll("[data-tweet-root]").forEach((root) => {
     if (root.dataset.bound === "true") return;
     root.dataset.bound = "true";
 
-    const button = root.querySelector(".tweet-card__button");
-    const status = root.querySelector(".tweet-card__status");
-    const target = root.querySelector(".tweet-card__target");
+    if (root.classList.contains("tweet-card--visible")) {
+      revealTweet(root);
+      return;
+    }
 
-    button?.addEventListener("click", () => {
-      const url = root.getAttribute("data-embed-url");
-
-      if (!url || !target) {
-        if (status) {
-          status.textContent = "The post could not be loaded. Use the source link instead.";
-        }
-        return;
-      }
-
-      target.innerHTML = "";
-      const blockquote = document.createElement("blockquote");
-      blockquote.className = "twitter-tweet";
-      const link = document.createElement("a");
-      link.href = url;
-      link.textContent = url;
-      blockquote.appendChild(link);
-      target.appendChild(blockquote);
-      target.hidden = false;
-
-      const existingScript = document.querySelector('script[data-twitter-widgets="true"]');
-      if (existingScript) {
-        if (window.twttr?.widgets?.load) {
-          window.twttr.widgets.load(target);
-        }
-      } else {
-        const script = document.createElement("script");
-        script.src = "https://platform.twitter.com/widgets.js";
-        script.async = true;
-        script.setAttribute("data-twitter-widgets", "true");
-        script.onerror = () => {
-          if (status) {
-            status.textContent = "The post failed to load. Use the source link instead.";
-          }
-        };
-        script.onload = () => {
-          if (window.twttr?.widgets?.load) {
-            window.twttr.widgets.load(target);
-          }
-        };
-        document.body.appendChild(script);
-      }
-
-      button.remove();
-
-      if (status) {
-        status.textContent = "Loaded social post.";
-      }
+    root.querySelector(".tweet-card__button")?.addEventListener("click", () => {
+      revealTweet(root);
     });
   });
 </script>
 
 <style>
   .tweet-card {
-    overflow: hidden;
-  }
-
-  .tweet-card__body {
-    padding: var(--space-6);
-  }
-
-  .tweet-card h3 {
-    margin: 0.35rem 0 0.75rem;
-    font-family: var(--font-heading);
-    font-size: clamp(1.4rem, 3vw, 2rem);
-  }
-
-  .tweet-card__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    align-items: center;
+    display: block;
+    width: auto;
+    max-width: 100%;
   }
 
   .tweet-card__button,
-  .tweet-card__actions a {
+  .tweet-card__source-link {
     border-radius: 999px;
     padding: 0.7rem 1rem;
     text-decoration: none;
@@ -146,22 +130,64 @@ const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
     cursor: pointer;
   }
 
-  .tweet-card__actions a {
+  .tweet-card__source-link {
     border: 1px solid var(--color-border);
+    color: var(--color-text);
+    background: color-mix(in srgb, white 74%, transparent);
   }
 
   .tweet-card__status {
     min-height: 1.5rem;
     color: var(--color-text-soft);
-    margin-bottom: 0;
+    margin: var(--space-3) 0 0;
   }
 
   .tweet-card__target {
-    border-top: 1px solid var(--color-border);
-    padding: var(--space-4);
+    position: relative;
+    display: inline-block;
+    width: min(100%, 34rem);
+    max-width: 34rem;
+    min-height: 28rem;
+    border: 1px solid color-mix(in srgb, var(--color-border) 92%, transparent);
   }
 
-  .tweet-card__target--visible {
-    display: block;
+  .tweet-card__veil {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: var(--space-6);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, white 34%, transparent) 0%, color-mix(in srgb, var(--color-surface) 54%, transparent) 100%),
+      radial-gradient(circle at 22% 24%, color-mix(in srgb, var(--color-highlight) 16%, transparent) 0, transparent 30%),
+      radial-gradient(circle at 78% 70%, color-mix(in srgb, var(--color-border-strong) 10%, transparent) 0, transparent 34%);
+    backdrop-filter: blur(18px) saturate(0.92);
+    -webkit-backdrop-filter: blur(18px) saturate(0.92);
+    transition: opacity 220ms ease;
+  }
+
+  .tweet-card__controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    width: min(100%, 24rem);
+  }
+
+  .tweet-card.is-loaded .tweet-card__veil {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .tweet-card.is-loaded .tweet-card__target {
+    width: fit-content;
+    min-height: 0;
+    max-width: 100%;
+    border: 0;
+  }
+
+  .tweet-card :global(.twitter-tweet),
+  .tweet-card :global(iframe.twitter-tweet-rendered) {
+    margin: 0 !important;
   }
 </style>
