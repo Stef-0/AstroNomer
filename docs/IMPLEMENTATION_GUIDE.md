@@ -46,6 +46,21 @@ Current variables:
 - `purpose`
 - `fallbackSocialImage`
 
+Supported `purpose` values:
+- `blog`
+- `documentation`
+- `changelog`
+- `seo-hub`
+
+Purpose behavior:
+- AstroNomer now ships built-in purpose presets for shell copy, default navigation, and default homepage mode
+- explicit `shell.navigation`, `shell.homepage.mode`, and `shell.copy.*` values still override the preset
+- the built-in defaults currently favor:
+  - `blog`: featured-led homepage
+  - `documentation`: posts-only archive flow
+  - `changelog`: posts-only update feed
+  - `seo-hub`: editorial hero homepage
+
 `fallbackSocialImage` may be:
 - a root-relative path like `"/images/social-default.jpg"`
 - an absolute URL like `"https://cdn.example.com/social/default.jpg"`
@@ -152,10 +167,32 @@ Table of contents behavior:
 - `shell.navigation`
 - `shell.homepage.mode`
   Supported values: `default`, `editorial-hero`, `posts-only`
+- `shell.copy`
 
 Each navigation item must include:
 - `href`
 - `label`
+
+If `shell.navigation` is omitted, AstroNomer uses the built-in navigation preset for the selected `purpose`.
+
+If `shell.homepage.mode` is omitted, AstroNomer uses the built-in homepage mode preset for the selected `purpose`.
+
+`shell.copy` supports optional overrides for:
+- `topline`
+- `tagline`
+- `footerEyebrow`
+- `collectionLabel`
+- `archiveEyebrow`
+- `archiveTitle`
+- `homepageHeroEyebrow`
+- `homepageHeroTitle`
+- `homepageFeaturedLabel`
+- `homepageArchiveEyebrow`
+- `homepageArchiveTitle`
+- `homepageNewsletterTitle`
+- `homepageNewsletterDescription`
+- `postNewsletterTitle`
+- `postNewsletterDescription`
 
 Homepage behavior:
 - `default` starts with a featured lead package and then the standard archive flow
@@ -166,6 +203,7 @@ Recommendation:
 - use `default` for most live publications
 - use `editorial-hero` when the homepage should feel more like a curated editorial front page
 - use `posts-only` when the homepage should behave like a minimal archive
+- start by choosing the right `purpose`, then override `shell` values only where the preset is not a good fit
 
 ### Deploy Transport
 - `deploy.transport`
@@ -187,7 +225,7 @@ This feeds structured data and metadata output.
 
 1. Set the public site URL in `.env`.
 2. Edit [instance.config.mjs](/Users/stefanorlic/code/astronomer/instance.config.mjs) for:
-   routing, authorship, fonts, analytics, newsletter activation, embeds, homepage mode, pagination, and social fallback image.
+   purpose, routing, authorship, fonts, analytics, newsletter activation, embeds, homepage mode, pagination, shell copy, and social fallback image.
 3. Adjust [src/styles/tokens.css](/Users/stefanorlic/code/astronomer/src/styles/tokens.css) to match the target brand.
 4. Add or replace content in [/Users/stefanorlic/code/astronomer/src/content/posts](/Users/stefanorlic/code/astronomer/src/content/posts).
 5. Build and deploy through the single deploy chain.
@@ -258,6 +296,7 @@ Implemented:
 - configurable analytics/privacy
 - configurable embed loading
 - configurable fallback social image
+- purpose-sensitive shell, archive, breadcrumb, and homepage presets with overrideable navigation and copy
 - configurable pagination
 
 Still intentionally deferred:

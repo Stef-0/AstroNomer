@@ -18,7 +18,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Current Build Phase
 - Active phase: `Phase 1 / post-MVP product refinements`
-- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, homepage lead tagline refinement, three-mode homepage presentation, homepage featured-label simplification, homepage featured-package alignment, posts-only first-story cleanup, rich-media embed activation fixes, frosted click-to-load embed placeholders, embed-stage simplification, and unified provider-neutral rich-media placeholder styling
+- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, homepage lead tagline refinement, three-mode homepage presentation, homepage featured-label simplification, homepage featured-package alignment, posts-only first-story cleanup, rich-media embed activation fixes, frosted click-to-load embed placeholders, embed-stage simplification, unified provider-neutral rich-media placeholder styling, and purpose-sensitive shell/homepage presets
 
 ## Requirement Tracking
 
@@ -45,6 +45,7 @@ This file is the working source for implementation status, intentional spec devi
 | GA4 default analytics slot | C6, C11, C15 | implemented | Non-blocking GA4 component scaffolded behind instance config and env vars. |
 | Newsletter structural placeholder | C6, C11 | implemented | `NewsletterEmbed` remains the structural seam even when active newsletter modes are enabled. |
 | Activated newsletter integration | C20, C21 | implemented | The newsletter seam now supports instance-configured `button`, `form`, and `embed` activation modes without requiring the deferred provider abstraction module. |
+| Purpose-sensitive instance presets | C5, C7 | implemented | `purpose` now drives built-in shell copy, archive/breadcrumb labeling, default navigation labels, and default homepage mode for `blog`, `documentation`, `changelog`, and `seo-hub`, while explicit shell config overrides still win. |
 
 ## Decisions and Overrides
 - Decision: the tracking file for implementation and spec drift lives at `/Users/stefanorlic/code/astronomer/IMPLEMENTATION_TRACKER.md`.
@@ -111,6 +112,10 @@ This file is the working source for implementation status, intentional spec devi
   Reason: authors should not have to infer that a generic `image` field only affects metadata; the explicit name makes the distinction from `featuredImage` obvious.
 - Decision: newsletter activation is implemented through instance-configured render modes instead of a provider-specific abstraction.
   Reason: this enables a real subscribe surface now while keeping the broader provider abstraction module deferred until compliance and parity rules are clearer.
+- Decision: `purpose` now supplies built-in shell and homepage presets instead of remaining metadata-only.
+  Reason: the product already had stable navigation and homepage seams, so purpose-specific defaults add strong multi-instance leverage without forcing operators into a larger component-library or CMS-style expansion.
+- Decision: purpose presets are defaults, not locks; explicit `shell.navigation`, `shell.homepage.mode`, and `shell.copy.*` overrides take precedence.
+  Reason: operators need purpose-native starting points, but the platform’s configurability depends on local instance choices still being authoritative.
 - Override: pagination is configurable per instance through `blog.postsPerPage`, with `10` as the default.
   Reason: this intentionally overrides the current spec lock at 10 per page in favor of operator flexibility; this is a tracked spec drift decision, not an accidental implementation change.
 - Interpretation: draft filtering is enforced in content query helpers and route generation, which makes production exclusion explicit in the code paths that create pages and feeds.
@@ -123,13 +128,11 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Open Questions From The Spec
 - Formal author vs operator deploy permissions remain unresolved by the spec.
-- Purpose is treated as metadata only for now; no purpose-specific UX branching has been introduced.
 - `SiteShell.astro` validation/fallback behavior for incomplete host integration remains unresolved.
 - Analytics reporting expectations beyond shipping the GA4 slot remain unspecified.
 
 ## Deferred By Spec
 - Provider-swappable analytics beyond GA4
-- Purpose-specific homepage/navigation variants
 - Additional schema fields beyond the locked defaults
 - Formal permissions module
 - Shared cross-instance design/component library
@@ -165,6 +168,7 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: homepage featured-image placement verified as inline lead media beneath the headline
 - `completed`: homepage lead image treatment verified with over-image headline and wider spacing to the featured rail
 - `completed`: featured-image text tone verified with per-post `light`/`dark` control on the homepage lead
+- `completed`: purpose-sensitive shell copy, archive labeling, default navigation labels, and default homepage modes verified through config normalization and generated homepage/layout output
 - `completed`: Pagefind index generation
 - `completed`: full `npm run deploy` verified against the expanded 53-page site
 - `completed`: `npm run deploy` with default `noop` transport

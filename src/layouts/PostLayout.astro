@@ -2,6 +2,7 @@
 import SiteShell from "@/components/SiteShell.astro";
 import NewsletterEmbed from "@/components/NewsletterEmbed.astro";
 import TableOfContents from "@/components/TableOfContents.astro";
+import { PRIMARY_COLLECTION_LABEL } from "@/lib/constants";
 import { getAuthorName, getPostReadingStats } from "@/lib/content";
 import {
   buildArticleSchema,
@@ -31,7 +32,7 @@ const schema = [
   buildArticleSchema(post),
   buildBreadcrumbSchema([
     { name: "Home", path: "/" },
-    { name: "Blog", path: "/blog" },
+    { name: PRIMARY_COLLECTION_LABEL, path: "/blog" },
     { name: post.data.title, path: `/blog/${post.slug}` }
   ])
 ];
@@ -41,6 +42,7 @@ if (faqSchema) {
 }
 
 const stats = getPostReadingStats(post);
+const shellCopy = instanceConfig.shell.copy;
 ---
 
 <SiteShell
@@ -85,8 +87,8 @@ const stats = getPostReadingStats(post);
         {toc && <TableOfContents toc={toc} />}
         {instanceConfig.features.newsletter && (
           <NewsletterEmbed
-            title="Newsletter desk"
-            description="Subscribe through the instance newsletter surface without leaving the reading flow."
+            title={shellCopy.postNewsletterTitle}
+            description={shellCopy.postNewsletterDescription}
           />
         )}
       </div>

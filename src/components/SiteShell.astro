@@ -43,6 +43,7 @@ const {
 } = Astro.props;
 
 const title = `${pageTitle} | ${instanceConfig.siteName}`;
+const shellCopy = instanceConfig.shell.copy;
 ---
 
 <!doctype html>
@@ -69,12 +70,12 @@ const title = `${pageTitle} | ${instanceConfig.siteName}`;
     <header class="site-header">
       <div class="page-shell site-header__inner">
         <div class="site-header__topline">
-          <span class="eyebrow">Independent Publishing System</span>
+          <span class="eyebrow">{shellCopy.topline}</span>
           <span class="site-header__description">{instanceConfig.siteDescription}</span>
         </div>
         <div class="site-header__masthead">
           <a class="site-header__name" href={withBasePath("/")}>{instanceConfig.siteName}</a>
-          <p class="site-header__tagline">Editorial infrastructure for static publishing.</p>
+          <p class="site-header__tagline">{shellCopy.tagline}</p>
         </div>
         <nav aria-label="Primary" class="site-nav">
           <ul>
@@ -94,7 +95,7 @@ const title = `${pageTitle} | ${instanceConfig.siteName}`;
     </main>
     <footer class="page-shell site-footer section-rule">
       <div>
-        <p class="eyebrow">AstroNomer Edition</p>
+        <p class="eyebrow">{shellCopy.footerEyebrow}</p>
         <p>{instanceConfig.siteDescription}</p>
       </div>
       <div>

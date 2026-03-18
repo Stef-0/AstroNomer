@@ -17,6 +17,7 @@ const leadSlugs = new Set(leadPosts.map((post) => post.slug));
 const recentPosts = publishedPosts.filter((post) => !leadSlugs.has(post.slug)).slice(0, 9);
 const social = getPageSocialMetadata();
 const homepageMode = instanceConfig.shell.homepage.mode;
+const shellCopy = instanceConfig.shell.copy;
 const showLeadTagline = homepageMode === "editorial-hero";
 const showFeaturedLead = homepageMode !== "posts-only";
 ---
@@ -42,12 +43,12 @@ const showFeaturedLead = homepageMode !== "posts-only";
     <section class="page-shell lead-package">
       {showLeadTagline && (
         <div class="archive-heading">
-          <p class="eyebrow">Latest Edition</p>
-          <h2>Start with the newest and strongest work</h2>
+          <p class="eyebrow">{shellCopy.homepageHeroEyebrow}</p>
+          <h2>{shellCopy.homepageHeroTitle}</h2>
         </div>
       )}
 
-      <p class="eyebrow lead-package__label">Featured</p>
+      <p class="eyebrow lead-package__label">{shellCopy.homepageFeaturedLabel}</p>
       <div class="lead-package__grid">
         <article class="lead-feature">
           <div class="lead-feature__content">
@@ -103,8 +104,8 @@ const showFeaturedLead = homepageMode !== "posts-only";
     <div class="newsroom__main">
       {homepageMode !== "posts-only" && (
         <div class="archive-heading">
-          <p class="eyebrow">Recent Posts</p>
-          <h2>From the archive</h2>
+          <p class="eyebrow">{shellCopy.homepageArchiveEyebrow}</p>
+          <h2>{shellCopy.homepageArchiveTitle}</h2>
         </div>
       )}
       <div class="story-stack">
@@ -113,7 +114,10 @@ const showFeaturedLead = homepageMode !== "posts-only";
     </div>
     {homepageMode !== "posts-only" && (
       <div class="newsroom__aside">
-        <NewsletterEmbed title="Newsletter desk" description="Subscribe to new issues through the instance newsletter surface." />
+        <NewsletterEmbed
+          title={shellCopy.homepageNewsletterTitle}
+          description={shellCopy.homepageNewsletterDescription}
+        />
       </div>
     )}
   </section>

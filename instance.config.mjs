@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { getPurposePreset } from "./src/lib/purpose-presets.mjs";
 
 const navigationItemSchema = z.object({
   href: z.string().startsWith("/"),
@@ -102,10 +103,27 @@ const instanceConfigSchema = z.object({
   }),
   shell: z.object({
     mode: z.enum(["standalone", "host-integrated"]),
-    navigation: z.array(navigationItemSchema).min(1),
+    navigation: z.array(navigationItemSchema).min(1).optional(),
     homepage: z.object({
-      mode: z.enum(["default", "editorial-hero", "posts-only"]),
-    }),
+      mode: z.enum(["default", "editorial-hero", "posts-only"]).optional(),
+    }).default({}),
+    copy: z.object({
+      collectionLabel: z.string().min(1).optional(),
+      topline: z.string().min(1).optional(),
+      tagline: z.string().min(1).optional(),
+      footerEyebrow: z.string().min(1).optional(),
+      archiveEyebrow: z.string().min(1).optional(),
+      archiveTitle: z.string().min(1).optional(),
+      homepageHeroEyebrow: z.string().min(1).optional(),
+      homepageHeroTitle: z.string().min(1).optional(),
+      homepageFeaturedLabel: z.string().min(1).optional(),
+      homepageArchiveEyebrow: z.string().min(1).optional(),
+      homepageArchiveTitle: z.string().min(1).optional(),
+      homepageNewsletterTitle: z.string().min(1).optional(),
+      homepageNewsletterDescription: z.string().min(1).optional(),
+      postNewsletterTitle: z.string().min(1).optional(),
+      postNewsletterDescription: z.string().min(1).optional(),
+    }).default({}),
   }),
   blog: z.object({
     postsPerPage: z.number().int().min(1).max(100),
@@ -154,27 +172,9 @@ const rawInstanceConfig = {
   },
   shell: {
     mode: "standalone",
-    navigation: [
-      {
-        href: "/",
-        label: "Home",
-      },
-      {
-        href: "/blog",
-        label: "Blog",
-      },
-      {
-        href: "/search",
-        label: "Search",
-      },
-      {
-        href: "/rss.xml",
-        label: "RSS",
-      },
-    ],
-    homepage: {
-      mode: "default",
-    },
+    navigation: undefined,
+    homepage: {},
+    copy: {},
   },
   blog: {
     postsPerPage: 10,
@@ -204,13 +204,33 @@ const rawInstanceConfig = {
   },
 };
 
-const instanceConfig = instanceConfigSchema.parse({
+const parsedInstanceConfig = instanceConfigSchema.parse({
   ...rawInstanceConfig,
   mount: {
     ...rawInstanceConfig.mount,
     basePath: normalizeBasePath(rawInstanceConfig.mount.basePath),
   },
 });
+
+const purposePreset = getPurposePreset(parsedInstanceConfig.purpose);
+
+const instanceConfig = {
+  ...parsedInstanceConfig,
+  shell: {
+    ...parsedInstanceConfig.shell,
+    navigation:
+      parsedInstanceConfig.shell.navigation ?? purposePreset.navigation,
+    homepage: {
+      ...parsedInstanceConfig.shell.homepage,
+      mode:
+        parsedInstanceConfig.shell.homepage.mode ?? purposePreset.homepageMode,
+    },
+    copy: {
+      ...purposePreset.copy,
+      ...parsedInstanceConfig.shell.copy,
+    },
+  },
+};
 
 if (
   instanceConfig.mount.model === "root" &&
