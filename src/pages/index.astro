@@ -61,21 +61,28 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
 
       <div class="lead-package__grid">
         <article class="lead-feature">
-          {primaryLead.data.featuredImage && (
-            <a class="lead-feature__media" href={withBasePath(`/blog/${primaryLead.slug}`)} aria-hidden="true" tabindex="-1">
-              <img
-                src={primaryLead.data.featuredImage.src}
-                alt={primaryLead.data.featuredImageAlt || ""}
-                loading="eager"
-              />
-            </a>
-          )}
-
           <div class="lead-feature__content">
-            <p class="eyebrow">{primaryLead.data.categories[0] || "Article"}</p>
-            <h3>
-              <a href={withBasePath(`/blog/${primaryLead.slug}`)}>{primaryLead.data.title}</a>
-            </h3>
+            {primaryLead.data.featuredImage && (
+              <a class="lead-feature__media" href={withBasePath(`/blog/${primaryLead.slug}`)}>
+                <div class="lead-feature__overlay">
+                  <p class="eyebrow">{primaryLead.data.categories[0] || "Article"}</p>
+                  <h3>{primaryLead.data.title}</h3>
+                </div>
+                <img
+                  src={primaryLead.data.featuredImage.src}
+                  alt={primaryLead.data.featuredImageAlt || ""}
+                  loading="eager"
+                />
+              </a>
+            )}
+            {!primaryLead.data.featuredImage && (
+              <>
+                <p class="eyebrow">{primaryLead.data.categories[0] || "Article"}</p>
+                <h3>
+                  <a href={withBasePath(`/blog/${primaryLead.slug}`)}>{primaryLead.data.title}</a>
+                </h3>
+              </>
+            )}
             <p class="lead-feature__dek">{primaryLead.data.description}</p>
             <div class="lead-feature__meta">
               <span>{primaryLead.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
@@ -164,7 +171,7 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
   .lead-package__grid {
     display: grid;
     grid-template-columns: minmax(0, 1.2fr) minmax(20rem, var(--home-sidebar-width));
-    gap: var(--space-7);
+    gap: calc(var(--space-8) + var(--space-2));
     align-items: start;
   }
 
@@ -177,6 +184,8 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
     display: block;
     overflow: hidden;
     aspect-ratio: 16 / 9;
+    position: relative;
+    text-decoration: none;
   }
 
   .lead-feature__media img {
@@ -184,6 +193,24 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
     height: 100%;
     object-fit: cover;
     transition: transform 260ms ease;
+  }
+
+  .lead-feature__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--space-6);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, black 18%, transparent) 0%, transparent 34%, color-mix(in srgb, black 48%, transparent) 100%);
+    z-index: 1;
+  }
+
+  .lead-feature__overlay .eyebrow,
+  .lead-feature__overlay h3 {
+    color: #fffaf3;
+    max-width: 10ch;
   }
 
   .lead-feature:hover .lead-feature__media img,

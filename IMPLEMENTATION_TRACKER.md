@@ -18,7 +18,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Current Build Phase
 - Active phase: `Phase 1 / post-MVP product refinements`
-- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, and social-image schema naming cleanup
+- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, and over-image homepage lead treatment
 
 ## Requirement Tracking
 
@@ -65,6 +65,10 @@ This file is the working source for implementation status, intentional spec devi
   Reason: using one sidebar measure keeps the featured rail and newsletter seam aligned, which makes the homepage read as one editorial grid instead of two unrelated column systems.
 - Decision: the homepage lead package gives the primary story a wider share of the grid than the secondary rail.
   Reason: matching the right-column alignment alone left too much inert space between the lead and sidebar; letting the primary story claim more width preserves alignment while keeping the lead package visually full.
+- Decision: homepage featured images render within the lead story flow rather than as a separate block above the story text.
+  Reason: the lead needs to read like one editorial unit; placing the image below the headline avoids the “image module plus second story” effect and keeps media integrated with the story hierarchy.
+- Decision: when a homepage lead has a featured image, the eyebrow and headline render over the image while the dek and metadata remain below it.
+  Reason: the lead reads more coherently when image, label, and headline form one dominant story object, and the wider gutter keeps that object from visually colliding with the featured rail beside it.
 - Decision: font delivery is configurable per instance through `fontsource`, `self-hosted`, or `google-fonts` provider modes.
   Reason: operators need a clean seam for package-managed fonts, manually hosted font files, or third-party convenience loading without rewriting the shell or token contract.
 - Decision: table of contents behavior is configurable at the instance level and overridable per post.
@@ -138,6 +142,8 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: post-page composition rebalanced with a narrower shell and wider body-to-sidebar separation
 - `completed`: homepage right-column alignment verified across the featured rail and newsletter seam
 - `completed`: homepage lead package rebalanced so the primary story occupies more of the shared editorial grid
+- `completed`: homepage featured-image placement verified as inline lead media beneath the headline
+- `completed`: homepage lead image treatment verified with over-image headline and wider spacing to the featured rail
 - `completed`: Pagefind index generation
 - `completed`: full `npm run deploy` verified against the expanded 53-page site
 - `completed`: `npm run deploy` with default `noop` transport
