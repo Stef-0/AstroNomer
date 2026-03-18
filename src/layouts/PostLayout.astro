@@ -68,6 +68,15 @@ const stats = getPostReadingStats(post);
         <span>{Math.ceil(stats.minutes)} min read</span>
       </div>
     </header>
+    {post.data.featuredImage && (
+      <figure class="post-feature">
+        <img
+          src={post.data.featuredImage.src}
+          alt={post.data.featuredImageAlt || ""}
+          loading="eager"
+        />
+      </figure>
+    )}
     <div class="post-content">
       <div class="post-body">
         <slot />
@@ -135,6 +144,17 @@ const stats = getPostReadingStats(post);
     grid-template-columns: minmax(0, 1fr) minmax(18rem, 20rem);
     gap: var(--space-8);
     align-items: stretch;
+  }
+
+  .post-feature {
+    margin: 0 0 var(--space-8);
+  }
+
+  .post-feature img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
   }
 
   .post-sidebar {

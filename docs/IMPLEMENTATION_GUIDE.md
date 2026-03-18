@@ -52,6 +52,10 @@ Current variables:
 
 If omitted, AstroNomer uses the generated default social image at `/social/site.svg`.
 
+Content image model:
+- `socialImage` is the post’s social/share image
+- `featuredImage` is the post’s on-site editorial image
+
 ### Mounting And Routing
 - `mount.model`
   Supported values: `root`, `subdirectory`, `subdomain`
@@ -204,7 +208,7 @@ For mounted instances:
 ## SEO And Social Behavior
 
 Current behavior:
-- posts can use their own social image through post frontmatter `image`
+- posts can use their own social image through post frontmatter `socialImage`
 - post images now emit richer social metadata when dimensions are available
 - non-post pages use the instance fallback social image
 - if no instance fallback image is configured, AstroNomer uses the generated `/social/site.svg`

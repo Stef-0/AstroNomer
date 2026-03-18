@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" fill="none">
+  <rect width="1600" height="900" fill="#f5f4ee"/>
+  <ellipse cx="320" cy="260" rx="320" ry="220" fill="#ece6d8"/>
+  <ellipse cx="1280" cy="680" rx="360" ry="240" fill="#e7e2d6"/>
+  <path d="M0 708C162 664 300 642 480 642C717 642 869 718 1081 718C1269 718 1417 664 1600 582V900H0V708Z" fill="#111111"/>
+  <text x="120" y="166" fill="#6e665a" font-family="Outfit Variable, Arial, sans-serif" font-size="28" letter-spacing="7">LAUNCH FEATURE</text>
+  <text x="120" y="314" fill="#111111" font-family="Newsreader Variable, Georgia, serif" font-size="92" font-weight="700">Welcome to</text>
+  <text x="120" y="410" fill="#111111" font-family="Newsreader Variable, Georgia, serif" font-size="92" font-weight="700">AstroNomer</text>
+  <text x="120" y="520" fill="#2d2a25" font-family="Newsreader Variable, Georgia, serif" font-size="36">A reusable static publishing base for blogs and content hubs.</text>
+</svg>

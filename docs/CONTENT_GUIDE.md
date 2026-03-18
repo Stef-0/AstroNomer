@@ -39,8 +39,10 @@ tags:
 Supported optional fields:
 - `updatedAt`
 - `categories`
-- `image`
-- `imageAlt`
+- `socialImage`
+- `socialImageAlt`
+- `featuredImage`
+- `featuredImageAlt`
 - `draft`
 - `featured`
 - `author`
@@ -54,8 +56,10 @@ Supported optional fields:
   Lets the homepage prioritize the post in the lead package
 - `author`
   Overrides the instance default author for that post
-- `image`
-  Becomes the post’s social image when present and may also be used in homepage lead presentation
+- `socialImage`
+  Becomes the post’s social/share image when present
+- `featuredImage`
+  Becomes the post’s on-site editorial image when present
 - `faq`
   Generates FAQ structured data on the post page
 - `toc`
@@ -139,12 +143,21 @@ Authors do not need to change content based on that setting.
 ## Social Images
 
 Post social image behavior:
-- if `image` is set in the post, that image is used
+- if `socialImage` is set in the post, that image is used
 - local post images also feed social alt/dimension metadata automatically
 - otherwise the instance fallback social image is used
 - if no instance fallback image is configured, the generated default site image is used
 
-If you want a specific post to have its own social card image, set `image`.
+If you want a specific post to have its own social card image, set `socialImage`.
+
+## Featured Images
+
+Featured-image behavior:
+- if `featuredImage` is set, it can be shown in homepage lead presentation and on the post page itself
+- featured images are editorial layout media, not social-card assets
+- `featuredImage` is optional; posts do not need one
+
+If you want a post to have on-site visual media without reusing its social card image, use `featuredImage`.
 
 ## Newsletter Surface
 

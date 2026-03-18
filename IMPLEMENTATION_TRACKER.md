@@ -18,7 +18,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Current Build Phase
 - Active phase: `Phase 1 / post-MVP product refinements`
-- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, and newsletter activation modes
+- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, and social-image schema naming cleanup
 
 ## Requirement Tracking
 
@@ -81,6 +81,10 @@ This file is the working source for implementation status, intentional spec devi
   Reason: some operators will already have consent handling in place and need standard GA4 behavior, while others need privacy-reduced analytics by default.
 - Decision: the instance-wide fallback social image is configurable, with the generated site SVG retained as the default fallback when no custom image is supplied.
   Reason: operators should be able to align social cards with their brand without needing per-post images everywhere.
+- Decision: post social images and on-site featured images are separate content fields.
+  Reason: social cards and editorial layout media serve different purposes; separating them avoids nested-card artifacts and lets posts carry featured imagery without forcing that asset into metadata or vice versa.
+- Decision: the social/share image field is named `socialImage` instead of the more ambiguous `image`.
+  Reason: authors should not have to infer that a generic `image` field only affects metadata; the explicit name makes the distinction from `featuredImage` obvious.
 - Decision: newsletter activation is implemented through instance-configured render modes instead of a provider-specific abstraction.
   Reason: this enables a real subscribe surface now while keeping the broader provider abstraction module deferred until compliance and parity rules are clearer.
 - Override: pagination is configurable per instance through `blog.postsPerPage`, with `10` as the default.
@@ -120,6 +124,7 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: RSS verified with 13 published items after content expansion
 - `completed`: RSS XML namespace declarations verified for `atom:link` and `content:encoded` output
 - `completed`: post-level social image metadata verified with local image alt text plus `og:image:*`, `twitter:image:alt`, and `ImageObject` schema output
+- `completed`: social/share images and editorial featured images verified as separate surfaces on home and post layouts
 - `completed`: newsletter seam verified with active instance-configured render modes instead of placeholder-only output
 - `completed`: duplicate content-id warning resolved after clearing stale `.astro` cache and rebuilding cleanly
 - `completed`: non-post pages verified with default social image plus `WebPage`/`CollectionPage`/`SearchResultsPage` schema in generated HTML

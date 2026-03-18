@@ -61,11 +61,11 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
 
       <div class="lead-package__grid">
         <article class="lead-feature">
-          {primaryLead.data.image && (
+          {primaryLead.data.featuredImage && (
             <a class="lead-feature__media" href={withBasePath(`/blog/${primaryLead.slug}`)} aria-hidden="true" tabindex="-1">
               <img
-                src={primaryLead.data.image.src}
-                alt={primaryLead.data.imageAlt || ""}
+                src={primaryLead.data.featuredImage.src}
+                alt={primaryLead.data.featuredImageAlt || ""}
                 loading="eager"
               />
             </a>
@@ -176,8 +176,6 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
   .lead-feature__media {
     display: block;
     overflow: hidden;
-    border: 1px solid var(--color-border);
-    background: color-mix(in srgb, var(--color-surface) 86%, white);
     aspect-ratio: 16 / 9;
   }
 

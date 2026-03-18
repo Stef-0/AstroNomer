@@ -200,8 +200,8 @@ export function buildFaqSchema(post: PostEntry) {
 
 export function getPostSocialMetadata(post: PostEntry) {
   const fallbackAlt = `${post.data.title} social image`;
-  const image = post.data.image
-    ? resolveSocialImage(post.data.image, post.data.imageAlt || fallbackAlt)
+  const image = post.data.socialImage
+    ? resolveSocialImage(post.data.socialImage, post.data.socialImageAlt || fallbackAlt)
     : getDefaultSocialImage(fallbackAlt);
 
   return {
