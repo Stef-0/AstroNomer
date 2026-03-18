@@ -64,7 +64,7 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
           <div class="lead-feature__content">
             {primaryLead.data.featuredImage && (
               <a class="lead-feature__media" href={withBasePath(`/blog/${primaryLead.slug}`)}>
-                <div class="lead-feature__overlay">
+                <div class:list={["lead-feature__overlay", `lead-feature__overlay--${primaryLead.data.featuredImageText || "light"}`]}>
                   <p class="eyebrow">{primaryLead.data.categories[0] || "Article"}</p>
                   <h3>{primaryLead.data.title}</h3>
                 </div>
@@ -202,14 +202,28 @@ const showEditorialHero = instanceConfig.shell.homepage.mode === "editorial-hero
     flex-direction: column;
     justify-content: space-between;
     padding: var(--space-6);
-    background:
-      linear-gradient(180deg, color-mix(in srgb, black 18%, transparent) 0%, transparent 34%, color-mix(in srgb, black 48%, transparent) 100%);
     z-index: 1;
   }
 
-  .lead-feature__overlay .eyebrow,
-  .lead-feature__overlay h3 {
+  .lead-feature__overlay--light {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, black 18%, transparent) 0%, transparent 34%, color-mix(in srgb, black 48%, transparent) 100%);
+  }
+
+  .lead-feature__overlay--light .eyebrow,
+  .lead-feature__overlay--light h3 {
     color: #fffaf3;
+    max-width: 10ch;
+  }
+
+  .lead-feature__overlay--dark {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, white 16%, transparent) 0%, transparent 32%, color-mix(in srgb, white 42%, transparent) 100%);
+  }
+
+  .lead-feature__overlay--dark .eyebrow,
+  .lead-feature__overlay--dark h3 {
+    color: var(--color-accent-strong);
     max-width: 10ch;
   }
 

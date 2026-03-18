@@ -16,6 +16,7 @@ const posts = defineCollection({
       socialImageAlt: z.string().optional(),
       featuredImage: image().optional(),
       featuredImageAlt: z.string().optional(),
+      featuredImageText: z.enum(["light", "dark"]).default("light"),
       draft: z.boolean().default(false),
       featured: z.boolean().default(false),
       author: z.string().optional(),

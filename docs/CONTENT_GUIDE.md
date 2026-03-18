@@ -43,6 +43,7 @@ Supported optional fields:
 - `socialImageAlt`
 - `featuredImage`
 - `featuredImageAlt`
+- `featuredImageText`
 - `draft`
 - `featured`
 - `author`
@@ -60,6 +61,8 @@ Supported optional fields:
   Becomes the post’s social/share image when present
 - `featuredImage`
   Becomes the post’s on-site editorial image when present
+- `featuredImageText`
+  Controls whether over-image homepage lead text uses a light or dark treatment
 - `faq`
   Generates FAQ structured data on the post page
 - `toc`
@@ -155,6 +158,7 @@ If you want a specific post to have its own social card image, set `socialImage`
 Featured-image behavior:
 - if `featuredImage` is set, it can be shown in homepage lead presentation and on the post page itself
 - featured images are editorial layout media, not social-card assets
+- `featuredImageText` may be `light` or `dark` when the homepage lead renders title text over the image
 - `featuredImage` is optional; posts do not need one
 
 If you want a post to have on-site visual media without reusing its social card image, use `featuredImage`.
