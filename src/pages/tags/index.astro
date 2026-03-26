@@ -29,10 +29,12 @@ const social = getPageSocialMetadata();
     ])
   ]}
 >
-  <section class="page-shell archive">
-    <p class="eyebrow">Taxonomy</p>
-    <h2>Tags</h2>
-    <ul class="tag-grid">
+  <section class="page-shell archive-shell">
+    <div class="archive-heading">
+      <p class="eyebrow">Taxonomy</p>
+      <h2>Tags</h2>
+    </div>
+    <ul class="taxonomy-grid">
       {tags.map(([tag, posts]) => (
         <li class="surface-card">
           <a href={withBasePath(`/tags/${tag}`)}>#{tag}</a>
@@ -42,46 +44,3 @@ const social = getPageSocialMetadata();
     </ul>
   </section>
 </SiteShell>
-
-<style>
-  .archive {
-    padding: var(--space-8) 0 var(--space-16);
-  }
-
-  h2 {
-    font-family: var(--font-heading);
-    font-size: clamp(2rem, 4vw, 4rem);
-    margin-top: 0;
-  }
-
-  .tag-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    gap: var(--space-4);
-    list-style: none;
-    padding: 0;
-  }
-
-  .tag-grid li {
-    padding: var(--space-5);
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-3);
-    align-items: baseline;
-    transition:
-      border-color 180ms ease,
-      background-color 180ms ease,
-      transform 180ms ease;
-  }
-
-  .tag-grid li:hover,
-  .tag-grid li:focus-within {
-    background: color-mix(in srgb, var(--color-surface) 72%, white);
-    border-color: var(--color-border-strong);
-    transform: translateY(-2px);
-  }
-
-  .tag-grid a {
-    text-decoration: none;
-  }
-</style>

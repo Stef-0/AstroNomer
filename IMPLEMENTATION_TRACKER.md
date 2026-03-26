@@ -18,7 +18,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Current Build Phase
 - Active phase: `Phase 1 / post-MVP product refinements`
-- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, homepage lead tagline refinement, three-mode homepage presentation, homepage featured-label simplification, homepage featured-package alignment, posts-only first-story cleanup, rich-media embed activation fixes, frosted click-to-load embed placeholders, embed-stage simplification, unified provider-neutral rich-media placeholder styling, purpose-sensitive shell/homepage presets, and post-audit security/accessibility/UI fixes (JSON-LD XSS, skip-to-content, aria-current, alt text, dark token completion, TOC heading level, overlay max-width, overlay contrast, newsletter heading level, footer credit line)
+- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, homepage lead tagline refinement, three-mode homepage presentation, homepage featured-label simplification, homepage featured-package alignment, posts-only first-story cleanup, rich-media embed activation fixes, frosted click-to-load embed placeholders, embed-stage simplification, unified provider-neutral rich-media placeholder styling, purpose-sensitive shell/homepage presets, post-audit security/accessibility/UI fixes, and design/UI refinement pass (typography, spacing, layout, UI elements)
 
 ## Requirement Tracking
 
@@ -50,6 +50,8 @@ This file is the working source for implementation status, intentional spec devi
 | JSON-LD security hardening | C6, C11 | implemented | JSON-LD output now escapes `</` sequences to prevent script tag breakout from author-controlled content (titles, descriptions, author names). |
 | Dark mode token completeness | C6, C11 | implemented | Dark theme now defines all 10 color tokens including `--color-border-strong` and `--color-highlight`; previously 8 of 15 tokens were missing. |
 | Footer credit line | C6, C11 | implemented | Footer right column now renders `shell.copy.footerCredit` when set; empty by default so operators start with a clean footer. |
+| Typography and spacing refinement | C6, C11 | implemented | Heading line-heights, eyebrow legibility, dek tonal separation, post body line-height, PostCard rail width, taxonomy index page structure, and pagination layout all refined in design pass. |
+| UI element polish | C6, C11 | implemented | Tag pills use token-based background, copy button has visual feedback state, tag overflow count shown, figcaption has separator, search page copy wired to shell copy system, taxonomy index pages share `.taxonomy-grid` global class. |
 
 ## Decisions and Overrides
 - Decision: the tracking file for implementation and spec drift lives at `/Users/stefanorlic/code/astronomer/IMPLEMENTATION_TRACKER.md`.
@@ -126,6 +128,34 @@ This file is the working source for implementation status, intentional spec devi
   Reason: empty-string alt signals a decorative image to assistive technology; featured editorial images carry content meaning and should have descriptive alt text; the title is a safe, always-available fallback until the author provides a dedicated alt value.
 - Decision: `NewsletterEmbed` accepts a `headingLevel` prop (`h2` | `h3`, default `h2`) and uses it for the component heading.
   Reason: in the post sidebar, the newsletter sits alongside post `h2` section headings, making a competing `h2` confusing for screen reader navigation; the call site at `PostLayout.astro` passes `headingLevel="h3"`.
+- Decision: heading line-heights bumped from sub-0.95 range to 1.0 across PostCard, PostLayout, and homepage lead headlines; hero tagline bumped from 0.88 to 0.93.
+  Reason: ultra-tight values (0.88–0.96) cause descender/ascender collision on post titles that wrap beyond one line; 1.0 preserves the editorial tension while remaining legible.
+- Decision: post body line-height reduced from 1.82 to 1.72.
+  Reason: 1.82 is beyond the comfortable reading range and makes paragraphs float apart; 1.72 retains the airy editorial character while tightening the rhythm.
+- Decision: the post dek (description) renders in `--color-text-soft` rather than full `--color-text`.
+  Reason: the dek is subtitle copy that supports the headline, not body prose; the tonal step creates hierarchy between headline, dek, and article body.
+- Decision: `.eyebrow` size bumped from 0.72rem to 0.75rem and letter-spacing reduced from 0.18em to 0.14em.
+  Reason: 0.72rem is near the floor of comfortable legibility with `--color-text-soft`; the small adjustments improve contrast without changing the eyebrow's visual register.
+- Decision: PostCard left metadata rail reduced from 11rem to 9rem.
+  Reason: the rail holds two pieces of small-caps metadata (category + date) and 11rem left too much inert space at mid-range viewports.
+- Decision: taxonomy index pages (`/categories`, `/tags`) now use `.archive-shell` and `.archive-heading` global classes, eliminating their custom `.archive` and `h2` overrides.
+  Reason: the previous custom padding and heading styles were inconsistent with sibling archive surfaces; using shared classes makes all listing pages structurally uniform.
+- Decision: a `.taxonomy-grid` class is added to `global.css` as the shared grid for categories and tags index pages.
+  Reason: both pages had identical CSS duplicated verbatim; the shared global class eliminates the duplication and reduces future drift risk.
+- Decision: pagination uses a 3-column grid layout (`1fr auto 1fr`) with prev/next wrapped in slot divs, replacing the `justify-content: space-between` flex layout.
+  Reason: space-between de-centered the status label whenever only one nav link was present; the grid layout keeps the status always centered regardless of which links are rendered.
+- Decision: pagination links show directional arrows (`← Previous` / `Next →`).
+  Reason: plain uppercase text links with no directional affordance required the reader to read the label to understand direction; the arrows make navigation intent immediate.
+- Decision: tag pills use `color-mix(in srgb, var(--color-surface) 90%, transparent)` instead of `rgba(255,255,255,0.38)`.
+  Reason: the hardcoded RGBA value would be invisible in dark mode (white tint on dark background); the token-based value adapts to both themes.
+- Decision: the copy button shows `✓ Copied` and adds a green-tinted `is-copied` class for 1.5 seconds on activation.
+  Reason: a text-only change from "Copy" to "Copied" without a visual state change gave insufficient confirmation feedback; the combined text + color change closes the feedback loop.
+- Decision: tag lists in PostCard show a `+N` overflow count when more than 3 tags are present.
+  Reason: silently dropping tags beyond 3 with no indicator hides information from the reader; the count preserves the constraint while communicating that additional tags exist.
+- Decision: `Figure` figcaption gets a `border-top` separator and `font-display` styling; figure padding is removed from the card shell (image bleeds to edges) with padding only on the figcaption.
+  Reason: the previous caption had no visual demarcation from the image above it; the border-top cleanly separates caption from media, and edge-to-edge images read as more editorial.
+- Decision: search page eyebrow and heading are now driven by `shell.copy.searchEyebrow` and `shell.copy.searchTitle`, wired into the purpose-preset system.
+  Reason: the search page was the only archive surface with hardcoded developer-facing copy; aligning it with the shell copy system makes all archive surfaces consistent and purpose-aware.
 - Decision: the footer right column now renders `shell.copy.footerCredit` when set, and is empty when not set.
   Reason: the previous scaffolding copy ("Built as a static Astro instance with a host-shell seam through `SiteShell.astro`.") exposed implementation details and read as developer documentation rather than operator-facing product copy; the configurable credit line gives operators control without forcing a specific attribution pattern.
 - Decision: the `featuredImageText: "dark"` overlay uses a white-tinted gradient (not black-tinted) with `--color-accent-strong` text, and `"light"` uses a black-tinted gradient with `#fffaf3` text.
@@ -200,3 +230,15 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: `featuredImageText: "dark"` overlay contrast corrected — white-tinted gradient with dark text for light images; `"light"` retains black-tinted gradient with light text for dark images
 - `completed`: `NewsletterEmbed` heading level made configurable via `headingLevel` prop; `PostLayout.astro` passes `headingLevel="h3"`
 - `completed`: footer right column scaffolding copy replaced with configurable `shell.copy.footerCredit` field; empty by default
+- `completed`: heading line-heights bumped to 1.0 across PostCard, PostLayout h1, and homepage lead h3s; hero tagline bumped from 0.88 to 0.93
+- `completed`: post body line-height reduced from 1.82 to 1.72
+- `completed`: post dek color set to `--color-text-soft`
+- `completed`: `.eyebrow` size 0.72rem → 0.75rem, letter-spacing 0.18em → 0.14em
+- `completed`: PostCard left rail reduced from 11rem to 9rem
+- `completed`: taxonomy index pages refactored to use `.archive-shell`, `.archive-heading`, and new `.taxonomy-grid` global class; duplicate CSS removed
+- `completed`: pagination layout changed to 3-column grid for always-centered status; directional arrows added to prev/next links
+- `completed`: tag pill background replaced from hardcoded `rgba(255,255,255,0.38)` to token-based `color-mix`
+- `completed`: copy button shows `✓ Copied` with green-tinted `is-copied` state on activation
+- `completed`: PostCard tag list shows `+N` overflow count when more than 3 tags present
+- `completed`: Figure figcaption gets border-top separator and display-font styling; image now bleeds edge-to-edge within the card
+- `completed`: search page heading and eyebrow wired to `shell.copy.searchEyebrow` / `shell.copy.searchTitle` via purpose presets

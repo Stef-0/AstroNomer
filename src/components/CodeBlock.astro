@@ -82,9 +82,11 @@ function getTokenStyle(color?: string, fontStyle?: number) {
       const code = button.getAttribute("data-copy");
       if (!code) return;
       await navigator.clipboard.writeText(code);
-      button.textContent = "Copied";
+      button.textContent = "✓ Copied";
+      button.classList.add("is-copied");
       window.setTimeout(() => {
         button.textContent = "Copy";
+        button.classList.remove("is-copied");
       }, 1500);
     });
   });
@@ -131,6 +133,10 @@ function getTokenStyle(color?: string, fontStyle?: number) {
     border-radius: 999px;
     padding: 0.45rem 0.8rem;
     cursor: pointer;
+  }
+
+  .code-block__header button.is-copied {
+    background: color-mix(in srgb, var(--color-accent) 60%, #2d7a4f);
   }
 
   pre {

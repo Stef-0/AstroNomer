@@ -25,6 +25,8 @@ export const purposePresets = {
       postNewsletterTitle: "Newsletter desk",
       postNewsletterDescription:
         "Subscribe through the instance newsletter surface without leaving the reading flow.",
+      searchEyebrow: "Search Desk",
+      searchTitle: "Search the archive",
     },
   },
   documentation: {
@@ -53,6 +55,8 @@ export const purposePresets = {
       postNewsletterTitle: "Documentation updates",
       postNewsletterDescription:
         "Follow new guides and reference changes without leaving the reading flow.",
+      searchEyebrow: "Search Docs",
+      searchTitle: "Search the guides",
     },
   },
   changelog: {
@@ -81,6 +85,8 @@ export const purposePresets = {
       postNewsletterTitle: "Release bulletin",
       postNewsletterDescription:
         "Get shipping changes and release notes without leaving the reading flow.",
+      searchEyebrow: "Search Updates",
+      searchTitle: "Search releases",
     },
   },
   "seo-hub": {
@@ -109,6 +115,8 @@ export const purposePresets = {
       postNewsletterTitle: "Library updates",
       postNewsletterDescription:
         "Stay on top of new search-focused publishing without leaving the reading flow.",
+      searchEyebrow: "Search Library",
+      searchTitle: "Search the library",
     },
   },
 };

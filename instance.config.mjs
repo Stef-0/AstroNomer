@@ -124,6 +124,8 @@ const instanceConfigSchema = z.object({
       postNewsletterTitle: z.string().min(1).optional(),
       postNewsletterDescription: z.string().min(1).optional(),
       footerCredit: z.string().optional(),
+      searchEyebrow: z.string().min(1).optional(),
+      searchTitle: z.string().min(1).optional(),
     }).default({}),
   }),
   blog: z.object({
