@@ -66,6 +66,7 @@ const shellCopy = instanceConfig.shell.copy;
     />
   </head>
   <body>
+    <a href="#main-content" class="skip-to-content">Skip to content</a>
     <Analytics />
     <header class="site-header">
       <div class="page-shell site-header__inner">
@@ -81,7 +82,7 @@ const shellCopy = instanceConfig.shell.copy;
           <ul>
             {instanceConfig.shell.navigation.map((item) => (
               <li>
-                <a aria-current={currentPath === item.href ? "page" : undefined} href={withBasePath(item.href)}>
+                <a aria-current={(item.href === "/" ? currentPath === "/" : currentPath.startsWith(item.href)) ? "page" : undefined} href={withBasePath(item.href)}>
                   {item.label}
                 </a>
               </li>
@@ -90,7 +91,7 @@ const shellCopy = instanceConfig.shell.copy;
         </nav>
       </div>
     </header>
-    <main data-pagefind-body>
+    <main id="main-content" data-pagefind-body>
       <slot />
     </main>
     <footer class="page-shell site-footer section-rule">
@@ -99,16 +100,35 @@ const shellCopy = instanceConfig.shell.copy;
         <p>{instanceConfig.siteDescription}</p>
       </div>
       <div>
-        <p>
-          Built as a static Astro instance with a host-shell seam through
-          <code>SiteShell.astro</code>.
-        </p>
+        {shellCopy.footerCredit && <p>{shellCopy.footerCredit}</p>}
       </div>
     </footer>
   </body>
 </html>
 
 <style>
+  .skip-to-content {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    background: var(--color-accent-strong);
+    color: var(--color-surface);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transform: translateY(-200%);
+    transition: transform 160ms ease;
+  }
+
+  .skip-to-content:focus-visible {
+    transform: translateY(0);
+  }
+
   .site-header {
     background: transparent;
   }

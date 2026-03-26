@@ -70,4 +70,4 @@ const {
 {type === "article" &&
   tags.map((tag) => <meta property="article:tag" content={tag} />)}
 
-{schema.map((entry) => <script type="application/ld+json" set:html={JSON.stringify(entry)} />)}
+{schema.map((entry) => <script type="application/ld+json" set:html={JSON.stringify(entry).replace(/<\//g, "<\\/")} />)}

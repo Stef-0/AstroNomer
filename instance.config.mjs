@@ -123,6 +123,7 @@ const instanceConfigSchema = z.object({
       homepageNewsletterDescription: z.string().min(1).optional(),
       postNewsletterTitle: z.string().min(1).optional(),
       postNewsletterDescription: z.string().min(1).optional(),
+      footerCredit: z.string().optional(),
     }).default({}),
   }),
   blog: z.object({

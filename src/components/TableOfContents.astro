@@ -9,7 +9,7 @@ const { toc } = Astro.props;
 
 <nav class="toc surface-card" aria-label="Table of contents">
   <p class="eyebrow">Contents</p>
-  <h2>{toc.title}</h2>
+  <h3>{toc.title}</h3>
   <ol>
     {toc.items.map((item) => (
       <li class={`toc__item toc__item--depth-${item.depth}`}>
@@ -27,7 +27,7 @@ const { toc } = Astro.props;
     background: color-mix(in srgb, var(--color-surface) 90%, white);
   }
 
-  .toc h2 {
+  .toc h3 {
     margin: 0.35rem 0 1rem;
     font-family: var(--font-heading);
     font-size: 1.6rem;

@@ -5,12 +5,16 @@ import { withBasePath } from "@/lib/site";
 interface Props {
   title?: string;
   description?: string;
+  headingLevel?: "h2" | "h3";
 }
 
 const {
   title = instanceConfig.newsletter.title,
-  description = instanceConfig.newsletter.description
+  description = instanceConfig.newsletter.description,
+  headingLevel = "h2"
 } = Astro.props;
+
+const Heading = headingLevel;
 
 const newsletter = instanceConfig.newsletter;
 const eyebrow = newsletter.eyebrow;
@@ -22,7 +26,7 @@ function resolveUrl(value: string) {
 
 <aside class="surface-card newsletter">
   <p class="eyebrow">{eyebrow}</p>
-  <h2>{title}</h2>
+  <Heading>{title}</Heading>
   <p class="newsletter__description">{description}</p>
 
   {newsletter.mode === "placeholder" && newsletter.description !== description && (
@@ -87,7 +91,8 @@ function resolveUrl(value: string) {
     gap: var(--space-4);
   }
 
-  .newsletter h2 {
+  .newsletter :global(h2),
+  .newsletter :global(h3) {
     margin: 0.25rem 0 0;
     font-family: var(--font-heading);
     font-size: clamp(1.5rem, 3vw, 2.1rem);

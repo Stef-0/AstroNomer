@@ -60,7 +60,7 @@ const showFeaturedLead = homepageMode !== "posts-only";
                 </div>
                 <img
                   src={primaryLead.data.featuredImage.src}
-                  alt={primaryLead.data.featuredImageAlt || ""}
+                  alt={primaryLead.data.featuredImageAlt || primaryLead.data.title}
                   loading="eager"
                 />
               </a>
@@ -193,18 +193,16 @@ const showFeaturedLead = homepageMode !== "posts-only";
   .lead-feature__overlay--light .eyebrow,
   .lead-feature__overlay--light h3 {
     color: #fffaf3;
-    max-width: 10ch;
   }
 
   .lead-feature__overlay--dark {
     background:
-      linear-gradient(180deg, color-mix(in srgb, white 16%, transparent) 0%, transparent 32%, color-mix(in srgb, white 42%, transparent) 100%);
+      linear-gradient(180deg, color-mix(in srgb, white 52%, transparent) 0%, transparent 36%, color-mix(in srgb, white 68%, transparent) 100%);
   }
 
   .lead-feature__overlay--dark .eyebrow,
   .lead-feature__overlay--dark h3 {
     color: var(--color-accent-strong);
-    max-width: 10ch;
   }
 
   .lead-feature:hover .lead-feature__media img,

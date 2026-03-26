@@ -74,7 +74,7 @@ const shellCopy = instanceConfig.shell.copy;
       <figure class="post-feature">
         <img
           src={post.data.featuredImage.src}
-          alt={post.data.featuredImageAlt || ""}
+          alt={post.data.featuredImageAlt || post.data.title}
           loading="eager"
         />
       </figure>
@@ -89,6 +89,7 @@ const shellCopy = instanceConfig.shell.copy;
           <NewsletterEmbed
             title={shellCopy.postNewsletterTitle}
             description={shellCopy.postNewsletterDescription}
+            headingLevel="h3"
           />
         )}
       </div>

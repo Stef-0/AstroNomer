@@ -18,7 +18,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Current Build Phase
 - Active phase: `Phase 1 / post-MVP product refinements`
-- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, homepage lead tagline refinement, three-mode homepage presentation, homepage featured-label simplification, homepage featured-package alignment, posts-only first-story cleanup, rich-media embed activation fixes, frosted click-to-load embed placeholders, embed-stage simplification, unified provider-neutral rich-media placeholder styling, and purpose-sensitive shell/homepage presets
+- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, homepage lead tagline refinement, three-mode homepage presentation, homepage featured-label simplification, homepage featured-package alignment, posts-only first-story cleanup, rich-media embed activation fixes, frosted click-to-load embed placeholders, embed-stage simplification, unified provider-neutral rich-media placeholder styling, purpose-sensitive shell/homepage presets, and post-audit security/accessibility/UI fixes (JSON-LD XSS, skip-to-content, aria-current, alt text, dark token completion, TOC heading level, overlay max-width, overlay contrast, newsletter heading level, footer credit line)
 
 ## Requirement Tracking
 
@@ -46,6 +46,10 @@ This file is the working source for implementation status, intentional spec devi
 | Newsletter structural placeholder | C6, C11 | implemented | `NewsletterEmbed` remains the structural seam even when active newsletter modes are enabled. |
 | Activated newsletter integration | C20, C21 | implemented | The newsletter seam now supports instance-configured `button`, `form`, and `embed` activation modes without requiring the deferred provider abstraction module. |
 | Purpose-sensitive instance presets | C5, C7 | implemented | `purpose` now drives built-in shell copy, archive/breadcrumb labeling, default navigation labels, and default homepage mode for `blog`, `documentation`, `changelog`, and `seo-hub`, while explicit shell config overrides still win. |
+| Accessibility baseline | C6 | implemented | Skip-to-content link, `aria-current` section matching, and semantic heading hierarchy in TOC and newsletter components verified. |
+| JSON-LD security hardening | C6, C11 | implemented | JSON-LD output now escapes `</` sequences to prevent script tag breakout from author-controlled content (titles, descriptions, author names). |
+| Dark mode token completeness | C6, C11 | implemented | Dark theme now defines all 10 color tokens including `--color-border-strong` and `--color-highlight`; previously 8 of 15 tokens were missing. |
+| Footer credit line | C6, C11 | implemented | Footer right column now renders `shell.copy.footerCredit` when set; empty by default so operators start with a clean footer. |
 
 ## Decisions and Overrides
 - Decision: the tracking file for implementation and spec drift lives at `/Users/stefanorlic/code/astronomer/IMPLEMENTATION_TRACKER.md`.
@@ -114,6 +118,18 @@ This file is the working source for implementation status, intentional spec devi
   Reason: this enables a real subscribe surface now while keeping the broader provider abstraction module deferred until compliance and parity rules are clearer.
 - Decision: `purpose` now supplies built-in shell and homepage presets instead of remaining metadata-only.
   Reason: the product already had stable navigation and homepage seams, so purpose-specific defaults add strong multi-instance leverage without forcing operators into a larger component-library or CMS-style expansion.
+- Decision: JSON-LD entries are sanitized by replacing `</` with `<\/` before injection via `set:html`.
+  Reason: `JSON.stringify` does not escape end-tag sequences; author-controlled fields (title, description, author name) in schema values can break out of the `<script type="application/ld+json">` block and inject arbitrary script.
+- Decision: `aria-current="page"` now uses prefix matching for non-root nav items (`currentPath.startsWith(item.href)`) and exact matching for the root (`/`).
+  Reason: exact matching left section nav items inactive while the reader was anywhere inside a section (e.g., `/blog/my-post` did not activate the Blog nav item); prefix matching reflects the section's active state correctly.
+- Decision: featured image `alt` falls back to the post `title` rather than empty string when `featuredImageAlt` is not set.
+  Reason: empty-string alt signals a decorative image to assistive technology; featured editorial images carry content meaning and should have descriptive alt text; the title is a safe, always-available fallback until the author provides a dedicated alt value.
+- Decision: `NewsletterEmbed` accepts a `headingLevel` prop (`h2` | `h3`, default `h2`) and uses it for the component heading.
+  Reason: in the post sidebar, the newsletter sits alongside post `h2` section headings, making a competing `h2` confusing for screen reader navigation; the call site at `PostLayout.astro` passes `headingLevel="h3"`.
+- Decision: the footer right column now renders `shell.copy.footerCredit` when set, and is empty when not set.
+  Reason: the previous scaffolding copy ("Built as a static Astro instance with a host-shell seam through `SiteShell.astro`.") exposed implementation details and read as developer documentation rather than operator-facing product copy; the configurable credit line gives operators control without forcing a specific attribution pattern.
+- Decision: the `featuredImageText: "dark"` overlay uses a white-tinted gradient (not black-tinted) with `--color-accent-strong` text, and `"light"` uses a black-tinted gradient with `#fffaf3` text.
+  Reason: `"light"` means the image is light-toned and needs dark text lifted on a white overlay; `"dark"` means the image is dark-toned and needs light text on a dark overlay. The previous `"dark"` variant used white overlay with near-black text at lower contrast; the corrected version makes the variant semantics match the visual behavior.
 - Decision: purpose presets are defaults, not locks; explicit `shell.navigation`, `shell.homepage.mode`, and `shell.copy.*` overrides take precedence.
   Reason: operators need purpose-native starting points, but the platform’s configurability depends on local instance choices still being authoritative.
 - Override: pagination is configurable per instance through `blog.postsPerPage`, with `10` as the default.
@@ -122,6 +138,7 @@ This file is the working source for implementation status, intentional spec devi
 - Interpretation: approved third-party MDX embeds are implemented with click-to-load activation and source links so failures stay isolated to the embed surface.
 
 ## Drift Watch
+- Watch: the SVG fallback social image (`/social/site.svg`) is not supported by most social platforms (Twitter/X, LinkedIn, Facebook). Until operators supply a JPEG/PNG `fallbackSocialImage`, social cards will silently fail to render. This is an open product gap, not a spec deviation.
 - Watch: the approved rich-media provider set is implemented with click-to-load activation; the remaining risk in this area is provider-side embed reliability, which is intentionally isolated at runtime.
 - Watch: the font delivery seam now supports `fontsource`, `self-hosted`, and `google-fonts`; the remaining product question is whether Google CDN delivery should stay an opt-in convenience or eventually require stronger compliance guidance in docs/UI.
 - Watch: the spec currently says pagination is locked at 10 per page, but the implementation now supports configurable pagination with `10` as the default. This should be reconciled in future product documentation/spec updates.
@@ -173,3 +190,13 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: full `npm run deploy` verified against the expanded 53-page site
 - `completed`: `npm run deploy` with default `noop` transport
 - `completed`: `npm run deploy` with `DEPLOY_TRANSPORT=local-copy` and output copied to `/tmp/astronomer-deploy-check`
+- `completed`: JSON-LD XSS fix — `</` escaped to `<\/` in `SeoHead.astro` before `set:html` injection
+- `completed`: skip-to-content link added to `SiteShell.astro` with focus-visible reveal; `<main>` receives `id="main-content"` target
+- `completed`: `aria-current` updated to prefix matching for non-root nav items in `SiteShell.astro`
+- `completed`: featured image `alt` fallback changed from empty string to post `title` in `index.astro` and `PostLayout.astro`
+- `completed`: dark token set completed — `--color-border-strong` and `--color-highlight` added to `[data-theme="dark"]` block in `tokens.css`
+- `completed`: TOC heading changed from `h2` to `h3` in `TableOfContents.astro` to avoid heading hierarchy conflict with post section headings
+- `completed`: lead overlay `max-width: 10ch` cap removed from both overlay variants in `index.astro`
+- `completed`: `featuredImageText: "dark"` overlay contrast corrected — white-tinted gradient with dark text for light images; `"light"` retains black-tinted gradient with light text for dark images
+- `completed`: `NewsletterEmbed` heading level made configurable via `headingLevel` prop; `PostLayout.astro` passes `headingLevel="h3"`
+- `completed`: footer right column scaffolding copy replaced with configurable `shell.copy.footerCredit` field; empty by default
