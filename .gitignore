@@ -25,6 +25,9 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Claude Code local memory
+memory/
+
 # Local deploy/test artifacts
 .deploy-output/
 
