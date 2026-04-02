@@ -166,8 +166,8 @@ This file is the working source for implementation status, intentional spec devi
   Reason: this intentionally overrides the current spec lock at 10 per page in favor of operator flexibility; this is a tracked spec drift decision, not an accidental implementation change.
 - Interpretation: draft filtering is enforced in content query helpers and route generation, which makes production exclusion explicit in the code paths that create pages and feeds.
 - Interpretation: approved third-party MDX embeds are implemented with click-to-load activation and source links so failures stay isolated to the embed surface.
-- Decision: `--color-accent` changed from near-black (`#2e2a24`) to warm amber (`#b5713a`); `--color-accent-strong` remains ink-dark for text and structural borders.
-  Reason: the monochrome ink palette had no hue energy for interactive elements; a warm amber accent gives buttons and CTAs visual distinction from body text while staying within the editorial warmth of the design system.
+- Decision: `--color-accent` changed from near-black (`#2e2a24`) to warm charcoal (`#3d3833`); `--color-accent-strong` remains ink-dark for text and structural borders. An intermediate amber value (`#b5713a`) was tried and reverted — it clashed with the editorial ink language.
+  Reason: buttons and interactive elements need subtle visual distinction from body text, but the distinction should stay within the warm neutral palette rather than introducing hue.
 - Decision: body and root background gradients removed in favor of flat `--color-background`; surface cards use subtle `box-shadow` instead of tinted backgrounds.
   Reason: stacked background gradients created a "dirty white" appearance rather than the intended paper feel; flat backgrounds with elevation through shadow read cleaner on screen.
 - Decision: `text-transform: uppercase` removed from post metadata, tag pills, pagination, and code block language labels; retained only on `.eyebrow`, `.site-nav a`, and `.site-header__tagline`.
@@ -176,16 +176,20 @@ This file is the working source for implementation status, intentional spec devi
   Reason: near-zero radii read as sharp and formal; slightly softened corners feel more approachable without going rounded.
 - Decision: hover expressiveness is now differentiated by element importance — lead story image gets scale + shadow, CTAs get background color shift + shadow, small items keep the subtle `translateY(-1px)` lift.
   Reason: uniform 1px lifts on every interactive element made interactions feel flat; varying the response by visual weight makes high-value targets more expressive while keeping secondary items restrained.
-- Decision: a subtle CSS grain texture (`feTurbulence` SVG) is applied as a fixed `body::after` overlay at ~3% opacity with `mix-blend-mode: multiply`.
-  Reason: the flat parchment background lacked material presence; a near-invisible grain gives the warm palette a paper-like feel without adding visual weight.
-- Decision: the homepage uses staggered CSS `fadeUp` entrance animations (80ms lead section, 240ms newsroom) and the site header uses a `fadeIn` entrance on every page.
+- Decision: CSS grain texture attempted via SVG `feTurbulence` (data URI, inline SVG, div-wrapped SVG) and reverted — none rendered visibly in Chrome. Dropped rather than pursuing fragile workarounds.
+  Reason: the technique is not cross-browser reliable enough to justify the complexity; the flat parchment background works without it.
+- Decision: the homepage uses staggered CSS `fadeUp` entrance animations (150ms lead section, 400ms newsroom) and the site header uses a `fadeIn` entrance on every page.
   Reason: instant full-page rendering made the editorial layout feel assembled rather than composed; staggered reveals create a sense of editorial pacing.
-- Decision: the TOC sidebar now includes a scroll-spy via `IntersectionObserver` that highlights the current section heading with accent color and bold weight.
+- Decision: the TOC sidebar now includes a scroll-spy via `IntersectionObserver` that highlights the current section heading with warm charcoal accent and bold weight.
   Reason: a sticky TOC without active-state tracking fails its primary UX purpose; the scroll-spy makes the TOC function as live reading-progress navigation.
 - Decision: blockquotes are restyled as pull quotes — larger Newsreader italic, accent-colored left border, and a decorative opening `\201C` quotation mark positioned via `::before`.
   Reason: the default `border-left: 3px solid` blockquote is the generic Markdown renderer treatment; the editorial system deserves blockquotes that use the typographic voice already established by the heading font.
 - Decision: the homepage `.lead-package` section uses a wider container (90rem vs 78rem page-shell) to create visual rhythm between the hero and the standard-width newsroom below.
   Reason: every section sharing the same measure made the page feel like one undifferentiated column; the wider lead creates a breathing moment that distinguishes the featured content from the archive.
+- Decision: PostCard and homepage lead-rail items shift the title to `--color-text-soft` on hover, with no background color change.
+  Reason: a background highlight tint on hover created distracting boxes in the lead package; title-only color shift provides clickability indication without breaking the layout's visual flow.
+- Decision: the newsletter CTA button uses `--color-accent-strong` (dark ink) instead of `--color-accent`, matching the editorial ink language rather than the interactive accent.
+  Reason: the warm charcoal accent is appropriate for small UI buttons (code copy, embed reveal) but the newsletter CTA is a prominent editorial surface that reads better in the same dark ink as the masthead and navigation.
 
 ## Drift Watch
 - Watch: the SVG fallback social image (`/social/site.svg`) is not supported by most social platforms (Twitter/X, LinkedIn, Facebook). Until operators supply a JPEG/PNG `fallbackSocialImage`, social cards will silently fail to render. This is an open product gap, not a spec deviation.
@@ -262,16 +266,22 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: PostCard tag list shows `+N` overflow count when more than 3 tags present
 - `completed`: Figure figcaption gets border-top separator and display-font styling; image now bleeds edge-to-edge within the card
 - `completed`: search page heading and eyebrow wired to `shell.copy.searchEyebrow` / `shell.copy.searchTitle` via purpose presets
-- `completed`: `--color-accent` updated to warm amber `#b5713a` in light theme; dark theme accent unchanged
+- `completed`: `--color-accent` updated to warm charcoal `#3d3833` in light theme (amber `#b5713a` tried and reverted); dark theme accent unchanged
 - `completed`: body/root background gradients removed; flat `--color-background` applied; `.surface-card` updated to use subtle box-shadow for elevation
 - `completed`: `text-transform: uppercase` removed from PostCard rail/meta/tags, PostLayout post-meta, homepage lead meta, Pagination links/status, CodeBlock language label, and NewsletterEmbed CTA; retained on `.eyebrow`, `.site-nav a`, `.site-header__tagline`
 - `completed`: border-radius tokens softened across all three scale steps
 - `completed`: lead story image hover enhanced with scale(1.03) + shadow; newsletter/embed CTA hover enhanced with color shift + shadow; taxonomy cards get shadow on hover
 - `completed`: Astro build verified with all visual modernization changes (53 pages)
-- `completed`: CSS grain texture added via `body::after` with feTurbulence SVG at 2.8% opacity and mix-blend-mode: multiply
-- `completed`: homepage entrance animations added — staggered fadeUp on lead-package (80ms) and newsroom (240ms) sections
+- `completed`: homepage entrance animations added — staggered fadeUp on lead-package (150ms) and newsroom (400ms) sections
 - `completed`: site header fadeIn entrance animation added in SiteShell.astro
 - `completed`: TOC scroll-spy implemented via IntersectionObserver; active heading highlighted with accent color and font-weight: 600
 - `completed`: blockquote restyled as pull quote — Newsreader italic, accent left border, decorative opening quotation mark via ::before
 - `completed`: homepage lead-package container widened to 90rem (vs 78rem page-shell) for visual rhythm
 - `completed`: Astro build verified with all design expression changes (53 pages)
+- `completed`: CSS grain texture removed — SVG feTurbulence approach did not render visibly in Chrome across three attempts
+- `completed`: `--color-accent` changed from amber `#b5713a` to warm charcoal `#3d3833`; bronze removed from all surfaces
+- `completed`: newsletter CTA reverted from `--color-accent` to `--color-accent-strong` (dark ink)
+- `completed`: PostCard hover changed to title-only color shift (`--color-text-soft`); background highlight removed
+- `completed`: homepage lead-rail items get matching title-only hover treatment
+- `completed`: homepage entrance animation timings adjusted to 150ms/400ms stagger with 32px travel and 800ms duration
+- `completed`: Astro build verified with all design refinement changes (53 pages)
