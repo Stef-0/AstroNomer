@@ -18,7 +18,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Current Build Phase
 - Active phase: `Phase 1 / post-MVP product refinements`
-- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, homepage lead tagline refinement, three-mode homepage presentation, homepage featured-label simplification, homepage featured-package alignment, posts-only first-story cleanup, rich-media embed activation fixes, frosted click-to-load embed placeholders, embed-stage simplification, unified provider-neutral rich-media placeholder styling, purpose-sensitive shell/homepage presets, post-audit security/accessibility/UI fixes, design/UI refinement pass (typography, spacing, layout, UI elements), and visual modernization pass (accent color, flat backgrounds, reduced uppercase, softened radii, differentiated hover)
+- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, homepage lead tagline refinement, three-mode homepage presentation, homepage featured-label simplification, homepage featured-package alignment, posts-only first-story cleanup, rich-media embed activation fixes, frosted click-to-load embed placeholders, embed-stage simplification, unified provider-neutral rich-media placeholder styling, purpose-sensitive shell/homepage presets, post-audit security/accessibility/UI fixes, design/UI refinement pass (typography, spacing, layout, UI elements), visual modernization pass (accent color, flat backgrounds, reduced uppercase, softened radii, differentiated hover), and design expression pass (grain texture, entrance animations, TOC scroll-spy, pull-quote blockquotes, full-bleed lead section)
 
 ## Requirement Tracking
 
@@ -176,6 +176,16 @@ This file is the working source for implementation status, intentional spec devi
   Reason: near-zero radii read as sharp and formal; slightly softened corners feel more approachable without going rounded.
 - Decision: hover expressiveness is now differentiated by element importance — lead story image gets scale + shadow, CTAs get background color shift + shadow, small items keep the subtle `translateY(-1px)` lift.
   Reason: uniform 1px lifts on every interactive element made interactions feel flat; varying the response by visual weight makes high-value targets more expressive while keeping secondary items restrained.
+- Decision: a subtle CSS grain texture (`feTurbulence` SVG) is applied as a fixed `body::after` overlay at ~3% opacity with `mix-blend-mode: multiply`.
+  Reason: the flat parchment background lacked material presence; a near-invisible grain gives the warm palette a paper-like feel without adding visual weight.
+- Decision: the homepage uses staggered CSS `fadeUp` entrance animations (80ms lead section, 240ms newsroom) and the site header uses a `fadeIn` entrance on every page.
+  Reason: instant full-page rendering made the editorial layout feel assembled rather than composed; staggered reveals create a sense of editorial pacing.
+- Decision: the TOC sidebar now includes a scroll-spy via `IntersectionObserver` that highlights the current section heading with accent color and bold weight.
+  Reason: a sticky TOC without active-state tracking fails its primary UX purpose; the scroll-spy makes the TOC function as live reading-progress navigation.
+- Decision: blockquotes are restyled as pull quotes — larger Newsreader italic, accent-colored left border, and a decorative opening `\201C` quotation mark positioned via `::before`.
+  Reason: the default `border-left: 3px solid` blockquote is the generic Markdown renderer treatment; the editorial system deserves blockquotes that use the typographic voice already established by the heading font.
+- Decision: the homepage `.lead-package` section uses a wider container (90rem vs 78rem page-shell) to create visual rhythm between the hero and the standard-width newsroom below.
+  Reason: every section sharing the same measure made the page feel like one undifferentiated column; the wider lead creates a breathing moment that distinguishes the featured content from the archive.
 
 ## Drift Watch
 - Watch: the SVG fallback social image (`/social/site.svg`) is not supported by most social platforms (Twitter/X, LinkedIn, Facebook). Until operators supply a JPEG/PNG `fallbackSocialImage`, social cards will silently fail to render. This is an open product gap, not a spec deviation.
@@ -258,3 +268,10 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: border-radius tokens softened across all three scale steps
 - `completed`: lead story image hover enhanced with scale(1.03) + shadow; newsletter/embed CTA hover enhanced with color shift + shadow; taxonomy cards get shadow on hover
 - `completed`: Astro build verified with all visual modernization changes (53 pages)
+- `completed`: CSS grain texture added via `body::after` with feTurbulence SVG at 2.8% opacity and mix-blend-mode: multiply
+- `completed`: homepage entrance animations added — staggered fadeUp on lead-package (80ms) and newsroom (240ms) sections
+- `completed`: site header fadeIn entrance animation added in SiteShell.astro
+- `completed`: TOC scroll-spy implemented via IntersectionObserver; active heading highlighted with accent color and font-weight: 600
+- `completed`: blockquote restyled as pull quote — Newsreader italic, accent left border, decorative opening quotation mark via ::before
+- `completed`: homepage lead-package container widened to 90rem (vs 78rem page-shell) for visual rhythm
+- `completed`: Astro build verified with all design expression changes (53 pages)

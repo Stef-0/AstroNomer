@@ -124,12 +124,26 @@ const showFeaturedLead = homepageMode !== "posts-only";
 </SiteShell>
 
 <style>
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   :root {
     --home-sidebar-width: 22rem;
   }
 
   .lead-package {
     padding: var(--space-6) 0 var(--space-8);
+    width: min(calc(100% - 2rem), 90rem);
+    animation: fadeUp 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 80ms;
   }
 
   .lead-package__label {
@@ -301,6 +315,8 @@ const showFeaturedLead = homepageMode !== "posts-only";
     padding-top: var(--space-12);
     padding-bottom: var(--space-16);
     border-top: 1px solid color-mix(in srgb, var(--color-border) 92%, transparent);
+    animation: fadeUp 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 240ms;
   }
 
   .newsroom__aside {

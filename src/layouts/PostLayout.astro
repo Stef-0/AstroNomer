@@ -192,10 +192,31 @@ const shellCopy = instanceConfig.shell.copy;
   }
 
   .post-body :global(blockquote) {
-    margin: 2rem 0;
-    padding-left: 1.2rem;
-    border-left: 3px solid var(--color-border-strong);
+    margin: 2.5rem 0;
+    padding: 1.2rem 0 0 2rem;
+    border-left: 2px solid var(--color-accent);
+    font-family: var(--font-heading);
     font-style: italic;
+    font-size: 1.3rem;
+    line-height: 1.5;
+    color: var(--color-text-soft);
+    position: relative;
+  }
+
+  .post-body :global(blockquote)::before {
+    content: "\201C";
+    font-family: var(--font-heading);
+    font-size: 3.6rem;
+    font-style: normal;
+    line-height: 0.8;
+    color: color-mix(in srgb, var(--color-accent) 35%, transparent);
+    position: absolute;
+    left: 0.55rem;
+    top: -0.1rem;
+  }
+
+  .post-body :global(blockquote p) {
+    margin-bottom: 0.5rem;
   }
 
   .post-body :global(pre),
