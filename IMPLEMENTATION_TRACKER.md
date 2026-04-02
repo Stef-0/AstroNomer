@@ -18,7 +18,7 @@ This file is the working source for implementation status, intentional spec devi
 
 ## Current Build Phase
 - Active phase: `Phase 1 / post-MVP product refinements`
-- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, homepage lead tagline refinement, three-mode homepage presentation, homepage featured-label simplification, homepage featured-package alignment, posts-only first-story cleanup, rich-media embed activation fixes, frosted click-to-load embed placeholders, embed-stage simplification, unified provider-neutral rich-media placeholder styling, purpose-sensitive shell/homepage presets, post-audit security/accessibility/UI fixes, and design/UI refinement pass (typography, spacing, layout, UI elements)
+- Last updated for: separator cleanup, font delivery architecture, TOC system, post/homepage composition refinements, RSS namespace compliance, richer post image metadata, newsletter activation modes, social/editorial image separation, social-image schema naming cleanup, homepage lead-media integration, over-image homepage lead treatment, featured-image text tone control, flat featured-image contrast styling, homepage lead tagline refinement, three-mode homepage presentation, homepage featured-label simplification, homepage featured-package alignment, posts-only first-story cleanup, rich-media embed activation fixes, frosted click-to-load embed placeholders, embed-stage simplification, unified provider-neutral rich-media placeholder styling, purpose-sensitive shell/homepage presets, post-audit security/accessibility/UI fixes, design/UI refinement pass (typography, spacing, layout, UI elements), and visual modernization pass (accent color, flat backgrounds, reduced uppercase, softened radii, differentiated hover)
 
 ## Requirement Tracking
 
@@ -166,6 +166,16 @@ This file is the working source for implementation status, intentional spec devi
   Reason: this intentionally overrides the current spec lock at 10 per page in favor of operator flexibility; this is a tracked spec drift decision, not an accidental implementation change.
 - Interpretation: draft filtering is enforced in content query helpers and route generation, which makes production exclusion explicit in the code paths that create pages and feeds.
 - Interpretation: approved third-party MDX embeds are implemented with click-to-load activation and source links so failures stay isolated to the embed surface.
+- Decision: `--color-accent` changed from near-black (`#2e2a24`) to warm amber (`#b5713a`); `--color-accent-strong` remains ink-dark for text and structural borders.
+  Reason: the monochrome ink palette had no hue energy for interactive elements; a warm amber accent gives buttons and CTAs visual distinction from body text while staying within the editorial warmth of the design system.
+- Decision: body and root background gradients removed in favor of flat `--color-background`; surface cards use subtle `box-shadow` instead of tinted backgrounds.
+  Reason: stacked background gradients created a "dirty white" appearance rather than the intended paper feel; flat backgrounds with elevation through shadow read cleaner on screen.
+- Decision: `text-transform: uppercase` removed from post metadata, tag pills, pagination, and code block language labels; retained only on `.eyebrow`, `.site-nav a`, and `.site-header__tagline`.
+  Reason: applying uppercase to every piece of UI chrome created a "newspaper masthead" density that fought the clean editorial intent; selective uppercase preserves hierarchy while adding breathing room.
+- Decision: border-radius tokens softened — `--radius-sm` from 0.15rem to 0.25rem, `--radius-md` from 0.35rem to 0.5rem, `--radius-lg` from 0.5rem to 0.75rem.
+  Reason: near-zero radii read as sharp and formal; slightly softened corners feel more approachable without going rounded.
+- Decision: hover expressiveness is now differentiated by element importance — lead story image gets scale + shadow, CTAs get background color shift + shadow, small items keep the subtle `translateY(-1px)` lift.
+  Reason: uniform 1px lifts on every interactive element made interactions feel flat; varying the response by visual weight makes high-value targets more expressive while keeping secondary items restrained.
 
 ## Drift Watch
 - Watch: the SVG fallback social image (`/social/site.svg`) is not supported by most social platforms (Twitter/X, LinkedIn, Facebook). Until operators supply a JPEG/PNG `fallbackSocialImage`, social cards will silently fail to render. This is an open product gap, not a spec deviation.
@@ -242,3 +252,9 @@ This file is the working source for implementation status, intentional spec devi
 - `completed`: PostCard tag list shows `+N` overflow count when more than 3 tags present
 - `completed`: Figure figcaption gets border-top separator and display-font styling; image now bleeds edge-to-edge within the card
 - `completed`: search page heading and eyebrow wired to `shell.copy.searchEyebrow` / `shell.copy.searchTitle` via purpose presets
+- `completed`: `--color-accent` updated to warm amber `#b5713a` in light theme; dark theme accent unchanged
+- `completed`: body/root background gradients removed; flat `--color-background` applied; `.surface-card` updated to use subtle box-shadow for elevation
+- `completed`: `text-transform: uppercase` removed from PostCard rail/meta/tags, PostLayout post-meta, homepage lead meta, Pagination links/status, CodeBlock language label, and NewsletterEmbed CTA; retained on `.eyebrow`, `.site-nav a`, `.site-header__tagline`
+- `completed`: border-radius tokens softened across all three scale steps
+- `completed`: lead story image hover enhanced with scale(1.03) + shadow; newsletter/embed CTA hover enhanced with color shift + shadow; taxonomy cards get shadow on hover
+- `completed`: Astro build verified with all visual modernization changes (53 pages)

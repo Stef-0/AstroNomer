@@ -140,6 +140,16 @@ const eager = instanceConfig.features.richMediaLoadStrategy === "eager";
     background: var(--color-accent);
     color: white;
     cursor: pointer;
+    transition:
+      background-color 180ms ease,
+      box-shadow 180ms ease,
+      transform 180ms ease;
+  }
+
+  .embed-card__button:hover,
+  .embed-card__button:focus-visible {
+    background: color-mix(in srgb, var(--color-accent) 82%, black);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   }
 
   .embed-card__source-link {

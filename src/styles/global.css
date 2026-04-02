@@ -3,10 +3,7 @@
 
 :root {
   font-family: var(--font-body);
-  background:
-    linear-gradient(180deg, rgba(20, 19, 17, 0.018), transparent 14rem),
-    linear-gradient(90deg, rgba(20, 19, 17, 0.008), transparent 24rem),
-    var(--color-background);
+  background: var(--color-background);
   color: var(--color-text);
   line-height: 1.5;
 }
@@ -22,9 +19,6 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.55), transparent 24rem),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.42), transparent 12rem);
 }
 
 a {
@@ -77,10 +71,10 @@ pre {
 }
 
 .surface-card {
-  background: color-mix(in srgb, var(--color-surface) 92%, white);
-  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
   border-radius: var(--radius-sm);
-  box-shadow: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 h1,
@@ -180,6 +174,7 @@ main {
   background: color-mix(in srgb, var(--color-surface) 72%, white);
   border-color: var(--color-border-strong);
   transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .taxonomy-grid a {

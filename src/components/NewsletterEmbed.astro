@@ -111,18 +111,19 @@ function resolveUrl(value: string) {
     justify-content: center;
     min-height: 2.875rem;
     padding: 0.7rem 1rem;
-    border: 1px solid var(--color-accent-strong);
-    background: var(--color-accent-strong);
-    color: var(--color-surface);
+    border: 1px solid var(--color-accent);
+    background: var(--color-accent);
+    color: white;
     font-family: var(--font-display);
     font-size: 0.85rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0.02em;
     text-decoration: none;
+    border-radius: var(--radius-md);
     transition:
       transform 180ms ease,
       background-color 180ms ease,
-      border-color 180ms ease;
+      border-color 180ms ease,
+      box-shadow 180ms ease;
     cursor: pointer;
   }
 
@@ -130,9 +131,9 @@ function resolveUrl(value: string) {
   .newsletter__cta:focus-visible,
   .newsletter button:hover,
   .newsletter button:focus-visible {
-    transform: translateY(-1px);
-    background: color-mix(in srgb, var(--color-accent-strong) 88%, black);
-    border-color: color-mix(in srgb, var(--color-accent-strong) 88%, black);
+    background: color-mix(in srgb, var(--color-accent) 82%, black);
+    border-color: color-mix(in srgb, var(--color-accent) 82%, black);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .newsletter__form {
